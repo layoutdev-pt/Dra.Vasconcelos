@@ -1,0 +1,41 @@
+/* src/index.css */
+@import "tailwindcss";
+
+@theme {
+  /* Cores Existentes */
+  --color-primary: #0f1729;
+  --color-secondary: #2563EB;
+  --color-accent: #F97316;
+  --color-periwinkle: #C7D2FE;
+  --color-background-light: #f6f7f8;
+  --color-background-dark: #14171e;
+  --color-surface-hero: #eceef9;
+
+  --font-display: "Inter", sans-serif;
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  --shadow-float: 0 20px 40px -10px rgba(0,0,0,0.15);
+
+  /* DEFINIÇÃO DA NOVA ANIMAÇÃO SUAVE */
+  @keyframes gentle-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); } /* Movimento muito curto */
+  }
+  --animate-float-gentle: gentle-float 6s ease-in-out infinite; /* Duração longa (6s) para ser suave */
+}
+
+/* Utilitários existentes (mantidos) */
+@utility glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+@utility glass-panel-blue {
+  background: rgba(37, 99, 235, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@utility stats-dock {
+  border-top-left-radius: 4rem;
+}
