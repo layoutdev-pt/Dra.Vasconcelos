@@ -5,47 +5,31 @@ import { ArrowRight } from 'lucide-react';
 export const BooksSection: React.FC = () => {
   const books: BookCardProps[] = [
     {
-      author: "DR. SILVA",
-      titleLine1: "Gut Health",
-      titleLine2: "Revolution",
-      bookName: "Gut Health Revolution",
-      status: "Bestseller 2023",
-      theme: "dark"
-    },
-    {
-      author: "DR. SILVA",
-      titleLine1: "Mindful",
-      titleLine2: "Healing",
-      bookName: "Mindful Healing",
-      status: "New Release",
+      author: "ALEXANDRA VASCONCELOS",
+      titleLine1: "Jovem e Saudável",
+      titleLine2: "em 21 Dias",
+      bookName: "Jovem e Saudável em 21 Dias",
+      status: "Novo",
       theme: "light",
       isFeatured: true
-    },
-    {
-      author: "ESSENTIAL GUIDE",
-      titleLine1: "Sleep",
-      titleLine2: "Mastery",
-      bookName: "Sleep Mastery",
-      status: "Digital Edition",
-      theme: "blue"
     }
   ];
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-white" id="catalogo">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div>
             <span className="text-secondary font-bold tracking-widest uppercase text-xs mb-2 block">
-              Publications
+              NOVIDADE
             </span>
             <h2 className="text-4xl font-extrabold text-primary">
-              Novos Livros & Guias
+              Jovem e Saudável em 21 Dias
             </h2>
           </div>
           <a href="#catalogo" className="text-gray-600 hover:text-primary font-medium flex items-center gap-2 transition-colors text-sm">
-            View all publications
+            Comprar Já
             <ArrowRight className="w-4 h-4" />
           </a>
         </div>

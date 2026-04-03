@@ -2,36 +2,40 @@
 @import "tailwindcss";
 
 @theme {
-  /* Cores Existentes */
-  --color-primary: #0f1729;
-  --color-secondary: #2563EB;
-  --color-accent: #F97316;
-  --color-periwinkle: #C7D2FE;
-  --color-background-light: #f6f7f8;
+  /* Nova Paleta de Cores */
+  --color-primary: #0f1729; /* Mantido para alto contraste na tipografia */
+  --color-secondary: #7cb0b0; /* Nova cor principal (verde-água) */
+  --color-secondary-light: #92cfd1; /* Tom mais claro */
+  --color-accent: #df9d3b;  
+  /* Fundos neutralizados para alinhar com os tons frios do verde */
+  --color-background-light: #f9fafa;
   --color-background-dark: #14171e;
-  --color-surface-hero: #eceef9;
+  --color-surface-hero: #f2f6f6; 
 
   --font-display: "Inter", sans-serif;
-  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  
+  /* Sombras recalculadas para o RGB da nova cor secundária (124, 176, 176) */
+  --shadow-glass: 0 8px 32px 0 rgba(124, 176, 176, 0.30);
   --shadow-float: 0 20px 40px -10px rgba(0,0,0,0.15);
 
   /* DEFINIÇÃO DA NOVA ANIMAÇÃO SUAVE */
   @keyframes gentle-float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); } /* Movimento muito curto */
+    50% { transform: translateY(-6px); } 
   }
-  --animate-float-gentle: gentle-float 6s ease-in-out infinite; /* Duração longa (6s) para ser suave */
+  --animate-float-gentle: gentle-float 6s ease-in-out infinite; 
 }
 
-/* Utilitários existentes (mantidos) */
+/* Utilitários */
 @utility glass-panel {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-@utility glass-panel-blue {
-  background: rgba(37, 99, 235, 0.85);
+/* Nome alterado e RGB ajustado para #7cb0b0 */
+@utility glass-panel-brand {
+  background: rgba(124, 176, 176, 0.85);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }

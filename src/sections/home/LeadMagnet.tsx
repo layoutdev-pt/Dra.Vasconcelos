@@ -7,7 +7,7 @@ export const LeadMagnet: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email) return;
@@ -24,17 +24,13 @@ export const LeadMagnet: React.FC = () => {
 
       setStatus('success');
       setEmail('');
-      
-      // Gatilho para download automático do PDF (Substituir URL pelo link real do Storage)
-      window.open('https://teu-projeto.supabase.co/storage/v1/object/public/ebooks/guia-anti-inflamatorio.pdf', '_blank');
 
     } catch (error: any) {
       setStatus('error');
-      // Tratamento para a restrição UNIQUE do email na base de dados
       if (error.code === '23505') {
-        setErrorMessage('Este email já recebeu o guia gratuito.');
+        setErrorMessage('Este email já está registado na nossa base de dados.');
       } else {
-        setErrorMessage('Ocorreu um erro. Tente novamente mais tarde.');
+        setErrorMessage('Ocorreu um erro na submissão. Tente novamente.');
       }
     }
   };
@@ -48,11 +44,11 @@ export const LeadMagnet: React.FC = () => {
         </div>
         
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
-          Free: 7-Day Anti-Inflammatory<br className="hidden md:block" /> Guide
+          Gostava de ter o meu<br className="hidden md:block" /> novo ebook?
         </h2>
         
         <p className="text-gray-400 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-          Start your healing journey today. Download the comprehensive PDF guide with meal plans, shopping lists, and daily rituals.
+          Os Probióticos que vão Revolucionar a Sua Vida: um guia prático para otimizar o seu intestino e fortalecer a sua saúde.
         </p>
         
         {status === 'success' ? (
@@ -68,7 +64,7 @@ export const LeadMagnet: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={status === 'loading'}
-                placeholder="Enter your best email" 
+                placeholder="Insira o seu email" 
                 className="w-full px-6 py-4 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-secondary transition-all disabled:opacity-50" 
                 required 
               />
@@ -83,7 +79,7 @@ export const LeadMagnet: React.FC = () => {
               disabled={status === 'loading'}
               className="px-8 py-4 rounded-full bg-accent hover:bg-accent/90 text-white font-bold whitespace-nowrap transition-transform hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
             >
-              {status === 'loading' ? 'A processar...' : 'Send it to me'}
+              {status === 'loading' ? 'A processar...' : 'Faça Download Gratuito'}
             </button>
           </form>
         )}

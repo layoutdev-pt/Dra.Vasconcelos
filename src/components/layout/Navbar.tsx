@@ -11,7 +11,7 @@ export const Navbar: React.FC = () => {
           <div className="flex-shrink-0 flex items-center gap-2">
             <HeartPulse className="w-8 h-8 text-secondary" strokeWidth={2.5} />
             <span className="font-bold text-xl tracking-tight text-primary">
-              Dr. Silva <span className="font-normal text-gray-500">Integrative</span>
+              Dra. Alexandra <span className="font-normal text-gray-500">Vasconcelos</span>
             </span>
           </div>
           
