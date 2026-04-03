@@ -17,7 +17,7 @@ export const BooksSection: React.FC = () => {
 
   return (
     <section className="py-24 bg-white" id="catalogo">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
         
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div>
@@ -34,10 +34,12 @@ export const BooksSection: React.FC = () => {
           </a>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 lg:gap-12 items-end justify-items-center mt-12">
-          {books.map((book, index) => (
-            <BookCard key={index} {...book} />
-          ))}
+        <div className="flex justify-center mt-12 w-full">
+          <div className="w-full max-w-[320px]">
+            {books.map((book, index) => (
+              <BookCard key={index} {...book} />
+            ))}
+          </div>
         </div>
 
       </div>

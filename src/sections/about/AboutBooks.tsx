@@ -31,7 +31,7 @@ export const AboutBooks: React.FC = () => {
 
   return (
     <section className="py-24 bg-white" id="publicacoes">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
         
         <div className="flex flex-col mb-16 gap-4 text-center">
           <span className="text-secondary font-bold tracking-widest uppercase text-xs">
@@ -45,9 +45,11 @@ export const AboutBooks: React.FC = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-end justify-items-center mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start justify-items-center mt-12 pb-12">
           {books.map((book, index) => (
-            <BookCard key={index} {...book} />
+            <div key={index} className={`transition-transform duration-500 w-full flex justify-center ${index === 1 ? 'md:translate-y-12' : ''}`}>
+              <BookCard {...book} />
+            </div>
           ))}
         </div>
 

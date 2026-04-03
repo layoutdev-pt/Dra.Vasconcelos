@@ -38,7 +38,7 @@ export const CourseGrid: React.FC = () => {
 
   return (
     <section className="py-24 bg-background-light">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
         
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-extrabold text-primary mb-4 uppercase tracking-wider">
@@ -49,9 +49,11 @@ export const CourseGrid: React.FC = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 items-stretch pt-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 items-start pt-4 pb-12">
           {courses.map((course, index) => (
-            <CourseCard key={index} {...course} />
+            <div key={index} className={`transition-transform duration-500 ${index === 1 ? 'md:translate-y-12' : ''}`}>
+              <CourseCard {...course} />
+            </div>
           ))}
         </div>
         

@@ -1,22 +1,19 @@
 import React from 'react';
-import { HeartPulse } from 'lucide-react';
+import whiteLogo from '../../assets/logo/full_white.svg';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-primary pt-16 pb-8 text-white border-t border-white/10 mt-auto">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
           
           {/* Coluna 1: Branding & Descrição */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="flex items-center gap-2">
-              <HeartPulse className="w-6 h-6 text-accent" strokeWidth={2.5} />
-              <span className="font-bold text-xl tracking-tight text-white">
-                Dra. Alexandra <span className="font-normal text-gray-400">Integrative</span>
-              </span>
+            <div className="flex items-center">
+              <img src={whiteLogo} alt="Dra. Alexandra Vasconcelos" className="h-20 md:h-28 w-auto" />
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
               Empoderando pacientes através do conhecimento integrativo de ponta para um amanhã com mais vitalidade e saúde plena.

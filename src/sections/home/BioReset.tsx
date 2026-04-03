@@ -16,7 +16,7 @@ export const BioReset: React.FC = () => {
         }}
       ></div>
       
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12 relative z-10">
         
         {/* Cartão principal branco sólido */}
         <div className="bg-white rounded-[2rem] p-8 lg:p-12 shadow-xl flex flex-col lg:flex-row items-center gap-12 border border-gray-100">

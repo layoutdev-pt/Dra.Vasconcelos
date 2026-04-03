@@ -1,5 +1,5 @@
 import React from 'react';
-import draHero from '../../assets/images/dra.jpg'; // Using the portrait image from assets if possible, or dra_hero
+import draHero from '../../assets/images/dra3.jpg';
 import { ArrowDown } from 'lucide-react';
 
 export const AboutHero: React.FC = () => {
@@ -7,7 +7,7 @@ export const AboutHero: React.FC = () => {
     <section className="relative min-h-screen flex items-center bg-white overflow-hidden pt-24">
       <div className="absolute top-0 left-0 w-1/2 h-full bg-surface-hero hidden lg:block" />
       
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full relative z-10">
+      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12 relative z-10 h-full flex items-center">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           <div className="space-y-6 pt-12 lg:pt-0">

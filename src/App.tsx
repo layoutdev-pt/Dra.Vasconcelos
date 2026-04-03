@@ -1,21 +1,41 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
-import { Home } from './pages/Home';
-import { About } from './pages/About';
+
+// Lazy loaded pages
+const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
+const About = lazy(() => import('./pages/About').then(module => ({ default: module.About })));
+
+// Scroll to top helper component
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
+
+// Loading fallback
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background-light">
+    <div className="w-12 h-12 border-4 border-secondary/20 border-t-secondary rounded-full animate-spin"></div>
+  </div>
+);
 
 export const App: React.FC = () => {
   return (
     <Router>
+      <ScrollToTop />
       <div className="flex flex-col min-h-screen w-full bg-background-light font-display text-primary antialiased overflow-x-hidden">
         <Navbar />
-        {/* pt-24 removido. O Hero agora vai encostar ao topo do ecrã e o Navbar flutuará por cima */}
-        <main className="flex-grow w-full">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/sobre" element={<About />} />
-          </Routes>
+        <main className="grow w-full">
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/sobre" element={<About />} />
+            </Routes>
+          </Suspense>
         </main>
         <Footer />
       </div>

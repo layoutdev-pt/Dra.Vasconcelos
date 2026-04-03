@@ -12,7 +12,7 @@ export const AboutBio: React.FC = () => {
         <div className="absolute top-1/2 -left-40 w-120 h-120 bg-periwinkle/20 rounded-full blur-3xl" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12 relative z-10">
         
         {/* Intro Block with Large Quote */}
         <div className="relative bg-white rounded-3xl p-10 lg:p-16 shadow-xl border border-gray-100 mb-20 group">
