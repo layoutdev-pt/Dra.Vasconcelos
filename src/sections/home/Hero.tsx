@@ -84,7 +84,7 @@ export const Hero: React.FC = () => {
             </p>
             
             <div className="pt-2">
-              <Button variant="primary" className="shadow-lg shadow-accent/30 w-full max-w-md py-3 md:py-4 px-12 rounded-full text-sm md:text-base font-bold tracking-wide">
+              <Button to="/consultas" variant="primary" className="shadow-lg shadow-accent/30 w-full max-w-md py-3 md:py-4 px-12 rounded-full text-sm md:text-base font-bold tracking-wide">
                 AGENDE JÁ A SUA CONSULTA
               </Button>
             </div>

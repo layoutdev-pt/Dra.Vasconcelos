@@ -99,14 +99,23 @@ export const AuthorityMetrics: React.FC = () => {
             
             {/* Modal Content */}
             <div className="p-6 md:p-8 overflow-y-auto">
-              <p className="text-gray-600 leading-relaxed font-light text-lg space-y-6">
-                <span className="block italic text-gray-400 mb-6">
-                  [ O conteúdo final da biografia detalhada será inserido neste espaço... ]
-                </span>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                <br/><br/>
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.
-              </p>
+              <div className="text-gray-600 leading-relaxed font-light text-lg space-y-6">
+                <p>
+                  Alexandra Vasconcelos nasceu em Lisboa, em 1965. Licenciou-se em Ciências Farmacêuticas pela Universidade de Lisboa, em 1989, e dedicou os primeiros 15 anos da sua carreira à gestão e direção técnica da sua própria farmácia comunitária.
+                </p>
+                <p>
+                  O acompanhamento próximo de doentes com patologias crónicas despertou nela a necessidade de explorar novas abordagens na promoção da saúde. Foi esta inquietação que a impulsionou a especializar-se em terapias complementares, naturais e biológicas.
+                </p>
+                <p>
+                  Atualmente, é mestre em Medicina Integrativa e Humanista, com pós-graduações em Nutrição Oncológica pela Universidade Católica de Lisboa e em Adequação Nutricional e Homeostase (focada na prevenção e no tratamento de doenças associadas ao envelhecimento) pela Academia Dr. Lair Ribeiro e pelo Centro Universitário INGA, no Brasil.
+                </p>
+                <p>
+                  Com uma prática clínica consolidada, trabalha também como formadora em Biorressonância e Medicina Biorreguladora. É membro e formadora da Asociación Española de Microinmunoterapia (AEMI), sendo presença assídua como oradora em congressos e cursos de especialização focados na medicina integrativa, na prevenção da doença e na longevidade.
+                </p>
+                <p>
+                  Como autora de referência, escreveu obras de sucesso como "O Poder do Jejum Intermitente", "Energiza-te" e "Jovem e Saudável em 21 Dias". Através dos seus livros e programas de saúde, já ajudou milhares de pessoas a transformarem as suas vidas, recuperando energia, equilíbrio e bem-estar.
+                </p>
+              </div>
             </div>
 
             {/* Modal Footer */}

@@ -60,6 +60,7 @@ export const Navbar: React.FC = () => {
               <div className="ml-10 flex items-baseline space-x-8">
                 <Link to="/" className="text-gray-600 hover:text-secondary px-3 py-2 text-sm font-medium transition-colors">Home</Link>
                 <Link to="/sobre" className="text-gray-500 hover:text-secondary px-3 py-2 text-sm font-medium transition-colors">Sobre</Link>
+                <Link to="/consultas" className="text-gray-500 hover:text-secondary px-3 py-2 text-sm font-medium transition-colors">Consultas</Link>
                 <Link to="/cursos" className="text-gray-500 hover:text-secondary px-3 py-2 text-sm font-medium transition-colors">Programas</Link>
                 <Link to="/livros" className="text-gray-500 hover:text-secondary px-3 py-2 text-sm font-medium transition-colors">Livros</Link>
               </div>

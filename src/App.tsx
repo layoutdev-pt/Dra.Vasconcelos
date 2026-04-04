@@ -6,6 +6,7 @@ import { Footer } from './components/layout/Footer';
 // Lazy loaded pages
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const About = lazy(() => import('./pages/About').then(module => ({ default: module.About })));
+const Appointments = lazy(() => import('./pages/Appointments').then(module => ({ default: module.Appointments })));
 
 // Scroll to top helper component
 const ScrollToTop = () => {
@@ -34,6 +35,7 @@ export const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/sobre" element={<About />} />
+              <Route path="/consultas" element={<Appointments />} />
             </Routes>
           </Suspense>
         </main>

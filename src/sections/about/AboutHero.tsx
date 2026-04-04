@@ -37,7 +37,7 @@ export const AboutHero: React.FC = () => {
             <img 
               src={draHero} 
               alt="Dra. Alexandra Vasconcelos" 
-              className="w-full h-full object-cover object-top rounded-t-[3rem] lg:rounded-none lg:rounded-tl-[4rem] shadow-2xl" 
+              className="w-full h-full object-cover object-top rounded-[2rem] lg:rounded-[3rem] shadow-2xl border-4 border-white/50" 
             />
           </div>
 
