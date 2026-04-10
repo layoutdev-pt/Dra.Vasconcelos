@@ -9,6 +9,16 @@ const TABS = [
   { id: 'prevencao', label: 'Prevenção' }
 ];
 
+/* Scroll-triggered fade-up */
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay: i * 0.15, ease: [0.25, 0.46, 0.45, 0.94] as const },
+  }),
+};
+
 export const ConsultationDetails: React.FC = () => {
   const [activeTab, setActiveTab] = useState(TABS[0].id);
 
@@ -19,50 +29,52 @@ export const ConsultationDetails: React.FC = () => {
           
           {/* Top Row: Visual Cards */}
           <div className="w-full">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-60px' }}
+              className="text-center mb-10"
+            >
+              <motion.h2 variants={fadeInUp} custom={0} className="text-3xl md:text-4xl font-bold text-primary mb-4">
                 A Nossa Metodologia
-              </h2>
-              <p className="text-gray-500 font-light max-w-2xl mx-auto">
+              </motion.h2>
+              <motion.p variants={fadeInUp} custom={1} className="text-gray-500 font-light max-w-2xl mx-auto">
                 Uma abordagem integrativa onde desenhamos a sua biologia única num plano totalmente personalizado.
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-              <div className="bg-white p-8 rounded-4xl shadow-sm border border-gray-100 flex flex-col items-center text-center group hover:shadow-md transition-shadow">
-                <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center mb-6">
-                  <Clock className="w-7 h-7 text-secondary" />
-                </div>
-                <h3 className="font-bold text-xl text-primary mb-3">Tempo de Qualidade</h3>
-                <p className="text-gray-500 font-light leading-relaxed text-sm">
-                  Consultas com duração até 2 horas. Tempo dedicado para ouvir a sua história completa com total dedicação.
-                </p>
-              </div>
-
-              <div className="bg-white p-8 rounded-4xl shadow-sm border border-gray-100 flex flex-col items-center text-center group hover:shadow-md transition-shadow">
-                <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-6">
-                  <BriefcaseMedical className="w-7 h-7 text-blue-500" />
-                </div>
-                <h3 className="font-bold text-xl text-primary mb-3">Medicina Funcional</h3>
-                <p className="text-gray-500 font-light leading-relaxed text-sm">
-                  Investigação profunda das raízes dos distúrbios e análise rigorosa de parâmetros e biomarcadores.
-                </p>
-              </div>
-
-              <div className="bg-white p-8 rounded-4xl shadow-sm border border-gray-100 flex flex-col items-center text-center group hover:shadow-md transition-shadow">
-                <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center mb-6">
-                  <ClipboardList className="w-7 h-7 text-green-500" />
-                </div>
-                <h3 className="font-bold text-xl text-primary mb-3">Plano Personalizado</h3>
-                <p className="text-gray-500 font-light leading-relaxed text-sm">
-                  Nutrição, suplementação e estilo de vida desenhados para as suas necessidades biofísicas exclusivas.
-                </p>
-              </div>
+              {[
+                { icon: Clock, iconBg: 'bg-orange-50', iconColor: 'text-secondary', title: 'Tempo de Qualidade', desc: 'Consultas com duração até 2 horas. Tempo dedicado para ouvir a sua história completa com total dedicação.' },
+                { icon: BriefcaseMedical, iconBg: 'bg-blue-50', iconColor: 'text-blue-500', title: 'Medicina Funcional', desc: 'Investigação profunda das raízes dos distúrbios e análise rigorosa de parâmetros e biomarcadores.' },
+                { icon: ClipboardList, iconBg: 'bg-green-50', iconColor: 'text-green-500', title: 'Plano Personalizado', desc: 'Nutrição, suplementação e estilo de vida desenhados para as suas necessidades biofísicas exclusivas.' },
+              ].map((card, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.5, delay: i * 0.15, ease: [0.25, 0.46, 0.45, 0.94] as const }}
+                  className="bg-white p-8 rounded-4xl shadow-sm border border-gray-100 flex flex-col items-center text-center group hover:shadow-md transition-shadow"
+                >
+                  <div className={`w-16 h-16 rounded-2xl ${card.iconBg} flex items-center justify-center mb-6`}>
+                    <card.icon className={`w-7 h-7 ${card.iconColor}`} />
+                  </div>
+                  <h3 className="font-bold text-xl text-primary mb-3">{card.title}</h3>
+                  <p className="text-gray-500 font-light leading-relaxed text-sm">{card.desc}</p>
+                </motion.div>
+              ))}
             </div>
           </div>
 
           {/* Bottom Row: Tab Navigation & Content */}
-          <div className="w-full max-w-5xl mx-auto flex flex-col">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const }}
+            className="w-full max-w-5xl mx-auto flex flex-col"
+          >
             
             {/* Tabs Selector */}
             <div className="flex flex-wrap justify-center gap-2 mb-8 bg-white p-2 rounded-full border border-gray-100 shadow-sm mx-auto">
@@ -247,7 +259,7 @@ export const ConsultationDetails: React.FC = () => {
 
               </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </div>

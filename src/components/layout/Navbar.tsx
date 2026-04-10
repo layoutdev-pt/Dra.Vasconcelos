@@ -1,125 +1,224 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, User, LayoutDashboard, LogOut } from 'lucide-react';
 import fullLogo from '../../assets/logo/full1.svg';
 import simpleLogo from '../../assets/logo/simple.svg';
+import { useAuth } from '../../context/AuthContext';
+
+const NAV_LINKS = [
+  { to: '/', label: 'Home' },
+  { to: '/sobre', label: 'Sobre' },
+  { to: '/consultas', label: 'Consultas' },
+  { to: '/cursos', label: 'Blog' },
+  { to: '/livros', label: 'Livros' },
+];
 
 export const Navbar: React.FC = () => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+  // Close user dropdown when clicking outside
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    const handler = () => setUserMenuOpen(false);
+    document.addEventListener('click', handler);
+    return () => document.removeEventListener('click', handler);
+  }, [userMenuOpen]);
+
+  const toggleMobileMenu = () => setIsMobileMenuOpen(v => !v);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
   };
+
+  const userAvatarUrl = user?.user_metadata?.avatar_url as string | undefined;
 
   return (
     <div className={`fixed z-50 w-full transition-all duration-500 ease-in-out flex justify-center ${
       isScrolled ? 'top-2 md:top-6 px-2 md:px-6' : 'top-0 left-0 px-0'
     }`}>
       <nav className={`w-full transition-all duration-500 ease-in-out relative ${
-        isScrolled 
-          ? 'max-w-[1000px] bg-white/95 backdrop-blur-xl rounded-2xl md:rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-white/60' 
+        isScrolled
+          ? 'max-w-[1100px] bg-white/95 backdrop-blur-xl rounded-2xl md:rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-white/60'
           : 'max-w-full bg-white/80 backdrop-blur-md border-b border-white/20 rounded-none'
       }`}>
         <div className={`mx-auto transition-all duration-500 ${
           isScrolled ? 'px-4 md:px-8' : 'px-6 lg:px-8 2xl:px-12 max-w-[1400px] 2xl:max-w-[1600px]'
         }`}>
-          <div className={`flex items-center justify-between transition-all duration-500 ${isScrolled ? 'h-16 md:h-16' : 'h-20 md:h-24'}`}>
-            
+          <div className={`flex items-center transition-all duration-500 ${isScrolled ? 'h-16' : 'h-20 md:h-24'}`}>
+
+            {/* ── Logo (left) ───────────────────────── */}
             <div className="flex-shrink-0 flex items-center relative h-full">
               <Link to="/" className="relative flex items-center justify-center">
-                {/* Logo Principal (Full) */}
-                <img 
-                  src={fullLogo} 
-                  alt="Dra. Alexandra Vasconcelos" 
+                <img
+                  src={fullLogo}
+                  alt="Dra. Alexandra Vasconcelos"
                   className={`w-auto transition-all duration-300 absolute left-0 origin-left ${
                     isScrolled ? 'h-8 md:h-10 opacity-0 scale-90 pointer-events-none' : 'h-14 md:h-16 lg:h-18 opacity-100 scale-100 relative'
-                  }`} 
+                  }`}
                 />
-                {/* Logo Simplificado (Mínimo) */}
-                <img 
-                  src={simpleLogo} 
-                  alt="Dra. Alexandra Vasconcelos Ícone" 
+                <img
+                  src={simpleLogo}
+                  alt="Dra. Alexandra Vasconcelos Ícone"
                   className={`w-auto transition-all duration-300 absolute left-0 origin-left ${
                     isScrolled ? 'h-10 md:h-12 opacity-100 scale-100 relative' : 'h-14 md:h-16 opacity-0 scale-110 pointer-events-none'
-                  }`} 
+                  }`}
                 />
               </Link>
             </div>
-            
-            {/* Desktop Menu */}
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-8">
-                <Link to="/" className="text-gray-600 hover:text-secondary px-3 py-2 text-sm font-medium transition-colors">Home</Link>
-                <Link to="/sobre" className="text-gray-500 hover:text-secondary px-3 py-2 text-sm font-medium transition-colors">Sobre</Link>
-                <Link to="/consultas" className="text-gray-500 hover:text-secondary px-3 py-2 text-sm font-medium transition-colors">Consultas</Link>
-                <Link to="/cursos" className="text-gray-500 hover:text-secondary px-3 py-2 text-sm font-medium transition-colors">Programas</Link>
-                <Link to="/livros" className="text-gray-500 hover:text-secondary px-3 py-2 text-sm font-medium transition-colors">Livros</Link>
+
+            {/* ── Desktop nav links (centered) ─────── */}
+            <div className="hidden md:flex flex-1 justify-center">
+              <div className="flex items-center gap-1">
+                {NAV_LINKS.map(link => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className="text-gray-500 hover:text-secondary px-4 py-2 text-sm font-medium transition-colors rounded-lg hover:bg-gray-50"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </div>
             </div>
-            
-            <div className="hidden md:flex items-center">
-              <a 
-                href="https://portal.draalexandravasconcelos.pt" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`bg-primary hover:bg-primary/90 text-white rounded-full font-medium transition-colors shadow-lg shadow-primary/20 ${
-                  isScrolled ? 'px-5 py-2 text-xs' : 'px-6 py-2.5 md:py-3 text-xs md:text-sm'
-                }`}
-              >
-                Portal Login
-              </a>
-            </div>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center">
-              <button 
-                onClick={toggleMobileMenu} 
-                className="text-primary hover:text-secondary focus:outline-none focus:ring-2 focus:ring-inset focus:ring-secondary p-2 rounded-md"
+            {/* ── Right side ───────────────────────── */}
+            <div className="flex items-center gap-2 ml-auto md:ml-0">
+
+              {/* Desktop: login button or user menu */}
+              <div className="hidden md:block relative">
+                {user ? (
+                  /* Authenticated — user dropdown */
+                  <div className="relative">
+                    <button
+                      onClick={e => { e.stopPropagation(); setUserMenuOpen(v => !v); }}
+                      className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-secondary/30 bg-secondary/5 hover:bg-secondary/10 text-primary font-semibold text-sm transition-all shadow-sm"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-white text-xs font-bold uppercase overflow-hidden">
+                        {userAvatarUrl ? (
+                          <img src={userAvatarUrl} alt="Perfil" className="w-full h-full object-cover" />
+                        ) : (
+                          user.email?.[0] ?? 'A'
+                        )}
+                      </div>
+                      Admin
+                    </button>
+                    <AnimatedDropdown open={userMenuOpen}>
+                      <Link
+                        to="/admin"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-secondary transition-colors rounded-t-xl"
+                      >
+                        <LayoutDashboard className="w-4 h-4" />
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors rounded-b-xl w-full text-left"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Terminar Sessão
+                      </button>
+                    </AnimatedDropdown>
+                  </div>
+                ) : (
+                  /* Not authenticated — Área Pessoal button */
+                  <Link
+                    to="/entrar"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all hover:-translate-y-0.5 shadow-md"
+                  >
+                    <User className="w-4 h-4" />
+                    Área Pessoal
+                  </Link>
+                )}
+              </div>
+
+              {/* Mobile: user icon / photo */}
+              <Link
+                to={user ? '/admin' : '/entrar'}
+                className="md:hidden flex items-center justify-center w-10 h-10 rounded-full text-gray-500 hover:bg-gray-50 transition-colors overflow-hidden"
+              >
+                {user ? (
+                   <div className="w-full h-full bg-secondary flex items-center justify-center text-white text-sm font-bold uppercase">
+                    {userAvatarUrl ? (
+                      <img src={userAvatarUrl} alt="Perfil" className="w-full h-full object-cover" />
+                    ) : (
+                      user.email?.[0] ?? 'A'
+                    )}
+                  </div>
+                ) : (
+                  <User className="w-5 h-5" />
+                )}
+              </Link>
+
+              {/* Mobile: hamburger */}
+              <button
+                onClick={toggleMobileMenu}
+                className="md:hidden p-2 rounded-lg text-primary hover:text-secondary hover:bg-gray-50 focus:outline-none transition-colors"
                 aria-expanded={isMobileMenuOpen}
               >
-                <span className="sr-only">Abrir menu principal</span>
-                {isMobileMenuOpen ? (
-                  <X className="block h-7 w-7" aria-hidden="true" />
-                ) : (
-                  <Menu className="block h-7 w-7" aria-hidden="true" />
-                )}
+                <span className="sr-only">Abrir menu</span>
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
-            
+
           </div>
         </div>
 
         {/* Mobile Menu Panel */}
         <div className={`md:hidden absolute left-0 w-full bg-white border border-gray-100 shadow-xl transition-all duration-300 ease-in-out origin-top ${
           isMobileMenuOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'
-        } ${
-          isScrolled ? 'top-[calc(100%+0.5rem)] rounded-2xl' : 'top-full border-t border-gray-100'
-        }`}>
-          <div className="px-6 pt-2 pb-6 space-y-1 flex flex-col">
-            <Link to="/" onClick={toggleMobileMenu} className="text-gray-600 hover:text-secondary hover:bg-gray-50 block px-4 py-3 rounded-md text-base font-medium">Home</Link>
-            <Link to="/sobre" onClick={toggleMobileMenu} className="text-gray-600 hover:text-secondary hover:bg-gray-50 block px-4 py-3 rounded-md text-base font-medium">Sobre</Link>
-            <Link to="/cursos" onClick={toggleMobileMenu} className="text-gray-600 hover:text-secondary hover:bg-gray-50 block px-4 py-3 rounded-md text-base font-medium">Programas</Link>
-            <Link to="/livros" onClick={toggleMobileMenu} className="text-gray-600 hover:text-secondary hover:bg-gray-50 block px-4 py-3 rounded-md text-base font-medium">Livros</Link>
-            
-            <div className="pt-4 mt-2 border-t border-gray-100">
-               <a 
-                  href="https://portal.draalexandravasconcelos.pt" 
-                  target="_blank"
-                  rel="noopener noreferrer"
+        } ${isScrolled ? 'top-[calc(100%+0.5rem)] rounded-2xl' : 'top-full'}`}>
+          <div className="px-6 pt-3 pb-6 space-y-1 flex flex-col">
+            {NAV_LINKS.map(link => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={toggleMobileMenu}
+                className="text-gray-600 hover:text-secondary hover:bg-gray-50 block px-4 py-3 rounded-xl text-base font-medium transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="pt-3 mt-1 border-t border-gray-100">
+              {user ? (
+                <>
+                  <Link
+                    to="/admin"
+                    onClick={toggleMobileMenu}
+                    className="flex items-center gap-2 text-gray-600 hover:text-secondary hover:bg-gray-50 px-4 py-3 rounded-xl text-base font-medium transition-colors"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Dashboard Admin
+                  </Link>
+                  <button
+                    onClick={() => { toggleMobileMenu(); handleSignOut(); }}
+                    className="w-full flex items-center gap-2 text-red-500 hover:bg-red-50 px-4 py-3 rounded-xl text-base font-medium transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Terminar Sessão
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/entrar"
                   onClick={toggleMobileMenu}
-                  className="w-full bg-primary hover:bg-primary/90 text-white block text-center px-4 py-3 rounded-full text-base font-medium transition-colors shadow-md"
+                  className="w-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center gap-2 px-4 py-3 rounded-full text-base font-bold transition-colors shadow-md"
                 >
-                  Portal Login
-                </a>
+                  <User className="w-4 h-4" />
+                  Área Pessoal
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -127,3 +226,13 @@ export const Navbar: React.FC = () => {
     </div>
   );
 };
+
+/* ─── Tiny animated dropdown ─────────────────────────────────────────────── */
+
+const AnimatedDropdown: React.FC<{ open: boolean; children: React.ReactNode }> = ({ open, children }) => (
+  <div className={`absolute right-0 top-[calc(100%+0.5rem)] w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden transition-all duration-200 origin-top-right ${
+    open ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+  }`}>
+    {children}
+  </div>
+);

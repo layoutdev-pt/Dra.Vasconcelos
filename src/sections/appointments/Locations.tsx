@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const LOCATIONS = [
   {
@@ -35,29 +36,59 @@ const LOCATIONS = [
 const EMBED_BASE = 'https://maps.google.com/maps?q=';
 const EMBED_SUFFIX = '&output=embed&z=16';
 
+/* ─── Animation variants ──────────────────────────────────────────────── */
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay: i * 0.12, ease: [0.25, 0.46, 0.45, 0.94] as const },
+  }),
+};
+
+const cardReveal = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay: i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] as const },
+  }),
+};
+
 export const Locations: React.FC = () => {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
 
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-bold uppercase tracking-widest mb-5">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          className="text-center max-w-2xl mx-auto mb-12"
+        >
+          <motion.span variants={fadeInUp} custom={0} className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-bold uppercase tracking-widest mb-5">
             Onde Estamos
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+          </motion.span>
+          <motion.h2 variants={fadeInUp} custom={1} className="text-3xl md:text-4xl font-bold text-primary mb-4">
             As Nossas Localizações
-          </h2>
-          <p className="text-gray-500 font-light text-lg">
+          </motion.h2>
+          <motion.p variants={fadeInUp} custom={2} className="text-gray-500 font-light text-lg">
             Consultas presenciais em 4 locais em Portugal, com primeira consulta exclusivamente online.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* 4-col grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {LOCATIONS.map((loc) => (
-            <div
+          {LOCATIONS.map((loc, i) => (
+            <motion.div
               key={loc.id}
+              variants={cardReveal}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-30px' }}
+              custom={i}
               className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-[0_8px_32px_0_rgba(124,176,176,0.18)] transition-shadow duration-300 flex flex-col group"
             >
               {/* Map embed */}
@@ -85,9 +116,20 @@ export const Locations: React.FC = () => {
                   {loc.address}
                 </p>
 
-
+                {/* Open Maps button */}
+                <div className="mt-auto">
+                  <a
+                    href={loc.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-gray-200 text-primary text-xs font-semibold hover:border-secondary hover:text-secondary transition-colors duration-200 shadow-sm group/btn"
+                  >
+                    Abrir Mapa
+                    <ExternalLink className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200" />
+                  </a>
+                </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

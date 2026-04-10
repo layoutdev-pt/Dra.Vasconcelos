@@ -54,6 +54,27 @@ const THERMOGRAPHY_SYSTEMS = [
   'Endócrino', 'Ginecológico', 'Neurológico', 'Locomotor',
 ];
 
+/* ─── Animation variants ──────────────────────────────────────────────── */
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay: i * 0.12, ease: [0.25, 0.46, 0.45, 0.94] as const },
+  }),
+};
+
+const cardReveal = {
+  hidden: { opacity: 0, y: 40, scale: 0.97 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.55, delay: i * 0.15, ease: [0.25, 0.46, 0.45, 0.94] as const },
+  }),
+};
+
 /* ─── Component ─────────────────────────────────────────────────────────── */
 
 export const AdvancedTreatments: React.FC = () => {
@@ -66,23 +87,35 @@ export const AdvancedTreatments: React.FC = () => {
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
 
         {/* ── Header ──────────────────────────────────────────────────── */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-bold uppercase tracking-widest mb-5">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          className="text-center max-w-2xl mx-auto mb-14"
+        >
+          <motion.span variants={fadeInUp} custom={0} className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-bold uppercase tracking-widest mb-5">
             Diagnóstico Avançado
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+          </motion.span>
+          <motion.h2 variants={fadeInUp} custom={1} className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Testes e Tratamentos Avançados
-          </h2>
-          <p className="text-gray-500 font-light text-lg leading-relaxed">
+          </motion.h2>
+          <motion.p variants={fadeInUp} custom={2} className="text-gray-500 font-light text-lg leading-relaxed">
             Tecnologia de ponta para um diagnóstico preciso e um plano terapêutico verdadeiramente personalizado.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* ── Bento Grid ──────────────────────────────────────────────── */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-          {/* ── Card 1: Pronutri A — Numbered Steps (A) ─── */}
-          <div className="lg:col-span-2 bg-white rounded-[2rem] p-8 md:p-10 border border-secondary/15 shadow-sm hover:shadow-[0_8px_32px_0_rgba(124,176,176,0.18)] transition-shadow duration-300 flex flex-col">
+          {/* ── Card 1: Pronutri A — Numbered Steps ─── */}
+          <motion.div
+            variants={cardReveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            custom={0}
+            className="lg:col-span-2 bg-white rounded-4xl p-8 md:p-10 border border-secondary/15 shadow-sm hover:shadow-[0_8px_32px_0_rgba(124,176,176,0.18)] transition-shadow duration-300 flex flex-col"
+          >
 
             {/* Title row */}
             <div className="flex items-start gap-4 mb-9">
@@ -100,7 +133,7 @@ export const AdvancedTreatments: React.FC = () => {
               </div>
             </div>
 
-            {/* Numbered step-flow (Idea A) */}
+            {/* Numbered step-flow */}
             <div className="flex-1">
               {PRONUTRI_STEPS.map((step, i) => (
                 <div key={i} className="flex gap-5">
@@ -110,7 +143,7 @@ export const AdvancedTreatments: React.FC = () => {
                       <span className="text-secondary font-bold text-xs tracking-wide">{step.num}</span>
                     </div>
                     {i < PRONUTRI_STEPS.length - 1 && (
-                      <div className="w-px flex-1 bg-gradient-to-b from-secondary/30 to-secondary/5 my-2 min-h-[2rem]" />
+                      <div className="w-px flex-1 bg-linear-to-b from-secondary/30 to-secondary/5 my-2 min-h-8" />
                     )}
                   </div>
                   {/* Content */}
@@ -129,10 +162,17 @@ export const AdvancedTreatments: React.FC = () => {
                 Método não invasivo · Sem extração de sangue
               </p>
             </div>
-          </div>
+          </motion.div>
 
-          {/* ── Card 2: Termografia — Photo + Thermal Blob (A+B) ─── */}
-          <div className="relative rounded-4xl overflow-hidden group min-h-[460px] flex flex-col">
+          {/* ── Card 2: Termografia ─── */}
+          <motion.div
+            variants={cardReveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            custom={1}
+            className="relative rounded-4xl overflow-hidden group min-h-[460px] flex flex-col"
+          >
 
             {/* Dark gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-primary/98 via-primary/85 to-primary/60" />
@@ -184,10 +224,17 @@ export const AdvancedTreatments: React.FC = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* ── Card 3: Análises Complementares — Accordion (C) ─── */}
-          <div className="lg:col-span-3 bg-white rounded-[2rem] p-8 md:p-10 border border-secondary/15 shadow-sm hover:shadow-[0_8px_32px_0_rgba(124,176,176,0.18)] transition-shadow duration-300">
+          {/* ── Card 3: Análises Complementares — Accordion ─── */}
+          <motion.div
+            variants={cardReveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            custom={0}
+            className="lg:col-span-3 bg-white rounded-4xl p-8 md:p-10 border border-secondary/15 shadow-sm hover:shadow-[0_8px_32px_0_rgba(124,176,176,0.18)] transition-shadow duration-300"
+          >
 
             {/* Header */}
             <div className="flex items-start gap-4 mb-8">
@@ -205,7 +252,7 @@ export const AdvancedTreatments: React.FC = () => {
               </div>
             </div>
 
-            {/* Accordion cards (C) */}
+            {/* Accordion cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {COMPLEMENTARY_EXAMS.map((exam, i) => {
                 const Icon = exam.icon;
@@ -270,7 +317,7 @@ export const AdvancedTreatments: React.FC = () => {
                 );
               })}
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </div>

@@ -1,5 +1,15 @@
 import React from 'react';
 import { ArrowRight, Info, Video } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay: i * 0.12, ease: [0.25, 0.46, 0.45, 0.94] as const },
+  }),
+};
 
 export const AppointmentHero: React.FC = () => {
   return (
@@ -12,23 +22,45 @@ export const AppointmentHero: React.FC = () => {
 
       <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
         {/* Top Tag */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 font-medium text-xs md:text-sm mb-8 shadow-sm border border-blue-100">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={0}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 font-medium text-xs md:text-sm mb-8 shadow-sm border border-blue-100"
+        >
           <Video className="w-4 h-4" />
           <span>Primeira consulta exclusivamente online</span>
-        </div>
+        </motion.div>
 
         {/* Headlines */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-primary leading-tight tracking-tight mb-6">
+        <motion.h1
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={1}
+          className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-primary leading-tight tracking-tight mb-6"
+        >
           Agende a sua Consulta de <br className="hidden md:block" />
           Saúde Integrativa
-        </h1>
+        </motion.h1>
         
-        <p className="text-lg md:text-xl text-gray-500 max-w-2xl font-light mb-10 leading-relaxed">
+        <motion.p
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={2}
+          className="text-lg md:text-xl text-gray-500 max-w-2xl font-light mb-10 leading-relaxed"
+        >
           Uma abordagem personalizada que une a medicina convencional e funcional para tratar a causa raiz dos seus sintomas.
-        </p>
+        </motion.p>
 
         {/* CTA Button */}
-        <a
+        <motion.a
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={3}
           href="https://buk.pt/draalexandravasconcelos"
           target="_blank"
           rel="noopener noreferrer"
@@ -36,10 +68,16 @@ export const AppointmentHero: React.FC = () => {
         >
           <span>Agendar Agora</span>
           <ArrowRight className="w-5 h-5" />
-        </a>
+        </motion.a>
 
         {/* Cancellation Notice */}
-        <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 md:p-5 flex items-start text-left gap-4 max-w-3xl shadow-sm">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={4}
+          className="bg-gray-50 border border-gray-100 rounded-2xl p-4 md:p-5 flex items-start text-left gap-4 max-w-3xl shadow-sm"
+        >
           <div className="bg-gray-200 text-gray-600 p-2 rounded-full shrink-0 mt-0.5">
             <Info className="w-5 h-5" />
           </div>
@@ -49,7 +87,7 @@ export const AppointmentHero: React.FC = () => {
               Informamos que as consultas marcadas não dão direito à devolução de valor em caso de cancelamento. É possível solicitar uma alteração na data, desde que o pedido seja efetuado com uma antecedência mínima de 48 horas.
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
