@@ -46,18 +46,21 @@ const AppShell: React.FC = () => {
             <Route path="/consultas" element={<Appointments />} />
             <Route path="/livros" element={<Books />} />
 
+            {/* admin para desenvolvimento - rota desprotegida */}
+            <Route path='/admin' element={<Admin />} />
+
             {/* Auth — standalone layout */}
             <Route path="/entrar" element={<Login />} />
 
             {/* Admin — protected + standalone */}
-            <Route
+            {/* <Route
               path="/admin"
               element={
                 <ProtectedRoute>
                   <Admin />
                 </ProtectedRoute>
               }
-            />
+            /> */}
           </Routes>
         </Suspense>
       </main>
