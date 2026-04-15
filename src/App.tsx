@@ -9,7 +9,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const About = lazy(() => import('./pages/About').then(module => ({ default: module.About })));
 const Appointments = lazy(() => import('./pages/Appointments').then(module => ({ default: module.Appointments })));
-const Books = lazy(() => import('./pages/Books').then(module => ({ default: module.Books })));
+const Academy = lazy(() => import('./pages/Academy').then(module => ({ default: module.Academy })));
+const CourseDetails = lazy(() => import('./pages/CourseDetails').then(module => ({ default: module.CourseDetails })));
 const Login = lazy(() => import('./pages/Login').then(module => ({ default: module.Login })));
 const Admin = lazy(() => import('./pages/Admin').then(module => ({ default: module.Admin })));
 
@@ -44,23 +45,24 @@ const AppShell: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/sobre" element={<About />} />
             <Route path="/consultas" element={<Appointments />} />
-            <Route path="/livros" element={<Books />} />
+            <Route path="/aprender" element={<Academy />} />
+            <Route path="/cursos/:id" element={<CourseDetails />} />
 
             {/* admin para desenvolvimento - rota desprotegida */}
-            <Route path='/admin' element={<Admin />} />
+            {/* <Route path='/admin' element={<Admin />} /> */}
 
             {/* Auth — standalone layout */}
             <Route path="/entrar" element={<Login />} />
 
-            {/* Admin — protected + standalone */}
-            {/* <Route
+            {/* Admin — protected + standalone (requireAdmin) */}
+            <Route
               path="/admin"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requireAdmin={true}>
                   <Admin />
                 </ProtectedRoute>
               }
-            /> */}
+            />
           </Routes>
         </Suspense>
       </main>

@@ -9,12 +9,11 @@ const NAV_LINKS = [
   { to: '/', label: 'Home' },
   { to: '/sobre', label: 'Sobre' },
   { to: '/consultas', label: 'Consultas' },
-  { to: '/cursos', label: 'Blog' },
-  { to: '/livros', label: 'Livros' },
+  { to: '/aprender', label: 'Aprender' },
 ];
 
 export const Navbar: React.FC = () => {
-  const { user, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -41,7 +40,7 @@ export const Navbar: React.FC = () => {
     navigate('/');
   };
 
-  const userAvatarUrl = user?.user_metadata?.avatar_url as string | undefined;
+  const avatarUrl = user?.user_metadata?.avatar_url;
 
   return (
     <div className={`fixed z-50 w-full transition-all duration-500 ease-in-out flex justify-center ${
@@ -102,26 +101,33 @@ export const Navbar: React.FC = () => {
                   <div className="relative">
                     <button
                       onClick={e => { e.stopPropagation(); setUserMenuOpen(v => !v); }}
-                      className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-secondary/30 bg-secondary/5 hover:bg-secondary/10 text-primary font-semibold text-sm transition-all shadow-sm"
+                      className={`flex items-center justify-center rounded-full transition-all ${
+                        isScrolled 
+                          ? 'w-10 h-10 border border-secondary/20 hover:border-secondary/50 bg-white hover:bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/20' 
+                          : 'gap-2.5 px-4 py-2 border border-secondary/30 bg-secondary/5 hover:bg-secondary/10 text-primary font-semibold text-sm'
+                      }`}
+                      title={isAdmin ? 'Admin' : 'Conta'}
                     >
-                      <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-white text-xs font-bold uppercase overflow-hidden">
-                        {userAvatarUrl ? (
-                          <img src={userAvatarUrl} alt="Perfil" className="w-full h-full object-cover" />
-                        ) : (
-                          user.email?.[0] ?? 'A'
-                        )}
-                      </div>
-                      Admin
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt="Perfil" className={`${isScrolled ? 'w-full h-full' : 'w-6 h-6'} rounded-full object-cover shadow-sm`} />
+                      ) : (
+                        <div className={`${isScrolled ? 'w-full h-full text-base' : 'w-6 h-6 text-xs'} rounded-full bg-secondary flex items-center justify-center text-white font-bold uppercase`}>
+                          {user.email?.[0] ?? 'U'}
+                        </div>
+                      )}
+                      {!isScrolled && <span>{isAdmin ? 'Admin' : 'Conta'}</span>}
                     </button>
                     <AnimatedDropdown open={userMenuOpen}>
-                      <Link
-                        to="/admin"
-                        onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-secondary transition-colors rounded-t-xl"
-                      >
-                        <LayoutDashboard className="w-4 h-4" />
-                        Dashboard
-                      </Link>
+                      {isAdmin && (
+                        <Link
+                          to="/admin"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-secondary transition-colors rounded-t-xl"
+                        >
+                          <LayoutDashboard className="w-4 h-4" />
+                          Dashboard
+                        </Link>
+                      )}
                       <button
                         onClick={handleSignOut}
                         className="flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors rounded-b-xl w-full text-left"
@@ -135,27 +141,27 @@ export const Navbar: React.FC = () => {
                   /* Not authenticated — Área Pessoal button */
                   <Link
                     to="/entrar"
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all hover:-translate-y-0.5 shadow-md"
+                    className={`flex items-center justify-center rounded-full bg-primary hover:bg-primary/90 text-white transition-all shadow-md ${
+                      isScrolled 
+                        ? 'w-10 h-10' 
+                        : 'gap-2 px-5 py-2.5 font-bold text-sm hover:-translate-y-0.5'
+                    }`}
+                    title="Área Pessoal"
                   >
-                    <User className="w-4 h-4" />
-                    Área Pessoal
+                    <User className={`${isScrolled ? 'w-5 h-5' : 'w-4 h-4'}`} />
+                    {!isScrolled && <span>Área Pessoal</span>}
                   </Link>
                 )}
               </div>
 
-              {/* Mobile: user icon / photo */}
+              {/* Mobile: user icon or avatar */}
               <Link
                 to={user ? '/admin' : '/entrar'}
-                className="md:hidden flex items-center justify-center w-10 h-10 rounded-full text-gray-500 hover:bg-gray-50 transition-colors overflow-hidden"
+                className="md:hidden flex items-center justify-center w-9 h-9 rounded-full bg-gray-50 border border-gray-100 text-gray-500 hover:text-secondary hover:bg-gray-100 transition-colors"
+                aria-label="Área Pessoal"
               >
-                {user ? (
-                   <div className="w-full h-full bg-secondary flex items-center justify-center text-white text-sm font-bold uppercase">
-                    {userAvatarUrl ? (
-                      <img src={userAvatarUrl} alt="Perfil" className="w-full h-full object-cover" />
-                    ) : (
-                      user.email?.[0] ?? 'A'
-                    )}
-                  </div>
+                {user && avatarUrl ? (
+                  <img src={avatarUrl} alt="Perfil" className="w-full h-full rounded-full object-cover" />
                 ) : (
                   <User className="w-5 h-5" />
                 )}
@@ -193,14 +199,16 @@ export const Navbar: React.FC = () => {
             <div className="pt-3 mt-1 border-t border-gray-100">
               {user ? (
                 <>
-                  <Link
-                    to="/admin"
-                    onClick={toggleMobileMenu}
-                    className="flex items-center gap-2 text-gray-600 hover:text-secondary hover:bg-gray-50 px-4 py-3 rounded-xl text-base font-medium transition-colors"
-                  >
-                    <LayoutDashboard className="w-4 h-4" />
-                    Dashboard Admin
-                  </Link>
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={toggleMobileMenu}
+                      className="flex items-center gap-2 text-gray-600 hover:text-secondary hover:bg-gray-50 px-4 py-3 rounded-xl text-base font-medium transition-colors"
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      Dashboard Admin
+                    </Link>
+                  )}
                   <button
                     onClick={() => { toggleMobileMenu(); handleSignOut(); }}
                     className="w-full flex items-center gap-2 text-red-500 hover:bg-red-50 px-4 py-3 rounded-xl text-base font-medium transition-colors"

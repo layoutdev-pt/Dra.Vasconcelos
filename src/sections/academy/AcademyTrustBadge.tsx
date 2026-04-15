@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Lock } from 'lucide-react';
 
-export const BooksTrustBadge: React.FC = () => {
+export const AcademyTrustBadge: React.FC = () => {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">

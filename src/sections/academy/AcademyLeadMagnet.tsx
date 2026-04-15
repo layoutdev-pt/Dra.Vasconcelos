@@ -11,7 +11,7 @@ const fadeUp = {
   }),
 };
 
-export const BooksLeadMagnet: React.FC = () => {
+export const AcademyLeadMagnet: React.FC = () => {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 

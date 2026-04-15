@@ -1,8 +1,10 @@
+// src/pages/Login.tsx
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2, Upload, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../config/supabase';
 import fullLogo from '../assets/logo/full1.svg';
 
 type Mode = 'login' | 'register';
@@ -14,45 +16,91 @@ export const Login: React.FC = () => {
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/admin';
-
+  
+const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/admin';
   const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
-    setLoading(true);
+  e.preventDefault();
+  setError(null);
+  setSuccess(null);
+  setLoading(true);
 
-    if (mode === 'login') {
-      const { error } = await signIn(email, password);
-      if (error) {
-        setError('Email ou password incorretos. Tente novamente.');
-      } else {
-        navigate(from, { replace: true });
+  if (mode === 'login') {
+    const { error, data } = await signIn(email, password);
+    
+    if (error) {
+      setError('Email ou password incorretos. Tente novamente.');
+      setLoading(false);
+      return;
+    } 
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (profileError) {
+        setError('Erro ao validar permissões.');
+        setLoading(false);
+        return;
       }
-    } else {
-      const { error } = await signUp(email, password);
-      if (error) {
-        setError(error);
+
+      if (profile?.is_admin) {
+        navigate('/admin', { replace: true });
       } else {
-        setSuccess('Conta criada! Verifique o seu email para confirmar o registo.');
-        setEmail('');
-        setPassword('');
+        navigate('/', { replace: true });
+      }
+    }
+  } else {
+    // 1. Try to upload avatar (non-blocking — registration proceeds even if upload fails)
+    let uploadedAvatarUrl = '';
+    if (avatarFile) {
+      try {
+        const ext = avatarFile.name.split('.').pop();
+        const path = `${Math.random().toString(36).slice(2)}_${Date.now()}.${ext}`;
+        const { error: upErr } = await supabase.storage.from('avatars').upload(path, avatarFile);
+        if (!upErr) {
+          const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+          uploadedAvatarUrl = data.publicUrl;
+        }
+        // If upErr, silently skip avatar — registration still proceeds
+      } catch {
+        // silently skip avatar upload errors
       }
     }
 
-    setLoading(false);
-  };
+    // 2. Create account (with or without avatar)
+    const { error } = await signUp(email, password, uploadedAvatarUrl);
+
+    if (error) {
+      setError(error);
+    } else {
+      setSuccess('Conta criada! Verifique o seu email para confirmar o registo.');
+      setEmail('');
+      setPassword('');
+      setAvatarFile(null);
+      setAvatarPreview(null);
+    }
+  }
+
+  setLoading(false);
+};
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-surface-hero via-white to-secondary/5 flex flex-col pt-32 pb-12">
+    <div className="min-h-screen bg-linear-to-br from-surface-hero via-white to-secondary/5 flex flex-col pt-32 pb-12">
       {/* Top spacer — Navbar is shown below this point if not standalone */}
 
       {/* Centered card */}
@@ -179,6 +227,56 @@ export const Login: React.FC = () => {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
+
+                {/* Avatar picker — only in register mode */}
+                <AnimatePresence>
+                  {mode === 'register' && (
+                    <motion.div
+                      key="avatar-picker"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="relative border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/50 hover:bg-gray-50 transition-colors p-4 flex flex-col items-center justify-center gap-3 cursor-pointer">
+                        {avatarPreview ? (
+                          <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-secondary/30 shadow-md group">
+                            <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={e => { e.stopPropagation(); setAvatarFile(null); setAvatarPreview(null); }}
+                              className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
+                            >
+                              <X className="w-5 h-5 text-white" />
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
+                              <Upload className="w-5 h-5 text-secondary" />
+                            </div>
+                            <div className="text-center">
+                              <p className="text-sm font-semibold text-primary">Foto de Perfil <span className="text-gray-400 font-normal">(Opcional)</span></p>
+                              <p className="text-xs text-gray-400 mt-0.5">Clique para selecionar uma imagem</p>
+                            </div>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          onChange={e => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setAvatarFile(file);
+                              setAvatarPreview(URL.createObjectURL(file));
+                            }
+                          }}
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/* Submit */}
                 <button

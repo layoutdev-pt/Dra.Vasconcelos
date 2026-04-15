@@ -47,7 +47,7 @@ export const AboutBooks: React.FC = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start justify-items-center mt-12 pb-12">
           {books.map((book, index) => (
-            <div key={index} className={`transition-transform duration-500 w-full flex justify-center ${index === 1 ? 'md:translate-y-12' : ''}`}>
+            <div key={index} className="transition-transform duration-500 w-full flex justify-center">
               <BookCard {...book} />
             </div>
           ))}

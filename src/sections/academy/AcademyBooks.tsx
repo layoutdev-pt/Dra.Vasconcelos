@@ -122,8 +122,13 @@ const BookCard: React.FC<BookCardProps> = ({ book, index }) => {
   const isEbook = book.type === 'ebook';
   const hasImage = !!book.cover_url && !imgError;
 
+  const WrapperElement = book.buy_url ? 'a' : 'div';
+  const wrapperProps = book.buy_url
+    ? { href: book.buy_url, target: '_blank', rel: 'noopener noreferrer' }
+    : {};
+
   return (
-    <Link to={`/livros/${book.id}`} className="flex flex-col items-center group">
+    <WrapperElement {...wrapperProps} className="flex flex-col items-center group">
     <motion.div
       variants={cardReveal}
       initial="hidden"
@@ -189,15 +194,15 @@ const BookCard: React.FC<BookCardProps> = ({ book, index }) => {
       </div>
 
       {/* ── Card info ───────────────────────────────────────────── */}
-      <div className="text-center w-full max-w-[220px]">
+      <div className="text-center w-full max-w-[220px] min-h-[170px] flex flex-col justify-start">
         <p className="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">{book.author}</p>
-        <h3 className="text-base font-bold text-primary leading-snug mb-1">{book.title}</h3>
+        <h3 className="text-base font-bold text-primary leading-snug mb-1 line-clamp-2">{book.title}</h3>
         {book.subtitle && (
-          <p className="text-xs text-accent italic mb-2">{book.subtitle}</p>
+          <p className="text-xs text-accent italic mb-2 line-clamp-1">{book.subtitle}</p>
         )}
         <p className="text-xs text-gray-500 font-light leading-relaxed mb-4 line-clamp-2">{book.description}</p>
 
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex items-center justify-center gap-3 mt-auto">
           {book.price != null ? (
             <span className="text-lg font-extrabold text-primary">
               {book.price.toFixed(2).replace('.', ',')}€
@@ -225,18 +230,18 @@ const BookCard: React.FC<BookCardProps> = ({ book, index }) => {
           )}
         </div>
 
-        <span className="inline-block text-xs text-secondary hover:underline mt-2 font-medium transition-colors">
+        <span className="inline-block text-xs text-secondary hover:underline mt-4 font-medium transition-colors">
           Saber Mais →
         </span>
       </div>
     </motion.div>
-    </Link>
+    </WrapperElement>
   );
 };
 
 /* ─── Main grid section ─────────────────────────────────────────────────── */
 
-export const BooksGrid: React.FC = () => {
+export const AcademyBooks: React.FC = () => {
   const { books, loading, error } = useBooks();
   const [activeTab, setActiveTab] = useState<TabId>('todos');
 
@@ -246,23 +251,8 @@ export const BooksGrid: React.FC = () => {
   }, [books, activeTab]);
 
   return (
-    <section id="catalogo" className="py-20 bg-surface-hero">
-      <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
-
-        {/* Section header */}
-        <div className="text-center mb-14">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-bold uppercase tracking-widest mb-5">
-            Catálogo
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            Todas as Publicações
-          </h2>
-          <p className="text-gray-500 font-light text-lg max-w-xl mx-auto">
-            Guias práticos de saúde integrativa para todos os momentos da sua vida.
-          </p>
-        </div>
-
-        {/* Filter Tabs */}
+    <div className="w-full pt-4 pb-12">
+      {/* Filter Tabs */}
         <div className="flex justify-center mb-16">
           <div className="flex flex-wrap justify-center gap-2 bg-white p-2 rounded-full border border-gray-100 shadow-sm">
             {TABS.map(tab => (
@@ -332,7 +322,6 @@ export const BooksGrid: React.FC = () => {
           </AnimatePresence>
         )}
 
-      </div>
-    </section>
+    </div>
   );
 };

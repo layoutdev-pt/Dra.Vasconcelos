@@ -76,9 +76,9 @@ export const BookCard: React.FC<BookCardProps> = ({
         </div>
       </div>
 
-      <div className="text-center">
-        <h4 className="text-lg font-bold text-primary">{bookName}</h4>
-        <p className="text-sm text-gray-500 mt-1">{status}</p>
+      <div className="text-center w-full min-h-[90px] flex flex-col justify-start mt-2">
+        <h4 className="text-lg font-bold text-primary line-clamp-2 leading-tight">{bookName}</h4>
+        <p className="text-sm text-gray-500 mt-auto pt-2">{status}</p>
       </div>
     </div>
   );

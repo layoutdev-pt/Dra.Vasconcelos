@@ -1,7 +1,7 @@
 import React from 'react';
 import { Hero } from '../sections/home/Hero';
 import { BooksSection } from '../sections/home/BooksSection';
-import { CourseGrid } from '../sections/home/CourseGrid';
+import { AcademyCourses } from '../sections/academy/AcademyCourses';
 import { BioReset } from '../sections/home/BioReset';
 import { LeadMagnet } from '../sections/home/LeadMagnet';
 
@@ -12,7 +12,7 @@ export const Home: React.FC = () => {
       <BooksSection />
       <BioReset />
       <LeadMagnet />
-      <CourseGrid />
+      <AcademyCourses />
     </div>
   );
 };
