@@ -5,7 +5,7 @@ import { Footer } from './components/layout/Footer';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
-// Lazy loaded pages
+// Lazy loaded pages existentes
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const About = lazy(() => import('./pages/About').then(module => ({ default: module.About })));
 const Appointments = lazy(() => import('./pages/Appointments').then(module => ({ default: module.Appointments })));
@@ -13,6 +13,11 @@ const Academy = lazy(() => import('./pages/Academy').then(module => ({ default: 
 const CourseDetails = lazy(() => import('./pages/CourseDetails').then(module => ({ default: module.CourseDetails })));
 const Login = lazy(() => import('./pages/Login').then(module => ({ default: module.Login })));
 const Admin = lazy(() => import('./pages/Admin').then(module => ({ default: module.Admin })));
+
+// NOVAS PÁGINAS ADICIONADAS
+const Blog = lazy(() => import('./pages/Blog').then(module => ({ default: module.Blog })));
+const Midia = lazy(() => import('./pages/Midia').then(module => ({ default: module.Midia })));
+const BlogPost = lazy(() => import('./pages/Blog').then(module => ({ default: module.Blog })));
 
 // Scroll to top helper
 const ScrollToTop = () => {
@@ -28,8 +33,8 @@ const LoadingFallback = () => (
   </div>
 );
 
-// Pages that render without Navbar/Footer
-const STANDALONE_ROUTES = ['/admin'];
+// Páginas que renderizam SEM Navbar e Footer (Layout limpo)
+const STANDALONE_ROUTES = ['/admin', '/entrar'];
 
 const AppShell: React.FC = () => {
   const { pathname } = useLocation();
@@ -37,26 +42,30 @@ const AppShell: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-background-light font-display text-primary antialiased overflow-x-hidden">
+      {/* Mostra Navbar se não for uma rota standalone */}
       {!isStandalone && <Navbar />}
+      
       <main className="grow w-full">
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
-            {/* Main site */}
+            {/* Site Principal */}
             <Route path="/" element={<Home />} />
             <Route path="/sobre" element={<About />} />
             <Route path="/consultas" element={<Appointments />} />
             <Route path="/aprender" element={<Academy />} />
             <Route path="/cursos/:id" element={<CourseDetails />} />
 
-            {/* admin para desenvolvimento - rota desprotegida */}
-            {/* <Route path='/admin' element={<Admin />} /> */}
+            {/* ROTAS DE BLOG E MÍDIA */}
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/midia" element={<Midia />} />
 
-            {/* Auth — standalone layout */}
+            {/* Auth — Layout Standalone */}
             <Route path="/entrar" element={<Login />} />
 
-            {/* Admin — protected + standalone (requireAdmin) */}
+            {/* Admin — Protegido + Standalone */}
             <Route
-              path="/admin"
+              path="/admin/*"
               element={
                 <ProtectedRoute requireAdmin={true}>
                   <Admin />
@@ -66,6 +75,8 @@ const AppShell: React.FC = () => {
           </Routes>
         </Suspense>
       </main>
+
+      {/* Mostra Footer se não for uma rota standalone */}
       {!isStandalone && <Footer />}
     </div>
   );

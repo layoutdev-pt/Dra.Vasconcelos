@@ -5,11 +5,14 @@ import fullLogo from '../../assets/logo/full1.svg';
 import simpleLogo from '../../assets/logo/simple.svg';
 import { useAuth } from '../../context/AuthContext';
 
+// ATUALIZADO: Adicionado Blog e Mídia aqui
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
   { to: '/sobre', label: 'Sobre' },
   { to: '/consultas', label: 'Consultas' },
   { to: '/aprender', label: 'Aprender' },
+  { to: '/blog', label: 'Blog' },
+  { to: '/midia', label: 'Mídia' },
 ];
 
 export const Navbar: React.FC = () => {
