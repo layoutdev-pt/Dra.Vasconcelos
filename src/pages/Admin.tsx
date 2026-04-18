@@ -14,6 +14,24 @@ import type { Course } from '../types/course';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import simpleLogo from '../assets/logo/simple.svg';
+import { BlogAdmin } from './admin/BlogAdmin';
+import { MediaAdmin } from './admin/MediaAdmin';
+import { LeadsAdmin } from './admin/LeadsAdmin';
+import { TestimonialsAdmin } from './admin/TestimonialsAdmin';
+
+// Extended Quill Modules for Rich Text formatting
+const activeQuillModules = {
+  toolbar: [
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    [{ 'size': ['small', false, 'large', 'huge'] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'align': [] }],
+    ['link', 'image', 'video'],
+    ['clean']
+  ]
+};
 
 /* ─── Shared UI helpers ─────────────────────────────────────────────────── */
 
@@ -213,7 +231,7 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
           <div>
             <label className={labelCls}>Conteúdo Detalhado (Landing Page)</label>
             <div className="bg-white rounded-xl overflow-hidden border border-gray-200">
-              <ReactQuill theme="snow" value={draft.content || ''} onChange={val => set('content', val)} className="h-48 border-none" />
+              <ReactQuill theme="snow" modules={activeQuillModules} value={draft.content || ''} onChange={val => set('content', val)} className="h-64 border-none" />
             </div>
             <p className="text-[10px] sm:text-xs text-gray-400 mt-12 sm:mt-12 md:mt-10 lg:mt-10 text-right">Construa a página descritiva do curso aqui.</p>
           </div>
@@ -527,7 +545,7 @@ const CoursesPanel: React.FC<{ showToast: (m: string) => void }> = ({ showToast 
 
 /* ─── Main Admin Page ────────────────────────────────────────────────────── */
 
-type Tab = 'books' | 'courses';
+type Tab = 'books' | 'courses' | 'blog' | 'media' | 'leads' | 'testimonials';
 
 export const Admin: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -548,6 +566,10 @@ export const Admin: React.FC = () => {
   const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'books', label: 'Livros & Ebooks', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'courses', label: 'Cursos & Programas', icon: <GraduationCap className="w-4 h-4" /> },
+    { id: 'blog', label: 'Artigos (Blog)', icon: <LayoutDashboard className="w-4 h-4" /> },
+    { id: 'media', label: 'Media', icon: <Eye className="w-4 h-4" /> },
+    { id: 'leads', label: 'Leads (E-mails)', icon: <Loader2 className="w-4 h-4 hidden" /> }, // icon hidden but mapped
+    { id: 'testimonials', label: 'Testemunhos', icon: <CheckCircle2 className="w-4 h-4" /> },
   ];
 
   return (
@@ -607,6 +629,10 @@ export const Admin: React.FC = () => {
           >
             {activeTab === 'books' && <BooksPanel showToast={showToast} />}
             {activeTab === 'courses' && <CoursesPanel showToast={showToast} />}
+            {activeTab === 'blog' && <BlogAdmin />}
+            {activeTab === 'media' && <MediaAdmin />}
+            {activeTab === 'leads' && <LeadsAdmin />}
+            {activeTab === 'testimonials' && <TestimonialsAdmin />}
           </motion.div>
         </AnimatePresence>
       </main>

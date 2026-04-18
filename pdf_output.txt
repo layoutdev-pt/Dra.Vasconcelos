@@ -1,0 +1,418 @@
+Site Dr vascocelos  
+Pagi na Home  
+design feito 
+https://stitch.withgoogle.com/projects/11239362
+124649638522  
+ 
+  
+Secção: Topo (Página Inicial)  
+Lado Esquerdo (Textos e Botões):  
+• Título Principal (H1):  Transforme a sua Saúde com a Dra. Vasc oncelos  
+• Texto de Apresentação:  "Especialista em Medicina Integrativa, a Dra. 
+Vasconcelos dedica -se a unir a ciência moderna a uma abordagem 100% natural. 
+Com uma metodologia comprovada e milhares de vidas transformadas, a sua 
+missão é partilhar o conhecime nto necessário para que recupere o controlo da 
+sua vitalidade, ao seu próprio ritmo."  
+• Botões de Ação:  
+o Botão 1:  Conhecer os Cursos  
+o Botão 2:  Explorar Ebooks  
+Lado Direito (Imagem e Métricas Transparentes):  
+• Imagem:  Fotografia de destaque da Dra. Vasconcelos.  
+• Blocos Transparentes (Métricas):  
+o Bloco 1: "+10.000 Alunos" (ou o número real que tiverem)  
+o Bloco 2: "Avaliação de 4.9/5" (com ícone de estrelas)  
+ 
+
+
+ 
+Secção 2: Ebooks  
+• Cabeçalho:  Título "Novos Livros & Guias" à esquerda e um link "Ver todas as 
+publicações" à dir eita (a apontar para a página geral dos ebooks).  
+• Conteúdo:  Mostrar as capas dos 3 ebooks mais recentes lado a lado.  
+• Detalhe:  Por baixo de cada capa, colocar o nome do livro e uma pequena 
+legenda em texto mais claro (tipo "Bestseller" ou "Novo Lançamento").  
+ 
+Secção 3: Curso em Destaque  
+• Layout:  Um bloco em destaque, dividido em duas partes (esquerda e direita).  
+• Lado Esquerdo (Textos e Botão):  
+o Etiqueta:  "CURSO EM DESTAQUE" (em letras pequenas).  
+o Título Principal:  Nome do Curso (com uma das palavras numa cor d e 
+destaque, ex: azul).  
+o Descrição:  Texto curto a explicar os benefícios do curso e como vai 
+ajudar o aluno.  
+o Tópicos (com visto verde):  3 pontos principais sobre o que o curso 
+inclui (ex: "Acesso Imediato", "Materiais de Apoio", "Passo a passo").  
+o Botão de Aç ão: "Comprar Curso" (Este botão deve ter um link  direto 
+para a página de pagamento/checkout ). 
+• Lado Direito (Visual):  
+
+
+o Imagem:  Fotografia ilustrativa do curso (como os 
+alimentos/suplementos da imagem de exemplo).  
+ 
+Secção 4: Oferta de Ebook (Captura de Email ) 
+1. Front -end (O que aparece no site):  
+• Visual:  Bloco com fundo escuro (como na imagem).  
+• Textos:  Título a anunciar a oferta (Ex: "Oferta: Guia Anti -Inflamatório de 7 
+Dias") e uma frase curta a incentivar o download.  
+• Formulário:  Apenas um campo para a pesso a inserir o email e um botão de 
+ação (Ex: "Descarregar agora").  
+• Comportamento:  Ao clicar no botão, o utilizador faz o download automático 
+do PDF do ebook.  
+2. Back -end (No painel de administração):  
+• Requisito:  Criar uma página muito simples no admin com uma tabela.  
+• Funcionalidade:  A tabela serve apenas para listar todos os emails recolhidos 
+através do formulário, guardados uns a seguir aos outros em formato de lista.  
+ 
+ 
+
+
+ 
+Secção 5: Últimos Artigos do Blog  
+1. Front -end (O que aparece no site):  
+• Cabeçalho:  Um título centrado (Ex: "Últimas do Blog" ou "Novidades e Dicas") 
+e uma pequena frase de apoio por baixo.  
+• Grelha (3 Colunas):  Apresentar 3 cartões lado a lado.  
+• Conteúdo de cada Cartão:  
+o Imagem de destaque do artigo.  
+o Etiqueta com a Categoria (ex: "Nutrição", "Bem -estar").  
+o Título do artigo.  
+o Pequeno resumo (1 ou 2 linhas).  
+o Link ou botão pequeno a dizer "Ler mais".  
+2. Back -end (Comportamento automático):  
+• Esta secção tem de ser dinâmica. O programador tem de a ligar diretame nte à 
+página do Blog, para que puxe  sempre e automaticamente  os 3 artigos 
+publicados mais recentemente, sem que tenhas de alterar a página Home à mão.  
+Página: Sobre a Dra. Vasconcelos  
+ 
+
+
+Secção 1: Hero Motivacional  
+• Layout:  Imagem de fundo em ecrã inteiro (f ull-screen) com texto centrado 
+sobreposto. Estilo dramático e sofisticado.  
+• Visual:  Uma fotografia profissional da Dra. Vasconcelos, em tons escuros 
+(preto e branco ou monocromático profundo), como na imagem de exemplo.  
+• Texto Sobreposto (Centrado):  
+o Etiqueta  de Topo (Pequena/Azul):  "A MINHA MISSÃO"  
+o Título Principal (H1 Grande/Branco):  "Guiando Você para a Saúde 
+Plena."  
+o Descrição (Parágrafo Menor/Branco):  "Uma jornada que une a ciência 
+rigorosa ao cuidado holístico, focada em transformar vidas através do 
+autoc onhecimento e da prevenção."  
+• Detalhe UI:  Uma pequena seta (azul ou cor de destaque) a apontar para baixo 
+no final da secção para indicar rolagem.  
+ 
+ 
+Secção 2: A Jornada (Linha do Tempo / Timeline)  
+1. Layout Geral e Fundo:  
+• Fundo Base:  Cor escura/cinza.  
+• Imagem de Fundo (Marca d'água):  Logótipo da Dra. Vasconcelos centrado e 
+em grande escala, com opacidade muito baixa (desbotado) para não interferir na 
+leitura.  
+2. Cabeçalho da Secção:  
+• Título:  "Uma Jornada de Propósito"  
+
+
+• Subtítulo:  "Role pa ra explorar os marcos da minha carreira" (em cor de 
+destaque).  
+3. Comportamento e Animação (Scroll):  
+• Linha vertical central que "pinta" de cima para baixo ao fazer scroll.  
+• Blocos de texto surgem com  fade in , alternados (esquerda/direita), quando a 
+linha chega até eles.  
+4. Conteúdo das 3 Etapas (Máx. 3 linhas cada):  
+• Etapa 1 (Esquerda):  
+o Ano:  1965  
+o Título:  "As Raízes"  
+o Texto:  "A paixão pela saúde começou cedo, inspirada por uma família 
+dedicada ao cuidado humano.  Estes valores formaram a base de uma 
+forte vocação para ajudar os outros a atingir o seu potencial máximo."  
+• Etapa 2 (Direita):  
+o Ano:  2003  
+o Título:  "Expansão Académica"  
+o Texto:  "Com a conclusão do Doutoramento, a prática clínica centrou -se 
+na neurociência com portamental. Foi aqui que nasceu uma abordagem 
+integrativa focada nas causas profundas da saúde e não apenas nos 
+sintomas."  
+• Etapa 3 (Esquerda):  
+o Ano:  Hoje  
+o Título:  "Presença Global"  
+o Texto:  "Atualmente, a Dra. Alexandra atua como referência clínica, 
+palestran te internacional e consultora científica. A sua grande missão é 
+partilhar conhecimento prático para transformar o maior número de vidas 
+possível."  
+
+ 
+"Nesta secção vamos ter uns blocos a mostrar alguns prémios da Doutora e a quantidade total 
+de alunos. Ao l ado, deve estar uma fotografia de destaque da Doutora e, na parte de baixo de 
+toda a secção, uma frase marcante que a defina.  
+ 
+Secção 4: Testemunhos de Alunos  
+• Título da Secção:  "Descobre o que os alunos dizem sobre mim" (centrado no 
+topo da secção).  
+• Visual e Estilo:  Fundo escuro. Os testemunhos devem ter um visual elegante de 
+citação (texto em itálico e ícones de aspas, como na imagem de referência).  
+• Funcionalidade (Carrossel):  Colocar os cartões de feedback num carrossel 
+(slider) que de sliza automaticamente para o lado.  
+
+
+• Navegação Manual:  Adicionar dois botões visíveis (uma seta para a esquerda e 
+outra para a direita) para que o utilizador possa andar pelos testemunhos ao seu 
+próprio ritmo.  
+• Conteúdo de cada Cartão:  O texto do feedback do aluno, o nome do aluno e 
+(se houver) uma pequena fotografia circular ao lado do texto.  
+ 
+Página: Marcar Consulta  
+Secção 1: Topo (Agendamento Principal)  
+• Etiqueta Topo:  "Primeira consulta exclusivamente online" (em azul claro, 
+como na imagem).  
+• Título (H1):  Agende a sua Consulta de Saúde Integrativa  
+
+
+• Subtítulo:  Uma abordagem personalizada que une a medicina convencional e 
+funcional para tratar a causa raiz dos seus sintomas.  
+• Ação Principal:  Botão central laranja com o texto "Agendar Agora".  
+• Caixa de Aviso (Polít ica de Cancelamento):  Colocar logo abaixo do botão, 
+numa caixa de fundo suave (ex: cinza muito claro), o seguinte texto:  
+o Título (Negrito):  Política de Cancelamento de Consultas  
+o Parágrafo 1:  "Informamos que as consultas marcadas e pagas não dão 
+direito à de volução do valor em caso de cancelamento. No entanto, é 
+possível solicitar uma alteração na data, hora ou titular da consulta, desde 
+que o pedido seja efetuado com uma antecedência mínima de 48 horas e 
+esteja sujeito à disponibilidade da Equipa Dra. Alexan dra Vasconcelos."  
+o Parágrafo 2:  "Esta política tem como objetivo assegurar um 
+compromisso mútuo, respeitando a agenda dos profissionais e dos 
+pacientes."  
+o Parágrafo 3:  "Agradecemos a sua compreensão e colaboração. Para 
+qualquer esclarecimento, não hesite em contactar -nos."  
+Secção 2: Nossas Localizações  
+• Cabeçalho:  Título "Nossas Localizações" à esquerda e link "Ver no mapa" à 
+direita.  
+• Grelha (4 Colunas):  Cada cartão deve ter uma imagem representativa do 
+espaço no topo.  
+o Cartão 1:  Lisboa | Av. da Liberdade, 123 | Selo verde: "Aberto"  
+o Cartão 2:  Porto | Rua de Santa Catarina, 45 | Selo verde: "Aberto"  
+o Cartão 3:  Online | Videoconsulta Segura | Selo laranja: "Di sponível"  
+o Cartão 4:  Algarve | Vilamoura Marina, Bloco B | Selo cinza: "Fechado 
+agora"  
+Secção 3: Detalhes da Consulta  
+• Layout:  Dividido em duas colunas (Esquerda: "Sobre a Consulta" | Direita: 
+"Para Quem É?").  
+• Coluna Esquerda (Sobre a Consulta):  3 cartões brancos com ícone.  
+o  
+1. 60 Minutos:  Tempo dedicado para ouvir a sua história completa.  
+o  
+2. Funcional:  Investigação profunda das causas e biomarcadores.  
+o  
+3. Plano Personalizado:  Nutrição, suplementação e estilo de vida 
+desenhados para a sua biologia única.  
+• Coluna Direita (Para Quem É?):  
+o Texto introdutório:  "A nossa abordagem é ideal se procura respostas 
+para sintomas persistentes ou deseja otimizar a sua saúde a longo prazo."  
+o Lista (ícones de visto verde):  Sintomas crónicos sem explicação; 
+Desejo de reduzir medicação (com segurança); Prevenção e longevidade.  
+o Áreas de foco (Etiquetas ovais):  Menopausa, Fadiga Crónica, Saúde 
+Intestinal, Autoimunes, Envelhecimento, Ansiedade.  
+
+Secção 4: Testes e Tratamentos Avançados  
+• Cabeçalho Centrado:  Título "Testes e Tratament os Avançados" e subtítulo 
+"Utilizamos a tecnologia mais recente para mapear a sua saúde."  
+• Grelha de Imagens/Cartões:  Mostrar os serviços disponíveis (conforme 
+imagem de referência).  
+o Bloco 1 (Imagem Grande): Genética e Epigenética.  
+o Bloco 2 (Imagem Grande): Microbiota.  
+o Blocos Menores à direita: Parasitologia e Nutracêuticos.  
+ 
+Secção 1: Topo (Hero / Mockup)  
+• Layout (Referência Image 14):  Duas colunas principais. Conteúdo textual à 
+esquerda e mockups de dispositivos à direita.  
+• Visual:  Uma foto profissional da Dra. Vasconcelos (feminino) no player de 
+vídeo, em vez do homem da referência, para consistência de marca.  
+• Coluna da Esquerda (Textos e Botões):  
+o Tag de Topo:  "• NOVAS TURMAS ABERTA S" (com fundo leve, 
+como na imagem 14).  
+o Título Principal (H1 Grande):  "Transforme a sua Saúde  com 
+Conhecimento ." (Negrito nas palavras 'Saúde' e 'Conhecimento', com 
+destaque de cor como na referência).  
+o Subtítulo (Parágrafo):  Descubra cursos práticos e base ados em ciência 
+para profissionais e entusiastas da saúde integrativa. Aprenda no seu 
+ritmo, em qualquer lugar.  
+o Botões:  
+▪ Botão 1 (Laranja/Primário):  Texto "Explorar Cursos →".  
+ 
+o Métrica de Alunos : "Junte -se a 12.000+ alunos transformados." (com 
+pequenos ícones de avatar de alunos) . 
+
+
+• Coluna da Direita (Mockups de Dispositivos):  
+o Colocar as mesmas interfaces de dispositivos (tablet/laptop aberto e 
+telemóvel ao lado) conforme a imagem 14.  
+o Mostrar inter faces de curso online com gráficos, dashboards de 
+progresso e, no player de vídeo, a aula inaugural da Dra. Vasconcelos.  
+• Ação do Botão (Funcionalidade Técnica):  
+o Requisito:  O botão laranja "Explorar Cursos"  deve funcionar como 
+um link de âncora (ex: #catalo go). Ao clicar, a página deve fazer um 
+scroll suave automático  para baixo, até à secção onde está o catálogo 
+completo de cursos.  
+ 
+Secção 2: Vantagens dos Cursos (Barra de Destaques)  
+• Layout:  Uma barra horizontal (full -width) com fundo neutro/claro.  
+• Estilo:  5 ícones com texto, distribuídos horizontalmente e com um design 
+"clean" (cantos arredondados e sombras suaves, como na imagem 15).  
+• Conteúdo (Ícones e Textos):  
+1. Ícone Escudo:  "Acesso Vitalício"  
+2. Ícone Chapéu:  "Certificado Incluso"  
+3. Ícone Dispositivos:  "Multi -plataforma"  
+4. Ícone Suporte:  "Suporte Dedicado"  
+5. Ícone Relógio:  "Atualizações Gratuitas"  
+ 
+ 
+Secção 3: Curso em Destaque (Banner de Conversão)  
+• Layout:  Um bloco retang ular com cantos arredondados, dividido ao meio.  
+• Lado Esquerdo (Conteúdo):  
+o Etiqueta:  "CURSO DESTAQUE" (em caixa alta e fundo azul claro).  
+o Título (H2):  "BioReset: O Guia Completo de Desintoxicação" (em 
+negrito e grande).  
+
+
+o Descrição:  "Recupere sua energia em 2 1 dias com um protocolo 
+validado por especialistas. Nutrição, sono e mindset em um único lugar."  
+o Ação:  * Botão:  "Conhecer o Programa" (cor escura/preto).  
+▪ Prova Social:  Ao lado do botão, incluir o ícone de estrela 
+amarela, a nota  4.9 e o texto "(342 avaliaç ões)".  
+• Lado Direito (Imagem):  
+o Uma fotografia de alta qualidade que transmita bem -estar (como a pessoa 
+a meditar na natureza da imagem 16).  
+o Efeito Visual:  A imagem deve ter um degradê (fade) suave para se 
+fundir com a cor de fundo do lado esquerdo.  
+ 
+Secçã o 4: Catálogo Completo de Cursos  
+1. Front -end (O que aparece no site):  
+• Título:  "Explore o nosso Catálogo" (centrado ou à esquerda).  
+• Filtros (Opcional):  Botões pequenos para filtrar por "Novos", "Populares" ou 
+"Avançados".  
+• Grelha de Cursos (Grid):  Mostrar o s cartões dos cursos em 3 colunas.  
+o Limitação Inicial:  Apresentar apenas os primeiros  9 cursos . 
+o Conteúdo do Cartão:  Imagem de capa, etiqueta da categoria (ex: 
+Nutrição), título do curso, número de aulas e duração total.  
+• Botão de Expansão:  Abaixo da grelha de 9 cursos, colocar um botão 
+centralizado:  "Ver todos os cursos" . 
+o Funcionalidade:  Ao clicar, a página carrega ou re vela o restante 
+catálogo sem sair da página.  
+
+
+2. Navegação e Detalhe:  
+• Link de Destino:  Cada cartão deve ter um botão ou link  "Ver Detalhes" . 
+• Página Interna:  Ao clicar, o utilizador é levado para a  Página de Vendas 
+individual de cada curso , onde teremos toda  a informação aprofundada  
+IDEIA DE PAGINA INDIVIDUAL 
+PARA CADA CUR SOS  
+Arranjar métrica para que sejam universais e termos de 
+mudar só a secção abaixo.  
+ 
+ 
+ 
+ 
+
+
+ 
+ 
+Página: Livros e Ebooks  
+Secção 1: Hero (A Mistura Perfeita)  
+• Layout (Mistura Imagem 19 e 20):  * Fundo:  Usar o estilo da Imagem 19, com 
+uma fotografia profissional da Dra. Alexandra em tons suaves/pastéis, 
+transmitindo serenidade.  
+o Sobreposição (Mockups):  Do lado oposto à foto (ou ligeiramente 
+sobreposto, como na Imagem 20), colocar mockups de alta qualidade:  
+um livro físico  aberto e um  tablet/e -reader  mostrando a capa de um 
+ebook.  
+• Conteúdo Textual (À esquerda ou sobreposto):  
+o Título (H1):  "Conhecimento que Transforma, em qualquer formato."  
+o Subtítulo:  "Explore a nossa coleção de livros físicos e digitais. Guia 
+práticos de saúde integrativa para ler onde e quando quiser."  
+o Botão:  "Explorar Biblioteca ↓" (com efeito de scroll suave para o 
+catálogo).  
+ 
+ 
+ 
+
+
+ 
+Secção 2: Métricas de Impacto (Barra de Números)  
+Logo abaixo do Hero, vamos colocar uma barra horizontal (estilo a que usamos nos 
+cursos, mas com números reais) para gerar autoridade imediata:  
+• Layout:  4 colunas simples com ícones minimalistas.  
+• Métricas:  
+1. +50.000  | Livros Vendidos  
+2. 15+ | Títulos Publicados  
+3. 12 | Países com Leitores  
+4. 4.9/5  | Avaliação Média dos Leitores  
+ 
+Secção 3: Captura de Email (Ebook Grátis)  
+• Visual:  Bloco de destaque com mockup do Ebook gratuito à esquerda.  
+• Textos:  
+o Título:  Comece a ler hoje mesmo: Guia Digital Gratuito.  
+o Descrição:  Deixe o seu email abaixo para receber imediatamente a sua 
+cópia digital.  
+• Formulário:  Campo "O seu melhor email" + Botão "Receber Ebook Grátis".  
+• Ação:  Download automático do PDF e envio do email para a tabela geral de 
+contactos no Admin (sem etiquetas extra).  
+ 
+ 
+ 
+
+
+ 
+Secção 4: Catálogo de Publicações (Regras de Links)  
+1. Comportamento do Catálog o: 
+• Grelha:  Apresentar todos os Livros e Ebooks em cartões individuais.  
+• Ação do Cartão:  Ao clicar em qualquer parte do cartão (ou no botão "Saber 
+Mais"), o utilizador é redirecionado para a Página de Detalhe dedicada  desse 
+título específico dentro do site.  
+ 
+Aviso f inal da pagina  
+
+
+ 
+ 
+Página de Detalhe Universal (Template Único)  
+1. Secção Hero (Conversão):  
+• Esquerda:  Mockup do Livro/Ebook (estilo flutuante com sombra).  
+• Direita:  
+o Label:  "BESTSELLER" ou "LANÇAMENTO" (Destaque azul).  
+o Título:  [Nome do Título].  
+o Preço:  Valor em destaque + (opcional) preço riscado para promoção.  
+o Seletor:  Quantidade (para físicos) ou formato (para ebooks).  
+o Botão:  "Comprar Agora →" (Laranja, redireciona para Wook ou 
+Hotmart).  
+o Ícones Rápidos:  Selos de "Envio Gratuito" ou "Checkout Seguro".  
+
+
+2. Secção: O Que Vai Aprender (Estrutura de 3 Colunas):  
+• Métrica universal: Usar 3 ícones com títulos curtos que se apliquem a quase 
+todos os livros da Dra. Alexandra:  
+o Ícone 1:  [Benefício Físico/Energia]  
+o Ícone 2:  [Benefício Mental/Clareza]  
+o Ícone 3:  [Estilo d e Vida/Equilíbrio]  
+3. Secção: Prova Social (O que dizem os leitores):  
+• Layout de 3 cartões brancos com 5 estrelas e um pequeno depoimento. (O 
+programador pode deixar este campo dinâmico).  
+5. Secção: Perguntas Frequentes (FAQ):  
+• Sistema de  Accordion  (clicar para abrir) com perguntas universais:  
+o "Quanto tempo demora o envio?" (Para físicos).  
+o "Como recebo o meu acesso?" (Para ebooks).  
+o "O pagamento é seguro?"  
+Página: Media  
+1. Design e Estética Geral:  
+• Referência:  Seguir a linha visual de   
+https://draalexandravasconcelos.pt/pt/media/  
+• Adaptação:  Usar as mesmas fontes e paleta de cores 
+(azuis/brancos/dourados) que definimos para o resto do 
+novo site, mantendo a sobriedade e autoridade.  
+
+  
+Página: Blog  
+• Design:  Aplicar o estilo visual da referência enviada (clean, focado em 
+tipografia e imagens de alta qualidade).  
+• Conteúdo:  Migrar e exportar toda a informação (artigos, imagens e cate gorias) 
+da página atual:  https://draalexandravasconcelos.pt/pt/blog/ . 
+ 
