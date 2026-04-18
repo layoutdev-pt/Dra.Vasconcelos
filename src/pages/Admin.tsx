@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   BookOpen, Plus, Pencil, Trash2, Eye, EyeOff, LogOut,
   X, Save, AlertCircle, CheckCircle2, Loader2, ExternalLink,
-  GraduationCap, LayoutDashboard
+  GraduationCap, LayoutDashboard, Shield
 } from 'lucide-react';
 import { supabase } from '../config/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -18,6 +18,7 @@ import { BlogAdmin } from './admin/BlogAdmin';
 import { MediaAdmin } from './admin/MediaAdmin';
 import { LeadsAdmin } from './admin/LeadsAdmin';
 import { TestimonialsAdmin } from './admin/TestimonialsAdmin';
+import { UsersAdmin } from './admin/UsersAdmin';
 
 // Extended Quill Modules for Rich Text formatting
 const activeQuillModules = {
@@ -545,7 +546,7 @@ const CoursesPanel: React.FC<{ showToast: (m: string) => void }> = ({ showToast 
 
 /* ─── Main Admin Page ────────────────────────────────────────────────────── */
 
-type Tab = 'books' | 'courses' | 'blog' | 'media' | 'leads' | 'testimonials';
+type Tab = 'books' | 'courses' | 'blog' | 'media' | 'leads' | 'testimonials' | 'users';
 
 export const Admin: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -570,6 +571,7 @@ export const Admin: React.FC = () => {
     { id: 'media', label: 'Media', icon: <Eye className="w-4 h-4" /> },
     { id: 'leads', label: 'Leads (E-mails)', icon: <Loader2 className="w-4 h-4 hidden" /> }, // icon hidden but mapped
     { id: 'testimonials', label: 'Testemunhos', icon: <CheckCircle2 className="w-4 h-4" /> },
+    { id: 'users', label: 'Acessos', icon: <Shield className="w-4 h-4" /> },
   ];
 
   return (
@@ -633,6 +635,7 @@ export const Admin: React.FC = () => {
             {activeTab === 'media' && <MediaAdmin />}
             {activeTab === 'leads' && <LeadsAdmin />}
             {activeTab === 'testimonials' && <TestimonialsAdmin />}
+            {activeTab === 'users' && <UsersAdmin />}
           </motion.div>
         </AnimatePresence>
       </main>
