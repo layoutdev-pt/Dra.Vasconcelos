@@ -10,3 +10,23 @@ export interface BlogPost {
   published_at: string | null;
   created_at: string;
 }
+
+export interface Comment {
+  id: string;
+  post_id: string;
+  user_id: string;
+  parent_id: string | null;
+  content: string;
+  created_at: string;
+  // Included via joins
+  user?: {
+    email?: string;
+  };
+}
+
+export interface CommentReport {
+  id: string;
+  comment_id: string;
+  reporter_id: string;
+  created_at: string;
+}

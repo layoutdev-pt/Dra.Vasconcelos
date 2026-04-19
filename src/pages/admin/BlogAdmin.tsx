@@ -33,7 +33,7 @@ const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: 
 );
 
 const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved: () => void }> = ({ post, onClose, onSaved }) => {
-  const [draft, setDraft] = useState<Partial<BlogPost>>(post ? { ...post } : { title: '', slug: '', summary: '', content: '', category: 'Artigo', is_published: true, image_url: '' });
+  const [draft, setDraft] = useState<Partial<BlogPost>>(post ? { ...post } : { title: '', slug: '', summary: '', content: '', category: 'Artigo', is_published: true, image_url: '', published_at: new Date().toISOString() });
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +70,7 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
       category: draft.category,
       image_url: finalImageUrl || null,
       is_published: draft.is_published ?? true,
-      published_at: draft.is_published ? new Date().toISOString() : null,
+      published_at: draft.is_published ? (draft.published_at || new Date().toISOString()) : null,
     };
 
     const { error: dbErr } = post
@@ -112,8 +112,23 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
             <ReactQuill theme="snow" modules={quillModules} value={draft.content || ''} onChange={val => set('content', val)} className="bg-white border-gray-200 h-64" />
           </div>
           
-          <div className="pt-4 border-t border-gray-100 flex gap-6">
-            <Toggle value={draft.is_published ?? true} onChange={v => set('is_published', v)} label="Publicar Imediatamente" />
+          <div className="pt-4 border-t border-gray-100 flex flex-col md:flex-row md:items-center gap-6">
+            <Toggle value={draft.is_published ?? true} onChange={v => set('is_published', v)} label="Publicar Artigo" />
+            
+            {draft.is_published && (
+              <div className="flex items-center gap-3">
+                <label className="text-sm font-semibold text-gray-500 tracking-wider">Data de Publicação:</label>
+                <input 
+                  type="date" 
+                  className={`${inputCls} !py-1.5`} 
+                  value={draft.published_at ? draft.published_at.split('T')[0] : ''} 
+                  onChange={e => {
+                    const dateVal = e.target.value;
+                    set('published_at', dateVal ? new Date(dateVal).toISOString() : new Date().toISOString());
+                  }} 
+                />
+              </div>
+            )}
           </div>
         </div>
 

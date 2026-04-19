@@ -5,8 +5,9 @@ import { useAuth } from '../../context/AuthContext';
 
 interface Profile {
   id: string;
-  email: string | null;  // Depende se a BD está a trazer o email ou o Auth. Se n trouxer, usaremos listagem simples
+  email: string | null;
   is_admin: boolean;
+  banned?: boolean;
   created_at: string;
 }
 
@@ -38,6 +39,23 @@ export const UsersAdmin: React.FC = () => {
     if(!window.confirm(`Tem a certeza que deseja ${action} permissões de Administrador a ${email || 'este utilizador'}?`)) return;
 
     const { error } = await supabase.from('profiles').update({ is_admin: !currentStatus }).eq('id', id);
+    if (error) {
+      alert(`Erro: ${error.message}`);
+      return;
+    }
+    fetchUsers();
+  };
+
+  const toggleBanStatus = async (id: string, currentStatus: boolean, email: string | null) => {
+    if (id === currentUser?.id) {
+      alert('Não podes banir a tua própria conta de Administrador.');
+      return;
+    }
+
+    const action = currentStatus ? 'DESBANIR' : 'BANIR';
+    if(!window.confirm(`Tem a certeza que deseja ${action} a participação do utilizador ${email || id}?\nQuando banido, o utilizador não poderá postar comentários.`)) return;
+
+    const { error } = await supabase.from('profiles').update({ banned: !currentStatus }).eq('id', id);
     if (error) {
       alert(`Erro: ${error.message}`);
       return;
@@ -99,6 +117,10 @@ export const UsersAdmin: React.FC = () => {
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 text-xs rounded-full font-bold">
                         <ShieldCheck className="w-3.5 h-3.5" /> Administrador
                       </span>
+                    ) : u.banned ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-600 text-xs rounded-full font-bold">
+                        <ShieldAlert className="w-3.5 h-3.5" /> Banido
+                      </span>
                     ) : (
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-500 text-xs rounded-full font-semibold">
                         Visitante Comum
@@ -119,6 +141,18 @@ export const UsersAdmin: React.FC = () => {
                       {u.is_admin ? <ShieldAlert className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
                       {u.is_admin ? 'Remover Admin' : 'Tornar Admin'}
                     </button>
+                    {!u.is_admin && (
+                      <button 
+                        onClick={() => toggleBanStatus(u.id, !!u.banned, u.email)} 
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border transition-colors ${
+                          u.banned 
+                            ? 'bg-red-50 border-red-200 text-red-600 hover:bg-green-50 hover:text-green-600 hover:border-green-200' 
+                            : 'bg-white border-gray-200 text-gray-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200'
+                        }`}
+                      >
+                        {u.banned ? 'Desbanir' : 'Banir'}
+                      </button>
+                    )}
                     {u.id === currentUser?.id && (
                       <span className="text-xs text-gray-400 italic">É a tua conta.</span>
                     )}

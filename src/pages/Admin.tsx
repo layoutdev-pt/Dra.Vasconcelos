@@ -587,7 +587,7 @@ export const Admin: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <a href="/livros" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-secondary transition-colors">
+            <a href="/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-secondary transition-colors">
               <ExternalLink className="w-3.5 h-3.5" /> Ver site
             </a>
             <button onClick={handleSignOut} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-red-500 hover:border-red-200 transition-all">
