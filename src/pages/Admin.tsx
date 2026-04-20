@@ -57,7 +57,7 @@ type BookDraft = Omit<Book, 'id' | 'created_at'>;
 const emptyBook = (): BookDraft => ({
   title: '', subtitle: null, author: 'Alexandra Vasconcelos',
   description: null, cover_url: '', type: 'fisico',
-  price: null, buy_url: null, is_featured: false, is_published: true,
+  price: null, currency: 'EUR', buy_url: null, is_featured: false, is_published: true,
   published_at: new Date().toISOString(),
 });
 
@@ -96,6 +96,7 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
       subtitle: draft.subtitle?.trim() || null, 
       buy_url: draft.buy_url?.trim() || null, 
       price: draft.price ?? null,
+      currency: draft.currency || 'EUR',
       description: draft.description?.trim() || null,
       published_at: new Date(pubYear, pubMonth, 1).toISOString()
     };
@@ -171,7 +172,17 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
                 <option value="ebook">Ebook</option>
               </select>
             </div>
-            <div><label className={labelCls}>Preço (€)</label><input type="number" step="0.01" min="0" className={inputCls} value={draft.price ?? ''} onChange={e => set('price', e.target.value ? parseFloat(e.target.value) : null)} placeholder="24.90" /></div>
+            <div className="md:col-span-1">
+              <label className={labelCls}>Preço</label>
+              <div className="flex gap-2">
+                <select className="w-20 px-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm" value={draft.currency} onChange={e => set('currency', e.target.value as 'EUR' | 'BRL' | 'USD')}>
+                  <option value="EUR">€</option>
+                  <option value="BRL">R$</option>
+                  <option value="USD">$</option>
+                </select>
+                <input type="number" step="0.01" min="0" className={inputCls} value={draft.price ?? ''} onChange={e => set('price', e.target.value ? parseFloat(e.target.value) : null)} placeholder="24.90" />
+              </div>
+            </div>
             <div><label className={labelCls}>Link de Compra</label><input className={inputCls} value={draft.buy_url ?? ''} onChange={e => set('buy_url', e.target.value || null)} placeholder="https://wook.pt/..." /></div>
           </div>
           <div className="flex flex-wrap gap-6">

@@ -7,6 +7,7 @@ export interface Book {
   cover_url: string;
   type: 'fisico' | 'ebook';
   price: number | null;
+  currency: 'EUR' | 'BRL' | 'USD';
   buy_url: string | null;
   is_featured: boolean;
   is_published: boolean;

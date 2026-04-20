@@ -205,7 +205,9 @@ const BookCard: React.FC<BookCardProps> = ({ book, index }) => {
         <div className="flex items-center justify-center gap-3 mt-auto">
           {book.price != null ? (
             <span className="text-lg font-extrabold text-primary">
-              {book.price.toFixed(2).replace('.', ',')}€
+              {book.currency === 'BRL' ? `R$ ${book.price.toFixed(2).replace('.', ',')}` : 
+               book.currency === 'USD' ? `$${book.price.toFixed(2).replace('.', ',')}` :
+               `${book.price.toFixed(2).replace('.', ',')}€`}
             </span>
           ) : (
             <span className="text-sm font-semibold text-secondary">Gratuito</span>
