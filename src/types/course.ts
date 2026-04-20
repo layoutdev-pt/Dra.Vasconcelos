@@ -12,5 +12,6 @@ export interface Course {
   buy_url: string | null;
   is_featured: boolean;
   is_published: boolean;
+  published_at: string | null;
   created_at: string;
 }

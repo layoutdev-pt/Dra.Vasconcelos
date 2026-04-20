@@ -14,6 +14,7 @@ export const useCourses = (onlyPublished = true) => {
     let query = supabase
       .from('courses')
       .select('*')
+      .order('published_at', { ascending: false })
       .order('created_at', { ascending: false });
 
     if (onlyPublished) {

@@ -58,6 +58,7 @@ const emptyBook = (): BookDraft => ({
   title: '', subtitle: null, author: 'Alexandra Vasconcelos',
   description: '', cover_url: '', type: 'fisico',
   price: null, buy_url: null, is_featured: false, is_published: true,
+  published_at: new Date().toISOString(),
 });
 
 const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () => void }> = ({ book, onClose, onSaved }) => {
@@ -86,7 +87,14 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
       finalCoverUrl = publicUrl;
     }
 
-    const payload = { ...draft, cover_url: finalCoverUrl, subtitle: draft.subtitle?.trim() || null, buy_url: draft.buy_url?.trim() || null, price: draft.price ?? null };
+    const payload = { 
+      ...draft, 
+      cover_url: finalCoverUrl, 
+      subtitle: draft.subtitle?.trim() || null, 
+      buy_url: draft.buy_url?.trim() || null, 
+      price: draft.price ?? null,
+      published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null
+    };
     const { error: dbErr } = book
       ? await supabase.from('books').update(payload).eq('id', book.id)
       : await supabase.from('books').insert(payload);
@@ -137,6 +145,10 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
               </div>
             )}
           </div>
+          <div>
+            <label className={labelCls}>Data de Publicação</label>
+            <input type="date" className={inputCls} value={draft.published_at?.split('T')[0] || ''} onChange={e => set('published_at', e.target.value)} />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className={labelCls}>Tipo</label>
@@ -170,7 +182,9 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
 type CourseDraft = Omit<Course, 'id' | 'created_at'>;
 const emptyCourse = (): CourseDraft => ({
   title: '', subtitle: null, description: '', content: '', image_url: '',
-  type: 'curso', level: null, modules: null, price: null, buy_url: null, is_featured: false, is_published: true,
+  type: 'curso', level: null, modules: null, price: null, buy_url: null, 
+  is_featured: false, is_published: true,
+  published_at: new Date().toISOString(),
 });
 
 const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSaved: () => void }> = ({ course, onClose, onSaved }) => {
@@ -199,7 +213,16 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
       finalImageUrl = publicUrl;
     }
 
-    const payload = { ...draft, image_url: finalImageUrl, subtitle: draft.subtitle?.trim() || null, buy_url: draft.buy_url?.trim() || null, price: draft.price ?? null, level: draft.level?.trim() || null, modules: draft.modules ?? null };
+    const payload = { 
+      ...draft, 
+      image_url: finalImageUrl, 
+      subtitle: draft.subtitle?.trim() || null, 
+      buy_url: draft.buy_url?.trim() || null, 
+      price: draft.price ?? null, 
+      level: draft.level?.trim() || null, 
+      modules: draft.modules ?? null,
+      published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null
+    };
     const { error: dbErr } = course
       ? await supabase.from('courses').update(payload).eq('id', course.id)
       : await supabase.from('courses').insert(payload);
@@ -259,7 +282,10 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
               </div>
             )}
           </div>
-
+          <div>
+            <label className={labelCls}>Data de Publicação</label>
+            <input type="date" className={inputCls} value={draft.published_at?.split('T')[0] || ''} onChange={e => set('published_at', e.target.value)} />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className={labelCls}>Tipo</label>
@@ -299,7 +325,7 @@ const BooksPanel: React.FC<{ showToast: (m: string) => void }> = ({ showToast })
 
   const fetch = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.from('books').select('*').order('created_at', { ascending: false });
+    const { data } = await supabase.from('books').select('*').order('published_at', { ascending: false }).order('created_at', { ascending: false });
     setBooks((data as Book[]) ?? []);
     setLoading(false);
   }, []);
@@ -427,7 +453,7 @@ const CoursesPanel: React.FC<{ showToast: (m: string) => void }> = ({ showToast 
 
   const fetch = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.from('courses').select('*').order('created_at', { ascending: false });
+    const { data } = await supabase.from('courses').select('*').order('published_at', { ascending: false }).order('created_at', { ascending: false });
     setCourses((data as Course[]) ?? []);
     setLoading(false);
   }, []);

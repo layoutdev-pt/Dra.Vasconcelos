@@ -100,7 +100,7 @@ export const MediaAdmin: React.FC = () => {
 
   const fetchMedia = async () => {
     setLoading(true);
-    const { data } = await supabase.from('media').select('*').order('published_at', { ascending: false });
+    const { data } = await supabase.from('media').select('*').order('published_at', { ascending: false }).order('created_at', { ascending: false });
     setMediaList(data || []);
     setLoading(false);
   };

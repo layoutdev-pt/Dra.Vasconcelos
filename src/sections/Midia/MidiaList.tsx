@@ -14,7 +14,7 @@ export const MidiaList: React.FC = () => {
 
   useEffect(() => {
     const fetchMedia = async () => {
-      const { data } = await supabase.from('media').select('*').order('published_at', { ascending: false });
+      const { data } = await supabase.from('media').select('*').order('published_at', { ascending: false }).order('created_at', { ascending: false });
       setMedia(data || []);
       setLoading(false);
     };
