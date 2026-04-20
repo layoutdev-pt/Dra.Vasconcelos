@@ -1,6 +1,6 @@
 // src/pages/Login.tsx
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2, Upload, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -27,6 +27,10 @@ const from = (location.state as { from?: { pathname: string } })?.from?.pathname
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  
+  // Consent checkboxes
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [acceptNewsletter, setAcceptNewsletter] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -65,6 +69,13 @@ const from = (location.state as { from?: { pathname: string } })?.from?.pathname
       }
     }
   } else {
+    // Validation for registration
+    if (!acceptTerms) {
+      setError('Deve aceitar os Termos e a Política de Privacidade para continuar.');
+      setLoading(false);
+      return;
+    }
+
     // 1. Try to upload avatar (non-blocking — registration proceeds even if upload fails)
     let uploadedAvatarUrl = '';
     if (avatarFile) {
@@ -277,6 +288,36 @@ const from = (location.state as { from?: { pathname: string } })?.from?.pathname
                     </motion.div>
                   )}
                 </AnimatePresence>
+
+                {/* Consent Checkboxes — only in register mode */}
+                {mode === 'register' && (
+                  <div className="space-y-3 pt-2">
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={acceptTerms}
+                        onChange={e => setAcceptTerms(e.target.checked)}
+                        className="mt-1 w-4 h-4 rounded border-gray-300 text-secondary focus:ring-secondary transition-all"
+                        required
+                      />
+                      <span className="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
+                        Li e aceito os <Link to="/termos" className="text-secondary font-bold hover:underline">Termos e Condições</Link> e a <Link to="/privacidade" className="text-secondary font-bold hover:underline">Política de Privacidade</Link>.*
+                      </span>
+                    </label>
+
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={acceptNewsletter}
+                        onChange={e => setAcceptNewsletter(e.target.checked)}
+                        className="mt-1 w-4 h-4 rounded border-gray-300 text-secondary focus:ring-secondary transition-all"
+                      />
+                      <span className="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
+                        Aceito receber comunicações sobre novos cursos, livros e artigos da Dra. Alexandra Vasconcelos por e-mail.
+                      </span>
+                    </label>
+                  </div>
+                )}
 
                 {/* Submit */}
                 <button

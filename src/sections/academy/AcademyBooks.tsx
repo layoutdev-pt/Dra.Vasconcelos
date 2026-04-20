@@ -4,6 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Download, BookOpen, Sparkles, AlertCircle } from 'lucide-react';
 import { useBooks } from '../../hooks/useBooks';
 import type { Book } from '../../types/book';
+import { Pagination } from '../../components/Pagination';
+
+const ITEMS_PER_PAGE = 12;
 
 /* ─── Filter tabs ──────────────────────────────────────────────────────── */
 
@@ -244,11 +247,21 @@ const BookCard: React.FC<BookCardProps> = ({ book, index }) => {
 export const AcademyBooks: React.FC = () => {
   const { books, loading, error } = useBooks();
   const [activeTab, setActiveTab] = useState<TabId>('todos');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Reset to page 1 when tab changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab]);
 
   const filtered = useMemo(() => {
     if (activeTab === 'todos') return books;
     return books.filter(b => b.type === activeTab);
   }, [books, activeTab]);
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const visibleBooks = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
     <div className="w-full pt-4 pb-12">
@@ -312,11 +325,19 @@ export const AcademyBooks: React.FC = () => {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-20">
-                  {filtered.map((book, i) => (
-                    <BookCard key={book.id} book={book} index={i} />
-                  ))}
-                </div>
+                <>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-20">
+                    {visibleBooks.map((book, i) => (
+                      <BookCard key={book.id} book={book} index={i} />
+                    ))}
+                  </div>
+
+                  <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                  />
+                </>
               )}
             </motion.div>
           </AnimatePresence>

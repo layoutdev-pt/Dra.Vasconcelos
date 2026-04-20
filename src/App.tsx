@@ -2,6 +2,7 @@ import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
+import { CookieBanner } from './components/common/CookieBanner';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -18,6 +19,13 @@ const Admin = lazy(() => import('./pages/Admin').then(module => ({ default: modu
 const Blog = lazy(() => import('./pages/Blog').then(module => ({ default: module.Blog })));
 const Midia = lazy(() => import('./pages/Midia').then(module => ({ default: module.Midia })));
 const BlogPost = lazy(() => import('./pages/Blog').then(module => ({ default: module.Blog })));
+
+// LEGAL PAGES
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(module => ({ default: module.PrivacyPolicy })));
+const ShippingTerms = lazy(() => import('./pages/ShippingTerms').then(module => ({ default: module.ShippingTerms })));
+const DisputeResolution = lazy(() => import('./pages/DisputeResolution').then(module => ({ default: module.DisputeResolution })));
+const Terms = lazy(() => import('./pages/Terms').then(module => ({ default: module.Terms })));
+const CookiePolicy = lazy(() => import('./pages/CookiePolicy').then(module => ({ default: module.CookiePolicy })));
 
 // Scroll to top helper
 const ScrollToTop = () => {
@@ -60,6 +68,13 @@ const AppShell: React.FC = () => {
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/midia" element={<Midia />} />
 
+            {/* LEGAL ROUTES */}
+            <Route path="/privacidade" element={<PrivacyPolicy />} />
+            <Route path="/termos-envio" element={<ShippingTerms />} />
+            <Route path="/resolucao-litigios" element={<DisputeResolution />} />
+            <Route path="/termos" element={<Terms />} />
+            <Route path="/cookies" element={<CookiePolicy />} />
+
             {/* Auth — Layout Standalone */}
             <Route path="/entrar" element={<Login />} />
 
@@ -78,6 +93,9 @@ const AppShell: React.FC = () => {
 
       {/* Mostra Footer se não for uma rota standalone */}
       {!isStandalone && <Footer />}
+
+      {/* Global Cookie Banner */}
+      <CookieBanner />
     </div>
   );
 };
