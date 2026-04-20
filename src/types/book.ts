@@ -3,7 +3,7 @@ export interface Book {
   title: string;
   subtitle: string | null;
   author: string;
-  description: string;
+  description: string | null;
   cover_url: string;
   type: 'fisico' | 'ebook';
   price: number | null;

@@ -56,7 +56,7 @@ const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: 
 type BookDraft = Omit<Book, 'id' | 'created_at'>;
 const emptyBook = (): BookDraft => ({
   title: '', subtitle: null, author: 'Alexandra Vasconcelos',
-  description: '', cover_url: '', type: 'fisico',
+  description: null, cover_url: '', type: 'fisico',
   price: null, buy_url: null, is_featured: false, is_published: true,
   published_at: new Date().toISOString(),
 });
@@ -67,11 +67,14 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [pubMonth, setPubMonth] = useState(draft.published_at ? new Date(draft.published_at).getMonth() : new Date().getMonth());
+  const [pubYear, setPubYear] = useState(draft.published_at ? new Date(draft.published_at).getFullYear() : new Date().getFullYear());
+
   const set = <K extends keyof BookDraft>(key: K, value: BookDraft[K]) =>
     setDraft(d => ({ ...d, [key]: value }));
 
   const handleSave = async () => {
-    if (!draft.title.trim() || !draft.description.trim()) { setError('Título e descrição são obrigatórios.'); return; }
+    if (!draft.title.trim()) { setError('O título é obrigatório.'); return; }
     setSaving(true); setError(null);
     
     let finalCoverUrl = draft.cover_url;
@@ -93,7 +96,8 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
       subtitle: draft.subtitle?.trim() || null, 
       buy_url: draft.buy_url?.trim() || null, 
       price: draft.price ?? null,
-      published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null
+      description: draft.description?.trim() || null,
+      published_at: new Date(pubYear, pubMonth, 1).toISOString()
     };
     const { error: dbErr } = book
       ? await supabase.from('books').update(payload).eq('id', book.id)
@@ -122,7 +126,7 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
             <div><label className={labelCls}>Subtítulo</label><input className={inputCls} value={draft.subtitle ?? ''} onChange={e => set('subtitle', e.target.value || null)} placeholder="Subtítulo opcional" /></div>
           </div>
           <div><label className={labelCls}>Autor</label><input className={inputCls} value={draft.author} onChange={e => set('author', e.target.value)} /></div>
-          <div><label className={labelCls}>Descrição *</label><textarea className={`${inputCls} resize-none`} rows={4} value={draft.description} onChange={e => set('description', e.target.value)} placeholder="Sinopse do livro..." /></div>
+          <div><label className={labelCls}>Descrição (Opcional)</label><textarea className={`${inputCls} resize-none`} rows={3} value={draft.description ?? ''} onChange={e => set('description', e.target.value || null)} placeholder="Sinopse breve (aparecerá apenas no detalhe)..." /></div>
           <div>
             <label className={labelCls}>Capa do Livro</label>
             <input 
@@ -145,9 +149,19 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
               </div>
             )}
           </div>
-          <div>
-            <label className={labelCls}>Data de Publicação</label>
-            <input type="date" className={inputCls} value={draft.published_at?.split('T')[0] || ''} onChange={e => set('published_at', e.target.value)} />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelCls}>Mês de Publicação</label>
+              <select className={inputCls} value={pubMonth} onChange={e => setPubMonth(parseInt(e.target.value))}>
+                {['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'].map((m, i) => (
+                  <option key={i} value={i}>{m}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={labelCls}>Ano de Publicação</label>
+              <input type="number" className={inputCls} value={pubYear} onChange={e => setPubYear(parseInt(e.target.value))} min="2000" max={new Date().getFullYear() + 2} />
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>

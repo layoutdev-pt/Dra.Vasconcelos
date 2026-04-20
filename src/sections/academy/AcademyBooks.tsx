@@ -200,10 +200,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, index }) => {
       <div className="text-center w-full max-w-[220px] min-h-[170px] flex flex-col justify-start">
         <p className="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">{book.author}</p>
         <h3 className="text-base font-bold text-primary leading-snug mb-1 line-clamp-2">{book.title}</h3>
-        {book.subtitle && (
-          <p className="text-xs text-accent italic mb-2 line-clamp-1">{book.subtitle}</p>
-        )}
-        <p className="text-xs text-gray-500 font-light leading-relaxed mb-4 line-clamp-2">{book.description}</p>
+        <p className="text-xs text-secondary font-light leading-relaxed mb-4 line-clamp-2">{book.subtitle || 'Livro Alexandra Vasconcelos'}</p>
 
         <div className="flex items-center justify-center gap-3 mt-auto">
           {book.price != null ? (
