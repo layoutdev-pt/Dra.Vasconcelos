@@ -21,11 +21,11 @@ const Midia = lazy(() => import('./pages/Midia').then(module => ({ default: modu
 const BlogPost = lazy(() => import('./pages/Blog').then(module => ({ default: module.Blog })));
 
 // LEGAL PAGES
-const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(module => ({ default: module.PrivacyPolicy })));
-const ShippingTerms = lazy(() => import('./pages/ShippingTerms').then(module => ({ default: module.ShippingTerms })));
-const DisputeResolution = lazy(() => import('./pages/DisputeResolution').then(module => ({ default: module.DisputeResolution })));
-const Terms = lazy(() => import('./pages/Terms').then(module => ({ default: module.Terms })));
-const CookiePolicy = lazy(() => import('./pages/CookiePolicy').then(module => ({ default: module.CookiePolicy })));
+const PrivacyPolicy = lazy(() => import('./pages/LegalDocs/PrivacyPolicy').then(module => ({ default: module.PrivacyPolicy })));
+const ShippingTerms = lazy(() => import('./pages/LegalDocs/ShippingTerms').then(module => ({ default: module.ShippingTerms })));
+const DisputeResolution = lazy(() => import('./pages/LegalDocs/DisputeResolution').then(module => ({ default: module.DisputeResolution })));
+const Terms = lazy(() => import('./pages/LegalDocs/Terms').then(module => ({ default: module.Terms })));
+const CookiePolicy = lazy(() => import('./pages/LegalDocs/CookiePolicy').then(module => ({ default: module.CookiePolicy })));
 
 // Scroll to top helper
 const ScrollToTop = () => {

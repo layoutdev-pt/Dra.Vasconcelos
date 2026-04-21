@@ -1,33 +1,20 @@
 import React from 'react';
 import { BookCard } from '../../components/BookCard';
+import { useBooks } from '../../hooks/useBooks';
+import { Loader2 } from 'lucide-react';
 
 export const AboutBooks: React.FC = () => {
-  const books = [
-    {
-      author: "ALEXANDRA VASCONCELOS",
-      titleLine1: "O Segredo para se",
-      titleLine2: "Manter Jovem",
-      bookName: "O Segredo para se Manter Jovem e Saudável",
-      status: "Bestseller",
-      theme: "dark" as "dark" | "light" | "blue"
-    },
-    {
-      author: "ALEXANDRA VASCONCELOS",
-      titleLine1: "O Poder do Jejum",
-      titleLine2: "Intermitente",
-      bookName: "O Poder do Jejum Intermitente",
-      status: "Mais Vendido",
-      theme: "blue" as "dark" | "light" | "blue"
-    },
-    {
-      author: "ALEXANDRA VASCONCELOS",
-      titleLine1: "Os Segredos",
-      titleLine2: "da Água",
-      bookName: "Os Segredos da Água que Bebemos",
-      status: "Digital Edition",
-      theme: "light" as "dark" | "light" | "blue"
-    }
-  ];
+  const { books, loading } = useBooks();
+
+  if (loading) {
+    return (
+      <div className="py-24 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-secondary animate-spin" />
+      </div>
+    );
+  }
+
+  const featuredBooks = books.filter(b => b.is_featured);
 
   return (
     <section className="py-24 bg-white" id="publicacoes">
@@ -41,14 +28,25 @@ export const AboutBooks: React.FC = () => {
             Autora de Bestsellers e Cursos Sobre Saúde
           </h2>
           <p className="text-gray-500 max-w-2xl mx-auto">
-            Autora de livros que se tornaram best-sellers tais como: "O Segredo para se Manter Jovem e Saudável", "Jovem e Saudável em 21 dias – Programa para reeducar o sistema imunitário, reverter e prevenir doenças", "O Poder do Jejum Intermitente", "Os Segredos da Água que Bebemos", "As Bactérias que nos curam" e recentemente o "ENERGIZA-TE".
+            {featuredBooks.length > 0 
+              ? `Autora de livros que se tornaram best-sellers tais como: ${featuredBooks.map(b => `"${b.title}"`).join(', ')}.`
+              : 'Autora de livros que se tornaram best-sellers, transformando a vida de milhares de pessoas.'
+            }
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start justify-items-center mt-12 pb-12">
-          {books.map((book, index) => (
-            <div key={index} className="transition-transform duration-500 w-full flex justify-center">
-              <BookCard {...book} />
+          {featuredBooks.map((book) => (
+            <div key={book.id} className="transition-transform duration-500 w-full flex justify-center">
+              <BookCard 
+                author={book.author.toUpperCase()}
+                titleLine1={book.title.split(' ').slice(0, 2).join(' ')}
+                titleLine2={book.title.split(' ').slice(2).join(' ')}
+                bookName={book.title}
+                image={book.cover_url}
+                status={book.currency === 'BRL' ? `R$ ${book.price?.toFixed(2).replace('.', ',')}` : book.currency === 'USD' ? `$${book.price?.toFixed(2).replace('.', ',')}` : `${book.price?.toFixed(2).replace('.', ',')}€`}
+                theme={book.type === 'ebook' ? 'blue' : 'dark'}
+              />
             </div>
           ))}
         </div>

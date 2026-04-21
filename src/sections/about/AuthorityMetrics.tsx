@@ -82,7 +82,7 @@ export const AuthorityMetrics: React.FC = () => {
       {/* Biography Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white w-full max-w-3xl rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+          <div className="bg-white w-full max-w-3xl rounded-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
             <div className="p-6 md:p-8 flex items-center justify-between border-b border-gray-100">
@@ -101,19 +101,16 @@ export const AuthorityMetrics: React.FC = () => {
             <div className="p-6 md:p-8 overflow-y-auto">
               <div className="text-gray-600 leading-relaxed font-light text-lg space-y-6">
                 <p>
-                  Alexandra Vasconcelos nasceu em Lisboa, em 1965. Licenciou-se em Ciências Farmacêuticas pela Universidade de Lisboa, em 1989, e dedicou os primeiros 15 anos da sua carreira à gestão e direção técnica da sua própria farmácia comunitária.
+                  Alexandra Vasconcelos nasceu em Lisboa, em 1965. Licenciou-se em Ciências Farmacêuticas pela Universidade de Lisboa em 1989 e, nos primeiros 15 anos da sua carreira, dedicou-se à gestão e direção técnica da sua própria farmácia comunitária.
+                </p>
+                <p>acad
+                  O acompanhamento próximo de doentes com patologias crónicas despertou nela a necessidade de explorar novas abordagens na promoção da saúde. Foi esta inquietação que a levou a especializar-se em terapias complementares, naturais e biológicas.
                 </p>
                 <p>
-                  O acompanhamento próximo de doentes com patologias crónicas despertou nela a necessidade de explorar novas abordagens na promoção da saúde. Foi esta inquietação que a impulsionou a especializar-se em terapias complementares, naturais e biológicas.
+                  Atualmente, é mestre em Medicina Integrativa e Humanista e tem pós-graduações em Nutrição Oncológica, pela Universidade Católica de Lisboa, e em Adequação Nutricional e Homeostase, focada na prevenção e no tratamento de doenças associadas ao envelhecimento, pela Academia Dr. Lair Ribeiro e pelo Centro Universitário INGA, no Brasil.
                 </p>
                 <p>
-                  Atualmente, é mestre em Medicina Integrativa e Humanista, com pós-graduações em Nutrição Oncológica pela Universidade Católica de Lisboa e em Adequação Nutricional e Homeostase (focada na prevenção e no tratamento de doenças associadas ao envelhecimento) pela Academia Dr. Lair Ribeiro e pelo Centro Universitário INGA, no Brasil.
-                </p>
-                <p>
-                  Com uma prática clínica consolidada, trabalha também como formadora em Biorressonância e Medicina Biorreguladora. É membro e formadora da Asociación Española de Microinmunoterapia (AEMI), sendo presença assídua como oradora em congressos e cursos de especialização focados na medicina integrativa, na prevenção da doença e na longevidade.
-                </p>
-                <p>
-                  Como autora de referência, escreveu obras de sucesso como "O Poder do Jejum Intermitente", "Energiza-te" e "Jovem e Saudável em 21 Dias". Através dos seus livros e programas de saúde, já ajudou milhares de pessoas a transformarem as suas vidas, recuperando energia, equilíbrio e bem-estar.
+                  É autora de vários livros e programas dedicados à saúde e ao envelhecimento saudável, nomeadamente "O Poder do Jejum Intermitente", "As Receitas - O Poder do Jejum Intermitente", "Energiza-te", "As Bactérias Que Nos Curam", "O Segredo para se Manter Jovem e Saudável" e "Jovem e Saudável em 21 Dias", através dos quais tem ajudado milhares de pessoas a recuperar energia, equilíbrio e bem-estar.
                 </p>
               </div>
             </div>

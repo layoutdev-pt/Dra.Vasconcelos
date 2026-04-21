@@ -8,6 +8,7 @@ export interface BookCardProps {
   bookName: string;
   status: string;
   theme: 'dark' | 'light' | 'blue';
+  image?: string;
   isFeatured?: boolean;
 }
 
@@ -18,6 +19,7 @@ export const BookCard: React.FC<BookCardProps> = ({
   bookName,
   status,
   theme,
+  image,
   isFeatured
 }) => {
   const coverStyles = {
@@ -56,23 +58,34 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   return (
     <div className={`flex flex-col items-center group cursor-pointer ${isFeatured ? 'md:-translate-y-6' : ''}`}>
-      <div className="relative w-48 h-72 book-3d mb-8 transition-transform duration-500 group-hover:-translate-y-4">
-        <div className={`absolute inset-0 rounded-r-md shadow-2xl overflow-hidden p-6 flex flex-col justify-between ${coverStyles[theme]}`}>
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
-          
-          <div className="relative z-10">
-            <p className="text-[10px] uppercase tracking-widest mb-3 text-gray-400">
-              {author}
-            </p>
-            <h3 className={`font-bold leading-tight ${titleClasses}`}>
-              {titleLine1}<br />
-              <span className={spanClasses}>{titleLine2}</span>
-            </h3>
-          </div>
+      <div className="relative w-48 h-72 mb-8 transition-transform duration-500 group-hover:-translate-y-4">
+        <div className={`absolute inset-0 flex flex-col justify-between ${image ? '' : 'rounded-r-md shadow-2xl overflow-hidden ' + coverStyles[theme]}`}>
+          {/* Real Cover Image */}
+          {image ? (
+            <img 
+              src={image} 
+              alt={bookName} 
+              className="absolute inset-0 w-full h-full object-contain z-0 mix-blend-multiply" 
+            />
+          ) : (
+            <>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+              
+              <div className="relative z-10 p-6 font-display">
+                <p className="text-[10px] uppercase tracking-widest mb-3 text-gray-400">
+                  {author}
+                </p>
+                <h3 className={`font-bold leading-tight ${titleClasses}`}>
+                  {titleLine1}<br />
+                  <span className={spanClasses}>{titleLine2}</span>
+                </h3>
+              </div>
 
-          <div className="relative z-10">
-            {renderIcon()}
-          </div>
+              <div className="relative z-10 p-6">
+                {renderIcon()}
+              </div>
+            </>
+          )}
         </div>
       </div>
 

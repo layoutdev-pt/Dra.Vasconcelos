@@ -34,7 +34,7 @@ export const CourseDetails: React.FC = () => {
       <div className="pt-32 pb-24 min-h-screen text-center">
         <h2 className="text-2xl font-bold">Curso não encontrado.</h2>
         <Link to="/aprender" className="text-secondary hover:underline mt-4 inline-block">
-          Voltar para a Academia
+          Voltar
         </Link>
       </div>
     );

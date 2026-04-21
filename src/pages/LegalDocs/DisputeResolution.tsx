@@ -27,9 +27,12 @@ export const DisputeResolution: React.FC = () => {
                 A União Europeia criou uma plataforma online para apoiar os consumidores na apresentação das suas reclamações sobre qualquer litígio em que estejam envolvidos.
               </p>
               
-              <div className="bg-gray-50/50 p-8 rounded-4xl border border-gray-100 space-y-6">
+              <div className="bg-gray-50/50 p-8 rounded-[2rem] border border-gray-100 space-y-6">
                 <p className="m-0">
-                  Neste âmbito, a FB – Farmabiologica Lda. disponibiliza toda a informação para que possa exercer o seu direito de reclamação junto de uma entidade oficial, terceira e imparcial ao processo. Assim, se ficou insatisfeito com a aquisição de um bem expedido pela nossa loja online, ou com a solução por nós apresentada para resolver a situação, pode expor a sua contestação através da Plataforma Europeia de Resolução de Litígios em Linha.
+                  Neste âmbito, a <strong>FB – Farmabiologica Lda.</strong> disponibiliza toda a informação para que possa exercer o seu direito de reclamação junto de uma entidade oficial, terceira e imparcial ao processo.
+                </p>
+                <p className="m-0">
+                  Assim, se ficou insatisfeito com a aquisição de um bem expedido pela nossa loja online, ou com a solução por nós apresentada para resolver a situação, pode expor a sua contestação através da Plataforma Europeia de Resolução de Litígios em Linha.
                 </p>
 
                 <div className="pt-4">
@@ -49,8 +52,8 @@ export const DisputeResolution: React.FC = () => {
                 <div className="shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                   <Scale className="w-5 h-5 text-blue-600" />
                 </div>
-                <p className="text-sm m-0 text-blue-800">
-                  Salientamos que eventuais litígios relacionados com aquisições de produtos digitais ou físicos efetuadas em plataformas parceiras (Hotmart, Wook, Planeta de Livros) deverão ser geridos através dos mecanismos de resolução dessas mesmas plataformas.
+                <p className="text-sm m-0 italic text-blue-800">
+                  Salientamos que eventuais litígios relacionados com aquisições de produtos digitais ou físicos efetuadas em plataformas parceiras (<strong>Hotmart, Wook, Planeta de Livros</strong>) deverão ser geridos através dos mecanismos de resolução dessas mesmas plataformas.
                 </p>
               </div>
             </section>

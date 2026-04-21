@@ -160,34 +160,34 @@ const BookCard: React.FC<BookCardProps> = ({ book, index }) => {
         </div>
 
         {/* Floating animation */}
-        <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{
-            duration: 4 + index * 0.3,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: index * 0.4,
-          }}
-          className="transition-transform duration-500 group-hover:scale-105"
-        >
-          {hasImage ? (
-            <div
-              className={`w-[180px] h-[260px] overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.25)] ${
-                isEbook ? 'rounded-2xl border-4 border-gray-800' : 'rounded-r-lg'
-              }`}
-              style={{
-                transform: isEbook ? 'rotateY(5deg) rotateX(-2deg)' : 'rotateY(-8deg) rotateX(2deg)',
-                transformStyle: 'preserve-3d',
-              }}
-            >
-              <img
-                src={book.cover_url}
-                alt={book.title}
-                onError={() => setImgError(true)}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : (
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{
+              duration: 4 + index * 0.3,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: index * 0.4,
+            }}
+            className="transition-transform duration-500 group-hover:scale-105 filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.2)]"
+          >
+            {hasImage ? (
+              <div
+                className={`w-[180px] h-[260px] ${
+                  isEbook ? 'rounded-2xl border-4 border-gray-800 overflow-hidden' : 'rounded-r-lg'
+                }`}
+                style={{
+                  transform: isEbook ? 'rotateY(5deg) rotateX(-2deg)' : 'rotateY(-8deg) rotateX(2deg)',
+                  transformStyle: 'preserve-3d',
+                }}
+              >
+                <img
+                  src={book.cover_url}
+                  alt={book.title}
+                  onError={() => setImgError(true)}
+                  className="w-full h-full object-cover mix-blend-multiply"
+                />
+              </div>
+            ) : (
             <BookMockup3D book={book} />
           )}
         </motion.div>

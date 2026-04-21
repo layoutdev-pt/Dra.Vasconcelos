@@ -1,44 +1,49 @@
 import React from 'react';
-import { CheckCircle2 } from 'lucide-react';
-import curso1 from '../../assets/images/curso1.jpg';
+import { CheckCircle2, Loader2 } from 'lucide-react';
+import { useCourses } from '../../hooks/useCourses';
+import { Link } from 'react-router-dom';
 
 export const BioReset: React.FC = () => {
+  const { courses, loading } = useCourses();
+
+  if (loading) {
+    return (
+      <div className="py-24 flex items-center justify-center bg-surface-hero">
+        <Loader2 className="w-8 h-8 text-secondary animate-spin" />
+      </div>
+    );
+  }
+
+  const latestCourse = courses[0];
+
+  if (!latestCourse) return null;
+
+  const formattedDate = latestCourse.published_at 
+    ? new Date(latestCourse.published_at).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' })
+    : 'Em breve';
+
   return (
-    // Fundo alterado para bg-surface-hero (#eceef9 definido no CSS)
-    <section className="py-24 bg-surface-hero relative overflow-hidden z-0">
-      
-      {/* Padrão de pontos subtil no fundo */}
-      <div 
-        className="absolute inset-0 opacity-10 pointer-events-none" 
-        style={{ 
-          backgroundImage: 'radial-gradient(var(--color-secondary) 1px, transparent 1px)', 
-          backgroundSize: '32px 32px' 
-        }}
-      ></div>
-      
+    <section className="py-24 bg-white relative overflow-hidden z-0">
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12 relative z-10">
-        
-        {/* Cartão principal branco sólido */}
-        <div className="bg-white rounded-[2rem] p-8 lg:p-12 shadow-xl flex flex-col lg:flex-row items-center gap-12 border border-gray-100">
+        <div className="bg-white rounded-[2rem] p-8 lg:p-12 shadow-xl flex flex-col lg:flex-row items-center gap-12 border border-blue-50/50">
           
-          {/* Coluna Esquerda: Texto */}
           <div className="lg:w-1/2 space-y-6">
             <div className="inline-block px-3 py-1 bg-blue-50 text-secondary text-[10px] font-bold uppercase rounded-full tracking-widest">
-              Programa
+              {latestCourse.type === 'programa' ? 'Programa' : 'Curso'}
             </div>
             
             <h2 className="text-3xl lg:text-4xl font-extrabold text-primary">
-              7.ª Edição <span className="text-secondary">BioReset 21</span> - 14 dias
+              {latestCourse.title}
             </h2>
             
             <p className="text-lg text-gray-500 leading-relaxed font-light">
-              Início: 27 de setembro. Um programa único desenhado para reativar o seu corpo, reduzir inflamação e otimizar processos celulares.
+              {latestCourse.published_at && `Início: ${formattedDate}. `}
+              {latestCourse.description}
             </p>
             
             <ul className="space-y-4 pt-2">
-              {['Acompanhamento Diário ao Vivo', 'Plano Nutricional Anti-inflamatório', 'Materiais de Apoio Exclusivos'].map((item, idx) => (
+              {['Acompanhamento Especializado', 'Conteúdo Programático Exclusivo', 'Materiais de Apoio Digitais'].map((item, idx) => (
                 <li key={idx} className="flex items-center gap-3 text-gray-600 font-medium">
-                  {/* Ícone atualizado para Lucide React */}
                   <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-50" />
                   <span>{item}</span>
                 </li>
@@ -46,25 +51,20 @@ export const BioReset: React.FC = () => {
             </ul>
             
             <div className="pt-6">
-              <button className="bg-primary hover:bg-primary/90 text-white px-8 py-3.5 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+              <Link to={`/cursos/${latestCourse.id}`} className="inline-block bg-primary hover:bg-primary/90 text-white px-8 py-3.5 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                 Garanta Já a Sua Vaga
-              </button>
+              </Link>
             </div>
           </div>
           
-          {/* Coluna Direita: Imagem e Cartão Flutuante */}
           <div className="lg:w-1/2 relative w-full mt-8 lg:mt-0">
-            {/* Imagem Principal */}
             <div className="relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-[3/2] shadow-sm border border-gray-100">
               <img 
-                src={curso1} 
-                alt="BioReset 21" 
+                src={latestCourse.image_url} 
+                alt={latestCourse.title} 
                 className="w-full h-full object-cover" 
               />
             </div>
-            
-
-
           </div>
         </div>
       </div>
