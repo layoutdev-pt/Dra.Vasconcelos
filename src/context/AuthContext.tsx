@@ -2,13 +2,23 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../config/supabase';
 
+export interface SignUpData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName?: string;
+  phone?: string;
+  avatarUrl?: string;
+}
+
 interface AuthContextValue {
   user: User | null;
   session: Session | null;
   isAdmin: boolean;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null; data: any }>;
-  signUp: (email: string, password: string, avatarUrl?: string) => Promise<{ error: string | null }>;
+  signUp: (data: SignUpData) => Promise<{ error: string | null }>;
+  verifyCode: (email: string, code: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -20,7 +30,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Helper to fetch admin status
   const fetchAdminStatus = async (userId: string | undefined) => {
     if (!userId) {
       setIsAdmin(false);
@@ -31,9 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    // Hydrate from existing session
     supabase.auth.getSession().then(({ data, error }) => {
-      console.log('[Auth] Session hydrated:', data.session?.user?.email ?? 'none', error ? `ERROR: ${error.message}` : '');
       setSession(data.session);
       setUser(data.session?.user ?? null);
       if (data.session?.user) {
@@ -43,9 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    // Subscribe to changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('[Auth] State change event:', event, '| user:', session?.user?.email ?? 'none');
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -60,34 +65,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    console.log('[Auth] signIn attempt:', email);
     const { error, data } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      console.error('[Auth] signIn ERROR:', error.message, '| status:', error.status);
-    } else {
-      console.log('[Auth] signIn SUCCESS | user id:', data.user?.id);
-    }
     return { error: error?.message ?? null, data };
   };
 
-  const signUp = async (email: string, password: string, avatarUrl?: string) => {
-    console.log('[Auth] signUp attempt:', email, '| avatarUrl:', avatarUrl || 'none');
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
+  const signUp = async (data: SignUpData) => {
+    const { error } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
       options: {
-        emailRedirectTo: window.location.origin + '/entrar',
-        data: { avatar_url: avatarUrl || '' },
+        data: { 
+          avatar_url: data.avatarUrl || '',
+          first_name: data.firstName,
+          last_name: data.lastName || '',
+          phone: data.phone || ''
+        },
       },
     });
-    if (error) {
-      console.error('[Auth] signUp ERROR:', error.message, '| status:', error.status, '| full:', error);
-    } else {
-      console.log('[Auth] signUp response | user:', data.user?.id, '| session:', data.session ? 'present' : 'null (email confirmation required)');
-      if (!data.session) {
-        console.info('[Auth] No session returned → email confirmation is enabled. User must verify email before logging in.');
-      }
-    }
+    return { error: error?.message ?? null };
+  };
+
+  const verifyCode = async (email: string, code: string) => {
+    console.log('[Auth] A tentar verificar o código:', code, 'para o email:', email);
+    const { error } = await supabase.auth.verifyOtp({
+      email: email.trim(),
+      token: code.trim(),
+      type: 'signup'
+    });
     return { error: error?.message ?? null };
   };
 
@@ -96,7 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, isAdmin, loading, signIn, signUp, verifyCode, signOut }}>
       {children}
     </AuthContext.Provider>
   );
