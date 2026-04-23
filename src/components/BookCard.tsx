@@ -10,6 +10,7 @@ export interface BookCardProps {
   theme: 'dark' | 'light' | 'blue';
   image?: string;
   isFeatured?: boolean;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 export const BookCard: React.FC<BookCardProps> = ({
@@ -20,8 +21,15 @@ export const BookCard: React.FC<BookCardProps> = ({
   status,
   theme,
   image,
-  isFeatured
+  isFeatured,
+  size = 'md'
 }) => {
+  const sizeClasses = {
+    sm: "w-32 h-48",
+    md: "w-48 h-72",
+    lg: "w-60 h-[360px]",
+    xl: "w-72 h-[432px]"
+  };
   const coverStyles = {
     dark: "bg-[#0f172a] border-l-4 border-gray-600 text-white",
     light: "bg-white border-l-4 border-gray-200 text-[#0f172a]",
@@ -58,7 +66,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   return (
     <div className={`flex flex-col items-center group cursor-pointer ${isFeatured ? 'md:-translate-y-6' : ''}`}>
-      <div className="relative w-48 h-72 mb-8 transition-transform duration-500 group-hover:-translate-y-4">
+      <div className={`relative ${sizeClasses[size]} mb-8 transition-transform duration-500 group-hover:-translate-y-4`}>
         <div className={`absolute inset-0 flex flex-col justify-between ${image ? '' : 'rounded-r-md shadow-2xl overflow-hidden ' + coverStyles[theme]}`}>
           {/* Real Cover Image */}
           {image ? (

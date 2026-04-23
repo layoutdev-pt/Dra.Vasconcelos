@@ -96,13 +96,13 @@ export const JourneyTimeline: React.FC = () => {
 
                 {/* Ano vizualmente associado ao ponto no desktop, ou ao lado no mobile */}
                 <div className={`hidden md:block w-1/2 pt-4 ${idx % 2 === 0 ? 'text-left pl-16' : 'text-right pr-16'}`}>
-                  <span className={`text-5xl font-black transition-colors duration-500 ${isActive ? 'text-secondary/20' : 'text-white/5'}`}>{item.year}</span>
+                  <span className={`text-5xl font-black transition-all duration-500 ${isActive ? 'text-secondary opacity-100' : 'text-white/20'}`}>{item.year}</span>
                 </div>
 
                 {/* Cartão de Conteúdo */}
                 <div className={`w-full pl-20 md:pl-0 md:w-1/2 ${idx % 2 === 0 ? 'md:pr-16' : 'md:pl-16'}`}>
                   <div className={`border p-8 rounded-2xl backdrop-blur-sm transition-all duration-500 ${isActive ? 'bg-white/10 border-secondary/30 scale-100' : 'bg-white/5 border-white/5 scale-95 opacity-50'}`}>
-                    <div className={`md:hidden font-black text-3xl mb-4 transition-colors duration-500 ${isActive ? 'text-secondary' : 'text-white/20'}`}>{item.year}</div>
+                    <div className={`md:hidden font-black text-3xl mb-4 transition-colors duration-500 ${isActive ? 'text-secondary' : 'text-white/40'}`}>{item.year}</div>
                     <h3 className="text-2xl font-bold mb-4 text-white">{item.title}</h3>
                     <p className="text-gray-400 font-light leading-relaxed">
                       {item.description}

@@ -1,9 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import whiteLogo from '../../assets/logo/full_white.svg';
+import { supabase } from '../../config/supabase';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
+  const [footerEmail, setFooterEmail] = useState('');
+  const [footerStatus, setFooterStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleFooterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!footerEmail) return;
+    setFooterStatus('loading');
+    try {
+      const { error } = await supabase.from('leads').insert([{ email: footerEmail, source: 'footer' }]);
+      if (error && error.code !== '23505') throw error;
+      setFooterStatus('success');
+      setFooterEmail('');
+    } catch {
+      setFooterStatus('error');
+    }
+  };
 
   return (
     <footer className="bg-primary pt-16 pb-8 text-white border-t border-white/10 mt-auto font-display">
@@ -75,19 +92,31 @@ export const Footer: React.FC = () => {
             <p className="text-xs text-gray-400 mb-4 leading-relaxed">
               Receba as mais recentes pesquisas.
             </p>
-            <form className="flex flex-col gap-2" onSubmit={(e) => e.preventDefault()}>
-              <input 
-                type="email" 
-                placeholder="O seu email" 
-                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent text-xs text-white" 
-              />
-              <button 
-                type="submit" 
-                className="bg-accent hover:bg-accent/90 text-white font-bold px-4 py-2 rounded-lg text-xs transition-colors"
-              >
-                Subscrever
-              </button>
-            </form>
+            {footerStatus === 'success' ? (
+              <p className="text-xs text-green-400 font-semibold">✓ Subscrito com sucesso!</p>
+            ) : (
+              <form className="flex flex-col gap-2" onSubmit={handleFooterSubmit}>
+                <input 
+                  type="email" 
+                  value={footerEmail}
+                  onChange={(e) => setFooterEmail(e.target.value)}
+                  disabled={footerStatus === 'loading'}
+                  placeholder="O seu email" 
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-accent text-xs text-white disabled:opacity-50" 
+                  required
+                />
+                <button 
+                  type="submit" 
+                  disabled={footerStatus === 'loading'}
+                  className="bg-accent hover:bg-accent/90 text-white font-bold px-4 py-2 rounded-lg text-xs transition-colors disabled:opacity-50"
+                >
+                  {footerStatus === 'loading' ? 'A processar...' : 'Subscrever'}
+                </button>
+                {footerStatus === 'error' && (
+                  <p className="text-xs text-red-400 mt-1">Ocorreu um erro. Tente novamente.</p>
+                )}
+              </form>
+            )}
           </div>
 
         </div>

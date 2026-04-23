@@ -16,11 +16,25 @@ const handleSubmit = async (e: React.FormEvent) => {
     setErrorMessage('');
 
     try {
+      // 1. Insert into leads table
       const { error } = await supabase
-        .from('leads_ebook')
-        .insert([{ email }]);
+        .from('leads')
+        .insert([{ email, source: 'ebook' }]);
 
-      if (error) throw error;
+      if (error) {
+        // If duplicate, still send the PDF
+        if (error.code !== '23505') throw error;
+      }
+
+      // 2. Call Edge Function to send the PDF email
+      const { error: fnError } = await supabase.functions.invoke('send-lead-magnet', {
+        body: { email },
+      });
+
+      if (fnError) {
+        console.error('Edge Function error:', fnError);
+        // Even if the email fails, the lead was captured
+      }
 
       setStatus('success');
       setEmail('');
@@ -28,7 +42,8 @@ const handleSubmit = async (e: React.FormEvent) => {
     } catch (error: any) {
       setStatus('error');
       if (error.code === '23505') {
-        setErrorMessage('Este email já está registado na nossa base de dados.');
+        setStatus('success'); // Duplicate = already subscribed, treat as success
+        setEmail('');
       } else {
         setErrorMessage('Ocorreu um erro na submissão. Tente novamente.');
       }

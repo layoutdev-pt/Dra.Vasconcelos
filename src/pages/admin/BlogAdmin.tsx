@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../config/supabase';
-import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle, Send, CheckCircle2 } from 'lucide-react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -37,6 +37,8 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sendNewsletter, setSendNewsletter] = useState(false);
+  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
   const set = <K extends keyof BlogPost>(key: K, value: any) => setDraft(d => ({ ...d, [key]: value }));
 
@@ -73,13 +75,43 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
       published_at: draft.is_published ? (draft.published_at || new Date().toISOString()) : null,
     };
 
-    const { error: dbErr } = post
-      ? await supabase.from('posts').update(payload).eq('id', post.id)
-      : await supabase.from('posts').insert(payload);
-      
-    if (dbErr) { setError(dbErr.message); setSaving(false); return; }
-    onSaved(); onClose();
+    let savedPostId = post?.id;
+
+    if (post) {
+      const { error: dbErr } = await supabase.from('posts').update(payload).eq('id', post.id);
+      if (dbErr) { setError(dbErr.message); setSaving(false); return; }
+    } else {
+      const { data: inserted, error: dbErr } = await supabase.from('posts').insert(payload).select('id').single();
+      if (dbErr) { setError(dbErr.message); setSaving(false); return; }
+      savedPostId = inserted?.id;
+    }
+
+    // Send newsletter if toggled on
+    if (sendNewsletter && savedPostId && draft.is_published) {
+      setNewsletterStatus('sending');
+      try {
+        const { error: fnError } = await supabase.functions.invoke('send-newsletter', {
+          body: { post_id: savedPostId },
+        });
+        if (fnError) {
+          console.error('Newsletter error:', fnError);
+          setNewsletterStatus('error');
+        } else {
+          setNewsletterStatus('sent');
+        }
+      } catch (err) {
+        console.error('Newsletter error:', err);
+        setNewsletterStatus('error');
+      }
+    }
+
+    setSaving(false);
+    onSaved(); 
+    onClose();
   };
+
+  // Check if post already had newsletter sent
+  const alreadySent = post && (post as any).newsletter_sent === true;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
@@ -130,6 +162,39 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
               </div>
             )}
           </div>
+
+          {/* Newsletter Toggle */}
+          {draft.is_published && (
+            <div className="pt-4 border-t border-gray-100">
+              {alreadySent ? (
+                <div className="flex items-center gap-3 text-sm text-green-600 bg-green-50 px-4 py-3 rounded-xl">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span className="font-semibold">Newsletter já enviada para este artigo</span>
+                  {(post as any).newsletter_sent_at && (
+                    <span className="text-xs text-green-500 ml-auto">
+                      {new Date((post as any).newsletter_sent_at).toLocaleString('pt-PT')}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <Toggle value={sendNewsletter} onChange={v => setSendNewsletter(v)} label="Enviar Newsletter" />
+                  {sendNewsletter && (
+                    <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg">
+                      <Send className="w-3 h-3" />
+                      <span className="font-semibold">Será enviado para todos os subscritores ao guardar</span>
+                    </div>
+                  )}
+                  {newsletterStatus === 'sending' && (
+                    <div className="flex items-center gap-2 text-xs text-blue-600">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      A enviar newsletter...
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end gap-3 px-8 py-5 border-t border-gray-100 shrink-0">
@@ -183,6 +248,7 @@ export const BlogAdmin: React.FC = () => {
                 <th className="px-6 py-4">Artigo</th>
                 <th className="px-6 py-4">Categoria</th>
                 <th className="px-6 py-4">Estado</th>
+                <th className="px-4 py-4">Newsletter</th>
                 <th className="px-6 py-4 text-right">Ações</th>
               </tr>
             </thead>
@@ -196,6 +262,11 @@ export const BlogAdmin: React.FC = () => {
                       ? <span className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-xs font-bold">Publicado</span> 
                       : <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-xs font-bold">Rascunho</span>}
                   </td>
+                  <td className="px-4 py-4">
+                    {(p as any).newsletter_sent 
+                      ? <span className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit"><Send className="w-3 h-3" />Enviada</span>
+                      : <span className="text-gray-400 text-xs">—</span>}
+                  </td>
                   <td className="px-6 py-4 flex justify-end gap-2">
                     <button onClick={() => { setEditingPost(p); setIsModalOpen(true); }} className="p-2 text-gray-400 hover:text-secondary bg-white shadow-sm border border-gray-100 rounded-lg"><Pencil className="w-4 h-4" /></button>
                     <button onClick={() => deletePost(p.id)} className="p-2 text-gray-400 hover:text-red-500 bg-white shadow-sm border border-gray-100 rounded-lg"><Trash2 className="w-4 h-4" /></button>
@@ -203,7 +274,7 @@ export const BlogAdmin: React.FC = () => {
                 </tr>
               ))}
               {posts.length === 0 && (
-                <tr><td colSpan={4} className="px-6 py-12 text-center text-gray-500">Ainda não existem artigos. Escreve o teu primeiro!</td></tr>
+                <tr><td colSpan={5} className="px-6 py-12 text-center text-gray-500">Ainda não existem artigos. Escreve o teu primeiro!</td></tr>
               )}
             </tbody>
           </table>

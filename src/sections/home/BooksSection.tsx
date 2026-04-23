@@ -41,7 +41,7 @@ export const BooksSection: React.FC = () => {
             </div>
             
             <div className="flex justify-center w-full">
-              <div className="w-full max-w-[320px]">
+              <div className="w-full max-w-[400px]">
                 <BookCard 
                   author={latestBook.author.toUpperCase()}
                   titleLine1={latestBook.title.split(' ').slice(0, 2).join(' ')}
@@ -51,6 +51,7 @@ export const BooksSection: React.FC = () => {
                   status={latestBook.currency === 'BRL' ? `R$ ${latestBook.price?.toFixed(2).replace('.', ',')}` : latestBook.currency === 'USD' ? `$${latestBook.price?.toFixed(2).replace('.', ',')}` : `${latestBook.price?.toFixed(2).replace('.', ',')}€`}
                   theme="light"
                   isFeatured={true}
+                  size="xl"
                 />
               </div>
             </div>
@@ -71,7 +72,7 @@ export const BooksSection: React.FC = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center">
               {featuredBooks.map((book) => (
-                <div key={book.id} className="w-full max-w-[280px]">
+                <div key={book.id} className="w-full max-w-[320px]">
                   <BookCard 
                     author={book.author.toUpperCase()}
                     titleLine1={book.title.split(' ').slice(0, 2).join(' ')}
@@ -80,6 +81,7 @@ export const BooksSection: React.FC = () => {
                     image={book.cover_url}
                     status={book.currency === 'BRL' ? `R$ ${book.price?.toFixed(2).replace('.', ',')}` : book.currency === 'USD' ? `$${book.price?.toFixed(2).replace('.', ',')}` : `${book.price?.toFixed(2).replace('.', ',')}€`}
                     theme={book.type === 'ebook' ? 'blue' : 'dark'}
+                    size="lg"
                   />
                 </div>
               ))}
