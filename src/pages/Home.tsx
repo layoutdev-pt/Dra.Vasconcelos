@@ -9,7 +9,7 @@ export const Home: React.FC = () => {
   return (
     <div className="w-full">
       <Hero />
-      <BooksSection />
+      // <BooksSection />
       <BioReset />
       <LeadMagnet />
       <AcademyCourses />
