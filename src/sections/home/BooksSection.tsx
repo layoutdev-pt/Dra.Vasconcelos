@@ -24,7 +24,7 @@ export const BooksSection: React.FC = () => {
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
         
         {/* NOVIDADE SECTION */}
-        {latestBook && (
+       {/* {latestBook && (
           <div className="mb-24">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
               <div>
@@ -57,7 +57,7 @@ export const BooksSection: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* BESTSELLERS SECTION */}
         {featuredBooks.length > 0 && (
