@@ -5,7 +5,6 @@ import curso2 from '../../assets/images/curso2.png';
 import curso3 from '../../assets/images/curso3.webp';
 
 export const CourseGrid: React.FC = () => {
-  // Injeção de dados validada pela interface CourseCardProps
   const courses: CourseCardProps[] = [
     {
       title: "BioReset 21® 14 dias – Parte Prática",
@@ -37,14 +36,15 @@ export const CourseGrid: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 bg-background-light">
+    /* bg-site-bg garante que a seção mude de cor com o tema */
+    <section className="py-24 bg-site-bg transition-colors duration-500">
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
         
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-primary mb-4 uppercase tracking-wider">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-site-text mb-4 uppercase tracking-wider">
             Cursos
           </h2>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto font-light">
+          <p className="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto font-light">
             Programas exclusivos desenhados para elevar os seus conhecimentos e potenciar a sua saúde ao longo da vida.
           </p>
         </div>
@@ -59,5 +59,5 @@ export const CourseGrid: React.FC = () => {
         
       </div>
     </section>
-  );
+  ); 
 };

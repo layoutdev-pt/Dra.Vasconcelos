@@ -19,6 +19,9 @@ interface AuthContextValue {
   signIn: (email: string, password: string) => Promise<{ error: string | null; data: any }>;
   signUp: (data: SignUpData) => Promise<{ error: string | null }>;
   verifyCode: (email: string, code: string) => Promise<{ error: string | null }>;
+  sendPasswordReset: (email: string) => Promise<{ error: string | null }>;
+  verifyRecoveryCode: (email: string, code: string) => Promise<{ error: string | null }>;
+  updatePassword: (newPassword: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -86,11 +89,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const verifyCode = async (email: string, code: string) => {
-    console.log('[Auth] A tentar verificar o código:', code, 'para o email:', email);
     const { error } = await supabase.auth.verifyOtp({
       email: email.trim(),
       token: code.trim(),
       type: 'signup'
+    });
+    return { error: error?.message ?? null };
+  };
+
+  // 1. Pede a recuperação (Envia código para o e-mail) e loga o erro!
+  const sendPasswordReset = async (email: string) => {
+    console.log('[Auth] A pedir código de recuperação para:', email);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim());
+    
+    if (error) {
+      console.error('[Auth] ERRO NO RESET:', error.message); 
+    }
+    
+    return { error: error?.message ?? null };
+  };
+
+  // 2. Apenas valida o código de recuperação
+  const verifyRecoveryCode = async (email: string, code: string) => {
+    const { error } = await supabase.auth.verifyOtp({
+      email: email.trim(),
+      token: code.trim(),
+      type: 'recovery'
+    });
+    return { error: error?.message ?? null };
+  };
+
+  // 3. Atualiza a palavra-passe
+  const updatePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
     });
     return { error: error?.message ?? null };
   };
@@ -100,7 +132,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, loading, signIn, signUp, verifyCode, signOut }}>
+    <AuthContext.Provider value={{ user, session, isAdmin, loading, signIn, signUp, verifyCode, sendPasswordReset, verifyRecoveryCode, updatePassword, signOut }}>
       {children}
     </AuthContext.Provider>
   );
