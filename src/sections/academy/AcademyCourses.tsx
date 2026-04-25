@@ -61,7 +61,7 @@ export const AcademyCourses: React.FC = () => {
           Array.from({ length: 3 }).map((_, i) => <CourseSkeleton key={i} />)
         ) : (
           courses.map((course) => (
-            <Link key={course.id} to={`/cursos/${course.id}`} className="transition-transform duration-500 block h-full">
+            <Link key={course.id} to={`/cursos/${course.slug || course.id}`} className="transition-transform duration-500 block h-full">
               <CourseCard 
                 title={course.title}
                 description={course.description}

@@ -2,9 +2,11 @@ export interface Course {
   id: string;
   title: string;
   subtitle: string | null;
+  slug: string | null;
   description: string;
   content: string; // The rich text content for the landing page
   image_url: string;
+  secondary_image_url: string | null;
   type: 'curso' | 'programa';
   level: string | null;
   modules: number | null;
