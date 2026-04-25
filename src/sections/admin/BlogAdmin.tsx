@@ -6,7 +6,32 @@ import 'react-quill-new/dist/quill.snow.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { BlogPost } from '../../types/blog';
 
-// Quill Modules for Rich Text formatting
+/* ─── FUNÇÃO DE NOTIFICAÇÃO GLOBAL ───────────────────────────────────────── */
+
+const notifyAllUsers = async (title: string, message: string, link: string) => {
+  try {
+    // 1. Vai buscar todos os IDs de utilizadores da tabela profiles
+    const { data: profiles } = await supabase.from('profiles').select('id');
+    if (!profiles || profiles.length === 0) return;
+
+    // 2. Prepara as notificações para todos
+    const notifications = profiles.map(profile => ({
+      user_id: profile.id,
+      title,
+      message,
+      link,
+      is_read: false
+    }));
+
+    // 3. Insere na tabela 'notifications'
+    await supabase.from('notifications').insert(notifications);
+  } catch (err) {
+    console.error('Erro ao disparar notificações do blog:', err);
+  }
+};
+
+/* ─── CONFIGURAÇÕES E HELPERS ────────────────────────────────────────────── */
+
 const quillModules = {
   toolbar: [
     [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -31,6 +56,8 @@ const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: 
     <span className="text-sm font-medium text-gray-700">{label}</span>
   </label>
 );
+
+/* ─── MODAL DO ARTIGO (BLOG MODAL) ───────────────────────────────────────── */
 
 const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved: () => void }> = ({ post, onClose, onSaved }) => {
   const [draft, setDraft] = useState<Partial<BlogPost>>(post ? { ...post } : { title: '', slug: '', summary: '', content: '', category: 'Artigo', is_published: true, image_url: '', published_at: new Date().toISOString() });
@@ -66,7 +93,7 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
 
     const payload = {
       title: draft.title,
-      slug: draft.slug || generateSlug(draft.title),
+      slug: draft.slug || generateSlug(draft.title || ''),
       summary: draft.summary || null,
       content: draft.content || null,
       category: draft.category,
@@ -76,6 +103,7 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
     };
 
     let savedPostId = post?.id;
+    const isNew = !post;
 
     if (post) {
       const { error: dbErr } = await supabase.from('posts').update(payload).eq('id', post.id);
@@ -86,21 +114,25 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
       savedPostId = inserted?.id;
     }
 
-    // Send newsletter if toggled on
-    if (sendNewsletter && savedPostId && draft.is_published) {
+    // NOTIFICAÇÃO GLOBAL: Se for um artigo novo e estiver publicado
+    if (isNew && payload.is_published) {
+      await notifyAllUsers(
+        '✍️ Novo Artigo no Blog!',
+        `Acabámos de publicar: ${payload.title}`,
+        `/blog/${payload.slug}`
+      );
+    }
+
+    // Lógica da Newsletter (Edge Function)
+    if (sendNewsletter && savedPostId && payload.is_published) {
       setNewsletterStatus('sending');
       try {
         const { error: fnError } = await supabase.functions.invoke('send-newsletter', {
           body: { post_id: savedPostId },
         });
-        if (fnError) {
-          console.error('Newsletter error:', fnError);
-          setNewsletterStatus('error');
-        } else {
-          setNewsletterStatus('sent');
-        }
+        if (fnError) setNewsletterStatus('error');
+        else setNewsletterStatus('sent');
       } catch (err) {
-        console.error('Newsletter error:', err);
         setNewsletterStatus('error');
       }
     }
@@ -110,7 +142,6 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
     onClose();
   };
 
-  // Check if post already had newsletter sent
   const alreadySent = post && (post as any).newsletter_sent === true;
 
   return (
@@ -133,7 +164,7 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
             <div><label className={labelCls}>Categoria *</label><input className={inputCls} placeholder="Nutrição, Bem-estar..." value={draft.category} onChange={e => set('category', e.target.value)} /></div>
             <div>
               <label className={labelCls}>Imagem de Capa</label>
-              <input type="file" accept="image/*" className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-secondary hover:file:bg-gray-100 transition-all cursor-pointer" onChange={e => setCoverFile(e.target.files?.[0] || null)} />
+              <input type="file" accept="image/*" className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-secondary cursor-pointer" onChange={e => setCoverFile(e.target.files?.[0] || null)} />
             </div>
           </div>
 
@@ -141,40 +172,27 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
 
           <div className="flex-1 pb-16">
             <label className={labelCls}>Corpo do Artigo</label>
-            <ReactQuill theme="snow" modules={quillModules} value={draft.content || ''} onChange={val => set('content', val)} className="bg-white border-gray-200 h-64" />
+            <div className="bg-white rounded-xl overflow-hidden border border-gray-200">
+              <ReactQuill theme="snow" modules={quillModules} value={draft.content || ''} onChange={val => set('content', val)} className="h-64 border-none" />
+            </div>
           </div>
           
           <div className="pt-4 border-t border-gray-100 flex flex-col md:flex-row md:items-center gap-6">
             <Toggle value={draft.is_published ?? true} onChange={v => set('is_published', v)} label="Publicar Artigo" />
-            
             {draft.is_published && (
               <div className="flex items-center gap-3">
-                <label className="text-sm font-semibold text-gray-500 tracking-wider">Data de Publicação:</label>
-                <input 
-                  type="date" 
-                  className={`${inputCls} !py-1.5`} 
-                  value={draft.published_at ? draft.published_at.split('T')[0] : ''} 
-                  onChange={e => {
-                    const dateVal = e.target.value;
-                    set('published_at', dateVal ? new Date(dateVal).toISOString() : new Date().toISOString());
-                  }} 
-                />
+                <label className="text-sm font-semibold text-gray-500 tracking-wider">Data:</label>
+                <input type="date" className={`${inputCls} !py-1.5`} value={draft.published_at ? draft.published_at.split('T')[0] : ''} onChange={e => set('published_at', e.target.value ? new Date(e.target.value).toISOString() : new Date().toISOString())} />
               </div>
             )}
           </div>
 
-          {/* Newsletter Toggle */}
           {draft.is_published && (
             <div className="pt-4 border-t border-gray-100">
               {alreadySent ? (
                 <div className="flex items-center gap-3 text-sm text-green-600 bg-green-50 px-4 py-3 rounded-xl">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span className="font-semibold">Newsletter já enviada para este artigo</span>
-                  {(post as any).newsletter_sent_at && (
-                    <span className="text-xs text-green-500 ml-auto">
-                      {new Date((post as any).newsletter_sent_at).toLocaleString('pt-PT')}
-                    </span>
-                  )}
+                  <span className="font-semibold">Newsletter já enviada</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-4">
@@ -182,13 +200,7 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
                   {sendNewsletter && (
                     <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg">
                       <Send className="w-3 h-3" />
-                      <span className="font-semibold">Será enviado para todos os subscritores ao guardar</span>
-                    </div>
-                  )}
-                  {newsletterStatus === 'sending' && (
-                    <div className="flex items-center gap-2 text-xs text-blue-600">
-                      <Loader2 className="w-3 h-3 animate-spin" />
-                      A enviar newsletter...
+                      <span className="font-semibold">Será enviado para os subscritores ao guardar</span>
                     </div>
                   )}
                 </div>
@@ -198,15 +210,18 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
         </div>
 
         <div className="flex justify-end gap-3 px-8 py-5 border-t border-gray-100 shrink-0">
-          <button onClick={onClose} className="px-5 py-2.5 rounded-xl border border-gray-200 font-semibold text-gray-600 hover:bg-gray-50">Cancelar</button>
-          <button onClick={handleSave} disabled={saving} className="px-5 py-2.5 rounded-xl bg-secondary hover:bg-secondary/90 text-white font-bold disabled:opacity-60 flex items-center gap-2 shadow-md">
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}{saving ? 'Guardar...' : 'Guardar Artigo'}
+          <button onClick={onClose} className="px-5 py-2.5 rounded-xl border border-gray-200 font-semibold text-gray-600">Cancelar</button>
+          <button onClick={handleSave} disabled={saving} className="px-5 py-2.5 rounded-xl bg-secondary hover:bg-secondary/90 text-white font-bold flex items-center gap-2 shadow-md disabled:opacity-60">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {saving ? 'A guardar...' : 'Guardar Artigo'}
           </button>
         </div>
       </motion.div>
     </div>
   );
 };
+
+/* ─── LISTAGEM DO BLOG (BLOG ADMIN MAIN) ─────────────────────────────────── */
 
 export const BlogAdmin: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -232,8 +247,8 @@ export const BlogAdmin: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-xl font-bold text-gray-800">Gerir Blog</h3>
-        <button onClick={() => { setEditingPost(null); setIsModalOpen(true); }} className="px-4 py-2 bg-secondary text-white rounded-xl font-semibold flex items-center gap-2 hover:bg-opacity-90">
+        <h3 className="text-xl font-bold text-primary">Gerir Blog</h3>
+        <button onClick={() => { setEditingPost(null); setIsModalOpen(true); }} className="px-4 py-2 bg-secondary text-white rounded-xl font-semibold flex items-center gap-2 shadow-md shadow-secondary/20 hover:-translate-y-0.5 transition-all">
           <Plus className="w-4 h-4" /> Escrever Artigo
         </button>
       </div>
@@ -242,42 +257,43 @@ export const BlogAdmin: React.FC = () => {
         <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-secondary" /></div>
       ) : (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold tracking-wider">
-              <tr>
-                <th className="px-6 py-4">Artigo</th>
-                <th className="px-6 py-4">Categoria</th>
-                <th className="px-6 py-4">Estado</th>
-                <th className="px-4 py-4">Newsletter</th>
-                <th className="px-6 py-4 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {posts.map(p => (
-                <tr key={p.id} className="hover:bg-gray-50/50">
-                  <td className="px-6 py-4 font-semibold text-primary">{p.title}</td>
-                  <td className="px-6 py-4"><span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">{p.category}</span></td>
-                  <td className="px-6 py-4">
-                    {p.is_published 
-                      ? <span className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-xs font-bold">Publicado</span> 
-                      : <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-xs font-bold">Rascunho</span>}
-                  </td>
-                  <td className="px-4 py-4">
-                    {(p as any).newsletter_sent 
-                      ? <span className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit"><Send className="w-3 h-3" />Enviada</span>
-                      : <span className="text-gray-400 text-xs">—</span>}
-                  </td>
-                  <td className="px-6 py-4 flex justify-end gap-2">
-                    <button onClick={() => { setEditingPost(p); setIsModalOpen(true); }} className="p-2 text-gray-400 hover:text-secondary bg-white shadow-sm border border-gray-100 rounded-lg"><Pencil className="w-4 h-4" /></button>
-                    <button onClick={() => deletePost(p.id)} className="p-2 text-gray-400 hover:text-red-500 bg-white shadow-sm border border-gray-100 rounded-lg"><Trash2 className="w-4 h-4" /></button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold tracking-wider">
+                <tr>
+                  <th className="px-6 py-4">Artigo</th>
+                  <th className="px-6 py-4">Categoria</th>
+                  <th className="px-6 py-4">Estado</th>
+                  <th className="px-4 py-4">Newsletter</th>
+                  <th className="px-6 py-4 text-right">Ações</th>
                 </tr>
-              ))}
-              {posts.length === 0 && (
-                <tr><td colSpan={5} className="px-6 py-12 text-center text-gray-500">Ainda não existem artigos. Escreve o teu primeiro!</td></tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {posts.map(p => (
+                  <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4 font-semibold text-primary">{p.title}</td>
+                    <td className="px-6 py-4"><span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">{p.category}</span></td>
+                    <td className="px-6 py-4">
+                      {p.is_published 
+                        ? <span className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-xs font-bold">Publicado</span> 
+                        : <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-xs font-bold">Rascunho</span>}
+                    </td>
+                    <td className="px-4 py-4">
+                      {(p as any).newsletter_sent 
+                        ? <span className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit"><Send className="w-3 h-3" />Enviada</span>
+                        : <span className="text-gray-400 text-xs">—</span>}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-2">
+                        <button onClick={() => { setEditingPost(p); setIsModalOpen(true); }} className="p-2 text-gray-400 hover:text-secondary bg-white shadow-sm border border-gray-100 rounded-lg transition-colors"><Pencil className="w-4 h-4" /></button>
+                        <button onClick={() => deletePost(p.id)} className="p-2 text-gray-400 hover:text-red-500 bg-white shadow-sm border border-gray-100 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
       
