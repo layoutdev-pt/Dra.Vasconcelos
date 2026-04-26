@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, User, LayoutDashboard, LogOut, Settings, Sun, Moon } from 'lucide-react'; // Importámos o Sun e o Moon
+import { Menu, X, User, LayoutDashboard, LogOut, Settings, Sun, Moon, ExternalLink } from 'lucide-react';
 import fullLogo from '../../assets/logo/full1.svg';
 import simpleLogo from '../../assets/logo/simple.svg';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext'; // Importámos o ThemeContext
+import { useTheme } from '../../context/ThemeContext';
+import { NotificationBell } from '../NotificationBell'; // Caminho corrigido para subir um nível
 
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
@@ -18,7 +19,7 @@ const NAV_LINKS = [
 
 export const Navbar: React.FC = () => {
   const { user, isAdmin, signOut } = useAuth();
-  const { theme, toggleTheme } = useTheme(); // Usamos o tema aqui!
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -30,7 +31,7 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close user dropdown when clicking outside
+  // Fecha o menu ao clicar fora
   useEffect(() => {
     if (!userMenuOpen) return;
     const handler = () => setUserMenuOpen(false);
@@ -51,7 +52,6 @@ export const Navbar: React.FC = () => {
     <div className={`fixed z-50 w-full transition-all duration-500 ease-in-out flex justify-center ${
       isScrolled ? 'top-2 md:top-6 px-2 md:px-6' : 'top-0 left-0 px-0'
     }`}>
-      {/* Adicionámos dark:bg-slate-900 e dark:border-slate-800 para a Navbar ficar escura */}
       <nav className={`w-full transition-all duration-500 ease-in-out relative ${
         isScrolled
           ? 'max-w-[1100px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl md:rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-white/60 dark:border-slate-800/60'
@@ -82,7 +82,7 @@ export const Navbar: React.FC = () => {
               </Link>
             </div>
 
-            {/* ── Desktop nav links ─────── */}
+            {/* ── Desktop Nav Links ─────── */}
             <div className="hidden md:flex flex-1 justify-center">
               <div className="flex items-center gap-1">
                 {NAV_LINKS.map(link => (
@@ -97,10 +97,10 @@ export const Navbar: React.FC = () => {
               </div>
             </div>
 
-            {/* ── Right side ───────────────────────── */}
+            {/* ── Right Side ───────────────────────── */}
             <div className="flex items-center gap-2 ml-auto md:ml-0">
 
-              {/* ===== NOVO: BOTÃO MODO ESCURO (DESKTOP) ===== */}
+              {/* Botão Dark Mode Desktop */}
               <button
                 onClick={toggleTheme}
                 className={`hidden md:flex items-center justify-center rounded-full transition-all w-10 h-10 text-gray-500 dark:text-gray-300 hover:text-secondary hover:bg-gray-50 dark:hover:bg-slate-800 ${
@@ -111,49 +111,53 @@ export const Navbar: React.FC = () => {
                 {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
 
-              {/* Desktop: login button or user menu */}
-              <div className="hidden md:block relative ml-2">
+              {/* Desktop User Section */}
+              <div className="hidden md:flex items-center gap-3 ml-2">
                 {user ? (
-                  <div className="relative">
-                    <button
-                      onClick={e => { e.stopPropagation(); setUserMenuOpen(v => !v); }}
-                      className={`flex items-center justify-center rounded-full transition-all ${
-                        isScrolled 
-                          ? 'w-10 h-10 border border-secondary/20 dark:border-secondary/40 hover:border-secondary/50 bg-white dark:bg-slate-800 hover:bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary/20' 
-                          : 'gap-2.5 px-4 py-2 border border-secondary/30 bg-secondary/5 hover:bg-secondary/10 text-primary dark:text-white font-semibold text-sm'
-                      }`}
-                      title={isAdmin ? 'Admin' : 'Conta'}
-                    >
-                      {avatarUrl ? (
-                        <img src={avatarUrl} alt="Perfil" className={`${isScrolled ? 'w-full h-full' : 'w-6 h-6'} rounded-full object-cover shadow-sm`} />
-                      ) : (
-                        <div className={`${isScrolled ? 'w-full h-full text-base' : 'w-6 h-6 text-xs'} rounded-full bg-secondary flex items-center justify-center text-white font-bold uppercase`}>
-                          {user.email?.[0] ?? 'U'}
-                        </div>
-                      )}
-                      {!isScrolled && <span>{isAdmin ? 'Admin' : 'Conta'}</span>}
-                    </button>
-                    <AnimatedDropdown open={userMenuOpen}>
-                      <Link to="/perfil" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-secondary transition-colors rounded-t-xl">
-                        <Settings className="w-4 h-4" /> Meu Perfil
-                      </Link>
-                      {isAdmin && (
-                        <Link to="/admin" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-secondary transition-colors">
-                          <LayoutDashboard className="w-4 h-4" /> Dashboard
-                        </Link>
-                      )}
-                      <button onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors rounded-b-xl w-full text-left border-t border-gray-50 dark:border-slate-700">
-                        <LogOut className="w-4 h-4" /> Terminar Sessão
+                  <>
+                    {/* SINO DE NOTIFICAÇÕES DESKTOP */}
+                    <NotificationBell />
+
+                    <div className="relative">
+                      <button
+                        onClick={e => { e.stopPropagation(); setUserMenuOpen(v => !v); }}
+                        className={`flex items-center justify-center rounded-full transition-all ${
+                          isScrolled 
+                            ? 'w-10 h-10 border border-secondary/20 dark:border-secondary/40 hover:border-secondary/50 bg-white dark:bg-slate-800 shadow-sm focus:outline-none' 
+                            : 'gap-2.5 px-4 py-2 border border-secondary/30 bg-secondary/5 hover:bg-secondary/10 text-primary dark:text-white font-semibold text-sm'
+                        }`}
+                      >
+                        {avatarUrl ? (
+                          <img src={avatarUrl} alt="Perfil" className={`${isScrolled ? 'w-full h-full' : 'w-6 h-6'} rounded-full object-cover shadow-sm`} />
+                        ) : (
+                          <div className={`${isScrolled ? 'w-full h-full text-base' : 'w-6 h-6 text-xs'} rounded-full bg-secondary flex items-center justify-center text-white font-bold uppercase`}>
+                            {user.email?.[0] ?? 'U'}
+                          </div>
+                        )}
+                        {!isScrolled && <span>{isAdmin ? 'Admin' : 'Conta'}</span>}
                       </button>
-                    </AnimatedDropdown>
-                  </div>
+
+                      <AnimatedDropdown open={userMenuOpen}>
+                        <Link to="/perfil" className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-secondary transition-colors rounded-t-xl">
+                          <Settings className="w-4 h-4" /> Meu Perfil
+                        </Link>
+                        {isAdmin && (
+                          <Link to="/admin" className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-secondary transition-colors">
+                            <LayoutDashboard className="w-4 h-4" /> Dashboard Admin
+                          </Link>
+                        )}
+                        <button onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors rounded-b-xl w-full text-left border-t border-gray-50 dark:border-slate-700">
+                          <LogOut className="w-4 h-4" /> Terminar Sessão
+                        </button>
+                      </AnimatedDropdown>
+                    </div>
+                  </>
                 ) : (
                   <Link
                     to="/entrar"
                     className={`flex items-center justify-center rounded-full bg-primary hover:bg-primary/90 text-white transition-all shadow-md ${
                       isScrolled ? 'w-10 h-10' : 'gap-2 px-5 py-2.5 font-bold text-sm hover:-translate-y-0.5'
                     }`}
-                    title="Área Pessoal"
                   >
                     <User className={`${isScrolled ? 'w-5 h-5' : 'w-4 h-4'}`} />
                     {!isScrolled && <span>Área Pessoal</span>}
@@ -161,16 +165,22 @@ export const Navbar: React.FC = () => {
                 )}
               </div>
 
-              {/* ===== NOVO: BOTÃO MODO ESCURO (MOBILE) ===== */}
+              {/* Botão Dark Mode Mobile */}
               <button
                 onClick={toggleTheme}
-                className="md:hidden p-2 rounded-lg text-primary dark:text-gray-300 hover:text-secondary focus:outline-none transition-colors ml-1"
-                aria-label="Alternar Tema"
+                className="md:hidden p-2 rounded-lg text-primary dark:text-gray-300 hover:text-secondary transition-colors ml-1"
               >
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
 
-              {/* Mobile: user icon */}
+              {/* SINO DE NOTIFICAÇÕES MOBILE */}
+              {user && (
+                <div className="md:hidden flex items-center ml-1">
+                  <NotificationBell />
+                </div>
+              )}
+
+              {/* Ícone de utilizador mobile */}
               <Link
                 to={user ? (isAdmin ? '/admin' : '/perfil') : '/entrar'}
                 className="md:hidden flex items-center justify-center w-9 h-9 rounded-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 text-gray-500 dark:text-gray-300 hover:text-secondary transition-colors ml-1"
@@ -182,19 +192,18 @@ export const Navbar: React.FC = () => {
                 )}
               </Link>
 
-              {/* Mobile: hamburger */}
+              {/* Hamburger Mobile */}
               <button
                 onClick={toggleMobileMenu}
-                className="md:hidden p-2 rounded-lg text-primary dark:text-gray-300 hover:text-secondary focus:outline-none transition-colors ml-1"
+                className="md:hidden p-2 rounded-lg text-primary dark:text-gray-300 hover:text-secondary transition-colors ml-1"
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
-
           </div>
         </div>
 
-        {/* Mobile Menu Panel */}
+        {/* Painel do Menu Mobile */}
         <div className={`md:hidden absolute left-0 w-full bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-xl transition-all duration-300 ease-in-out origin-top ${
           isMobileMenuOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'
         } ${isScrolled ? 'top-[calc(100%+0.5rem)] rounded-2xl' : 'top-full'}`}>
@@ -237,9 +246,9 @@ export const Navbar: React.FC = () => {
   );
 };
 
-/* ─── Tiny animated dropdown ─────────────────────────────────────────────── */
+/* ─── Dropdown Animado ─────────────────────────────────────────────────── */
 const AnimatedDropdown: React.FC<{ open: boolean; children: React.ReactNode }> = ({ open, children }) => (
-  <div className={`absolute right-0 top-[calc(100%+0.5rem)] w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden transition-all duration-200 origin-top-right ${
+  <div className={`absolute right-0 top-[calc(100%+0.5rem)] w-56 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden transition-all duration-200 origin-top-right ${
     open ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
   }`}>
     {children}

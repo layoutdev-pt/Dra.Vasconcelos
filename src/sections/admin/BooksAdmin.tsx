@@ -4,8 +4,12 @@ import { BookOpen, Plus, Pencil, Trash2, Eye, EyeOff, X, Save, AlertCircle, Load
 import { supabase } from '../../config/supabase';
 import type { Book } from '../../types/book';
 
+/* ─── ESTILOS REUTILIZÁVEIS ────────────────────────────────────────────── */
+
 const inputCls = 'w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all';
 const labelCls = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
+
+/* ─── COMPONENTES AUXILIARES ───────────────────────────────────────────── */
 
 const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: string }> = ({ value, onChange, label }) => (
   <label className="flex items-center gap-3 cursor-pointer">
@@ -18,6 +22,32 @@ const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: 
     <span className="text-sm font-medium text-gray-700">{label}</span>
   </label>
 );
+
+/* ─── FUNÇÃO DE NOTIFICAÇÃO GLOBAL ───────────────────────────────────────── */
+
+const notifyAllUsers = async (title: string, message: string, link: string) => {
+  try {
+    // 1. Procurar todos os IDs de utilizadores registrados na tabela profiles
+    const { data: profiles } = await supabase.from('profiles').select('id');
+    if (!profiles || profiles.length === 0) return;
+
+    // 2. Preparar o array de notificações para todos
+    const notifications = profiles.map(profile => ({
+      user_id: profile.id,
+      title,
+      message,
+      link,
+      is_read: false
+    }));
+
+    // 3. Inserir na tabela 'notifications'
+    await supabase.from('notifications').insert(notifications);
+  } catch (err) {
+    console.error('Erro ao disparar notificações de Livros:', err);
+  }
+};
+
+/* ─── MODAL DE LIVRO (BOOK MODAL) ────────────────────────────────────────── */
 
 type BookDraft = Omit<Book, 'id' | 'created_at'>;
 const emptyBook = (): BookDraft => ({
@@ -43,34 +73,52 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
     if (!draft.title.trim()) { setError('O título é obrigatório.'); return; }
     setSaving(true); setError(null);
     
-    let finalCoverUrl = draft.cover_url;
-    if (coverFile) {
-      const fileExt = coverFile.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-      const { data, error: uploadError } = await supabase.storage.from('media').upload(`books/${fileName}`, coverFile);
-      if (uploadError) {
-        setError(`Erro ao fazer upload da imagem: ${uploadError.message}`);
-        setSaving(false); return;
+    try {
+      let finalCoverUrl = draft.cover_url;
+      if (coverFile) {
+        const fileExt = coverFile.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+        const { data, error: uploadError } = await supabase.storage.from('media').upload(`books/${fileName}`, coverFile);
+        if (uploadError) throw uploadError;
+        const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
+        finalCoverUrl = publicUrl;
       }
-      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
-      finalCoverUrl = publicUrl;
-    }
 
-    const payload = { 
-      ...draft, 
-      cover_url: finalCoverUrl, 
-      subtitle: draft.subtitle?.trim() || null, 
-      buy_url: draft.buy_url?.trim() || null, 
-      price: draft.price ?? null,
-      currency: draft.currency || 'EUR',
-      description: draft.description?.trim() || null,
-      published_at: new Date(pubYear, pubMonth, 1).toISOString()
-    };
-    const { error: dbErr } = book
-      ? await supabase.from('books').update(payload).eq('id', book.id)
-      : await supabase.from('books').insert(payload);
-    if (dbErr) { setError(dbErr.message); setSaving(false); return; }
-    onSaved(); onClose();
+      const payload = { 
+        ...draft, 
+        cover_url: finalCoverUrl, 
+        subtitle: draft.subtitle?.trim() || null, 
+        buy_url: draft.buy_url?.trim() || null, 
+        price: draft.price ?? null,
+        currency: draft.currency || 'EUR',
+        description: draft.description?.trim() || null,
+        published_at: new Date(pubYear, pubMonth, 1).toISOString()
+      };
+
+      const isNew = !book;
+
+      const { error: dbErr } = book
+        ? await supabase.from('books').update(payload).eq('id', book.id)
+        : await supabase.from('books').insert(payload);
+
+      if (dbErr) throw dbErr;
+
+      // NOTIFICAÇÃO GLOBAL: Se for um livro novo e estiver publicado
+      if (isNew && payload.is_published) {
+        await notifyAllUsers(
+          '📚 Novo Livro Disponível!',
+          `Acabámos de publicar o livro: ${payload.title}. Descubra mais no nosso catálogo.`,
+          '/aprender' // Ou o link específico do detalhe do livro se existir
+        );
+      }
+
+      onSaved(); 
+      onClose();
+    } catch (err: any) {
+      setError(err.message || 'Erro ao guardar o livro.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -149,9 +197,9 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
                 <input type="number" step="0.01" min="0" className={inputCls} value={draft.price ?? ''} onChange={e => set('price', e.target.value ? parseFloat(e.target.value) : null)} placeholder="24.90" />
               </div>
             </div>
-            <div><label className={labelCls}>Link de Compra</label><input className={inputCls} value={draft.buy_url ?? ''} onChange={e => set('buy_url', e.target.value || null)} placeholder="https://wook.pt/..." /></div>
+            <div><label className={labelCls}>Link de Compra</label><input className={inputCls} value={draft.buy_url ?? ''} onChange={e => set('buy_url', e.target.value || null)} placeholder="https://..." /></div>
           </div>
-          <div className="flex flex-wrap gap-6">
+          <div className="flex flex-wrap gap-6 pt-2">
             <Toggle value={draft.is_featured} onChange={v => set('is_featured', v)} label="Em Destaque" />
             <Toggle value={draft.is_published} onChange={v => set('is_published', v)} label="Publicado" />
           </div>
@@ -160,13 +208,15 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
           <button onClick={onClose} className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors">Cancelar</button>
           <button onClick={handleSave} disabled={saving} className="px-5 py-2.5 rounded-xl bg-secondary hover:bg-secondary/90 text-white text-sm font-bold transition-all disabled:opacity-60 flex items-center gap-2 shadow-md shadow-secondary/20">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            {saving ? 'A guardar...' : 'Guardar'}
+            {saving ? 'A guardar...' : 'Guardar Livro'}
           </button>
         </div>
       </motion.div>
     </div>
   );
 };
+
+/* ─── PÁGINA DE ADMINISTRAÇÃO DE LIVROS ──────────────────────────────────── */
 
 export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showToast }) => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -188,18 +238,22 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
   const openEdit = (b: Book) => { setEditing(b); setModalOpen(true); };
 
   const handleToggle = async (b: Book) => {
-    await supabase.from('books').update({ is_published: !b.is_published }).eq('id', b.id);
-    showToast(b.is_published ? 'Livro ocultado.' : 'Livro publicado.');
-    fetch();
+    const { error } = await supabase.from('books').update({ is_published: !b.is_published }).eq('id', b.id);
+    if (!error) {
+      showToast(b.is_published ? 'Livro ocultado.' : 'Livro publicado.');
+      fetch();
+    }
   };
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Eliminar este livro?')) return;
     setDeletingId(id);
-    await supabase.from('books').delete().eq('id', id);
+    const { error } = await supabase.from('books').delete().eq('id', id);
     setDeletingId(null);
-    showToast('Livro eliminado.');
-    fetch();
+    if (!error) {
+      showToast('Livro eliminado.');
+      fetch();
+    }
   };
 
   return (
@@ -229,15 +283,15 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm text-left">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50/50">
-                  <th className="text-left px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Capa</th>
-                  <th className="text-left px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Título</th>
-                  <th className="text-left px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Tipo</th>
-                  <th className="text-left px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Preço</th>
-                  <th className="text-left px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Ações</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Capa</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Título</th>
+                  <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Tipo</th>
+                  <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Preço</th>
+                  <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Estado</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -250,7 +304,6 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
                     </td>
                     <td className="px-6 py-4 max-w-[240px]">
                       <p className="font-semibold text-primary truncate">{book.title}</p>
-                      {book.subtitle && <p className="text-xs text-gray-400 truncate mt-0.5">{book.subtitle}</p>}
                       {book.is_featured && <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold uppercase tracking-wider">Destaque</span>}
                     </td>
                     <td className="px-4 py-4">
@@ -258,7 +311,7 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
                         {book.type === 'ebook' ? 'Ebook' : 'Físico'}
                       </span>
                     </td>
-                    <td className="px-4 py-4 font-semibold text-primary">{book.price != null ? `${book.price.toFixed(2).replace('.', ',')}€` : '—'}</td>
+                    <td className="px-4 py-4 font-semibold text-primary">{book.price != null ? `${book.price.toFixed(2)}€` : '—'}</td>
                     <td className="px-4 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${book.is_published ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                         {book.is_published ? 'Publicado' : 'Oculto'}
@@ -266,13 +319,13 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => handleToggle(book)} title={book.is_published ? 'Ocultar' : 'Publicar'} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-primary transition-colors">
+                        <button onClick={() => handleToggle(book)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-primary transition-colors">
                           {book.is_published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
-                        <button onClick={() => openEdit(book)} title="Editar" className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-secondary transition-colors">
+                        <button onClick={() => openEdit(book)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-secondary transition-colors">
                           <Pencil className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleDelete(book.id)} disabled={deletingId === book.id} title="Eliminar" className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50">
+                        <button onClick={() => handleDelete(book.id)} disabled={deletingId === book.id} className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
                           {deletingId === book.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                         </button>
                       </div>

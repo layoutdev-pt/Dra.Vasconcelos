@@ -6,8 +6,12 @@ import type { Course } from '../../types/course';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
+/* ─── ESTILOS REUTILIZÁVEIS ────────────────────────────────────────────── */
+
 const inputCls = 'w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all';
 const labelCls = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
+
+/* ─── COMPONENTES AUXILIARES ───────────────────────────────────────────── */
 
 const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: string }> = ({ value, onChange, label }) => (
   <label className="flex items-center gap-3 cursor-pointer">
@@ -46,6 +50,29 @@ export type CourseContentData = {
 type CourseDraft = Omit<Course, 'id' | 'created_at'> & {
   parsedContent: CourseContentData;
 };
+
+/* ─── FUNÇÃO DE NOTIFICAÇÃO ─────────────────────────────────────────────── */
+
+const notifyAllUsers = async (title: string, message: string, link: string) => {
+  try {
+    const { data: profiles } = await supabase.from('profiles').select('id');
+    if (!profiles || profiles.length === 0) return;
+
+    const notifications = profiles.map(profile => ({
+      user_id: profile.id,
+      title,
+      message,
+      link,
+      is_read: false
+    }));
+
+    await supabase.from('notifications').insert(notifications);
+  } catch (err) {
+    console.error('Erro ao processar notificações globais:', err);
+  }
+};
+
+/* ─── MODAL DE CURSO (COURSE MODAL) ─────────────────────────────────────── */
 
 const emptyCourse = (): CourseDraft => ({
   title: '', subtitle: null, slug: null, description: '', content: '', image_url: '', secondary_image_url: '',
@@ -94,60 +121,72 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
     if (!draft.title.trim() || !draft.description.trim()) { setError('Título e descrição são obrigatórios.'); return; }
     setSaving(true); setError(null);
 
-    let finalImageUrl = draft.image_url;
-    if (coverFile) {
-      const fileExt = coverFile.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-      const { data, error: uploadError } = await supabase.storage.from('media').upload(`courses/${fileName}`, coverFile);
-      if (uploadError) {
-        setError(`Erro ao fazer upload da imagem: ${uploadError.message}`);
-        setSaving(false); return;
+    try {
+      let finalImageUrl = draft.image_url;
+      if (coverFile) {
+        const fileExt = coverFile.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+        const { data, error: uploadError } = await supabase.storage.from('media').upload(`courses/${fileName}`, coverFile);
+        if (uploadError) throw uploadError;
+        const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
+        finalImageUrl = publicUrl;
       }
-      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
-      finalImageUrl = publicUrl;
-    }
 
-    let finalSecondaryUrl = draft.secondary_image_url;
-    if (secondaryFile) {
-      const fileExt = secondaryFile.name.split('.').pop();
-      const fileName = `sec_${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-      const { data, error: uploadError } = await supabase.storage.from('media').upload(`courses/${fileName}`, secondaryFile);
-      if (uploadError) {
-        setError(`Erro ao fazer upload da segunda imagem: ${uploadError.message}`);
-        setSaving(false); return;
+      let finalSecondaryUrl = draft.secondary_image_url;
+      if (secondaryFile) {
+        const fileExt = secondaryFile.name.split('.').pop();
+        const fileName = `sec_${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+        const { data, error: uploadError } = await supabase.storage.from('media').upload(`courses/${fileName}`, secondaryFile);
+        if (uploadError) throw uploadError;
+        const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
+        finalSecondaryUrl = publicUrl;
       }
-      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
-      finalSecondaryUrl = publicUrl;
+
+      const finalContentStr = JSON.stringify(draft.parsedContent);
+
+      const payload = { 
+        title: draft.title,
+        description: draft.description,
+        content: finalContentStr,
+        image_url: finalImageUrl, 
+        secondary_image_url: finalSecondaryUrl,
+        subtitle: draft.subtitle?.trim() || null, 
+        slug: draft.slug?.trim() || null,
+        buy_url: draft.buy_url?.trim() || null, 
+        price: draft.price ?? null, 
+        level: draft.level?.trim() || null, 
+        modules: draft.modules ?? null,
+        type: draft.type,
+        is_featured: draft.is_featured,
+        is_published: draft.is_published,
+        published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null,
+        enrollment_closes_at: draft.enrollment_closes_at ? new Date(draft.enrollment_closes_at).toISOString() : null
+      };
+
+      const isNew = !course;
+
+      const { error: dbErr } = course
+        ? await supabase.from('courses').update(payload).eq('id', course.id)
+        : await supabase.from('courses').insert(payload);
+
+      if (dbErr) throw dbErr;
+
+      // DISPARAR NOTIFICAÇÃO APENAS SE FOR NOVO E PUBLICADO
+      if (isNew && draft.is_published) {
+        await notifyAllUsers(
+          '🎓 Novo Curso Disponível!',
+          `Acabámos de publicar o curso: ${draft.title}. Já podes conferir os detalhes.`,
+          '/cursos'
+        );
+      }
+
+      onSaved(); 
+      onClose();
+    } catch (err: any) {
+      setError(err.message || 'Erro ao guardar curso.');
+    } finally {
+      setSaving(false);
     }
-
-    // Convert parsedContent back to JSON string to save in the single "content" column
-    const finalContentStr = JSON.stringify(draft.parsedContent);
-
-    const payload = { 
-      title: draft.title,
-      description: draft.description,
-      content: finalContentStr, // Store JSON in content column
-      image_url: finalImageUrl, 
-      secondary_image_url: finalSecondaryUrl,
-      subtitle: draft.subtitle?.trim() || null, 
-      slug: draft.slug?.trim() || null,
-      buy_url: draft.buy_url?.trim() || null, 
-      price: draft.price ?? null, 
-      level: draft.level?.trim() || null, 
-      modules: draft.modules ?? null,
-      type: draft.type,
-      is_featured: draft.is_featured,
-      is_published: draft.is_published,
-      published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null,
-      enrollment_closes_at: draft.enrollment_closes_at ? new Date(draft.enrollment_closes_at).toISOString() : null
-    };
-
-    const { error: dbErr } = course
-      ? await supabase.from('courses').update(payload).eq('id', course.id)
-      : await supabase.from('courses').insert(payload);
-      
-    if (dbErr) { setError(dbErr.message); setSaving(false); return; }
-    onSaved(); onClose();
   };
 
   return (
@@ -158,7 +197,6 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-1"><X className="w-5 h-5" /></button>
         </div>
 
-        {/* Modal Tabs */}
         <div className="flex border-b border-gray-100 px-8 shrink-0 bg-gray-50/50">
           {[
             { id: 'geral', label: 'Info Geral' },
@@ -419,6 +457,8 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
   );
 };
 
+/* ─── PÁGINA DE ADMINISTRAÇÃO DE CURSOS ──────────────────────────────────── */
+
 export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showToast }) => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -428,29 +468,30 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
 
   const fetch = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.from('courses').select('*').order('published_at', { ascending: false }).order('created_at', { ascending: false });
+    const { data } = await supabase.from('courses').select('*').order('created_at', { ascending: false });
     setCourses((data as Course[]) ?? []);
     setLoading(false);
   }, []);
 
   useEffect(() => { fetch(); }, [fetch]);
 
-  const openNew = () => { setEditing(null); setModalOpen(true); };
-  const openEdit = (c: Course) => { setEditing(c); setModalOpen(true); };
-
   const handleToggle = async (c: Course) => {
-    await supabase.from('courses').update({ is_published: !c.is_published }).eq('id', c.id);
-    showToast(c.is_published ? 'Curso ocultado.' : 'Curso publicado.');
-    fetch();
+    const { error } = await supabase.from('courses').update({ is_published: !c.is_published }).eq('id', c.id);
+    if (!error) {
+      showToast(c.is_published ? 'Curso ocultado.' : 'Curso publicado.');
+      fetch();
+    }
   };
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Eliminar este curso?')) return;
     setDeletingId(id);
-    await supabase.from('courses').delete().eq('id', id);
+    const { error } = await supabase.from('courses').delete().eq('id', id);
     setDeletingId(null);
-    showToast('Curso eliminado.');
-    fetch();
+    if (!error) {
+      showToast('Curso eliminado.');
+      fetch();
+    }
   };
 
   return (
@@ -465,7 +506,7 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
             <p className="text-sm text-gray-400">{courses.length} landing page{courses.length !== 1 ? 's' : ''} no total</p>
           </div>
         </div>
-        <button onClick={openNew} className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white text-sm font-bold rounded-xl transition-all hover:-translate-y-0.5 shadow-md shadow-primary/20">
+        <button onClick={() => { setEditing(null); setModalOpen(true); }} className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white text-sm font-bold rounded-xl transition-all hover:-translate-y-0.5 shadow-md shadow-primary/20">
           <Plus className="w-4 h-4" /> Nova Página
         </button>
       </div>
@@ -480,15 +521,15 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm text-left">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50/50">
-                  <th className="text-left px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Imagem</th>
-                  <th className="text-left px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Título</th>
-                  <th className="text-left px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Tipo</th>
-                  <th className="text-left px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Preço</th>
-                  <th className="text-left px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Estado</th>
-                  <th className="text-right px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Ações</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Imagem</th>
+                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Título</th>
+                  <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase">Tipo</th>
+                  <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase">Preço</th>
+                  <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase">Estado</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -515,15 +556,15 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
                         {course.is_published ? 'Publicado' : 'Oculto'}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => handleToggle(course)} title={course.is_published ? 'Ocultar' : 'Publicar'} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-primary transition-colors">
+                        <button onClick={() => handleToggle(course)} className="p-2 text-gray-400 hover:text-primary transition-colors">
                           {course.is_published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
-                        <button onClick={() => openEdit(course)} title="Editar" className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-secondary transition-colors">
+                        <button onClick={() => { setEditing(course); setModalOpen(true); }} className="p-2 text-gray-400 hover:text-secondary transition-colors">
                           <Pencil className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleDelete(course.id)} disabled={deletingId === course.id} title="Eliminar" className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50">
+                        <button onClick={() => handleDelete(course.id)} disabled={deletingId === course.id} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
                           {deletingId === course.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                         </button>
                       </div>
