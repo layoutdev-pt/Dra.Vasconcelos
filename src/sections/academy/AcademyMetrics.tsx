@@ -20,7 +20,7 @@ const fadeInUp = {
 
 export const AcademyMetrics: React.FC = () => {
   return (
-    <section className="py-6 bg-white border-y border-gray-100">
+    <section className="py-6 bg-surface border-y border-surface-border">
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
         <motion.div
           initial="hidden"
@@ -37,12 +37,12 @@ export const AcademyMetrics: React.FC = () => {
                 custom={i}
                 className="flex flex-col items-center text-center gap-3"
               >
-                <div className="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center border border-secondary/20">
                   <Icon className="w-5 h-5 text-secondary" />
                 </div>
                 <div>
-                  <p className="text-2xl md:text-3xl font-extrabold text-primary tracking-tight">{metric.value}</p>
-                  <p className="text-xs md:text-sm text-gray-500 font-medium mt-0.5">{metric.label}</p>
+                  <p className="text-2xl md:text-3xl font-extrabold text-site-text tracking-tight">{metric.value}</p>
+                  <p className="text-xs md:text-sm text-site-text-muted font-medium mt-0.5">{metric.label}</p>
                 </div>
               </motion.div>
             );

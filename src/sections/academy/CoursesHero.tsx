@@ -42,7 +42,7 @@ export const CoursesHero: React.FC = () => {
               initial="hidden"
               animate="visible"
               custom={1}
-              className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-primary leading-tight tracking-tight mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-site-text leading-tight tracking-tight mb-6"
             >
               Cursos que <br className="hidden md:block" />
               <span className="text-secondary">Capacitam</span> a sua <br className="hidden lg:block" />
@@ -54,7 +54,7 @@ export const CoursesHero: React.FC = () => {
               initial="hidden"
               animate="visible"
               custom={2}
-              className="text-lg md:text-xl text-gray-500 font-light mb-10 leading-relaxed max-w-xl"
+              className="text-lg md:text-xl text-site-text-muted font-light mb-10 leading-relaxed max-w-xl"
             >
               Programas intensivos desenhados para quem procura profundidade científica e resultados práticos na medicina integrativa.
             </motion.p>
@@ -72,22 +72,29 @@ export const CoursesHero: React.FC = () => {
             </motion.a>
           </div>
 
-          {/* Right — Image */}
+          {/* Right — Floating Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] as const }}
             className="flex-1 relative flex items-center justify-center min-h-[440px] md:min-h-[560px]"
           >
-            <div className="relative z-10 w-full max-w-[600px] aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-white shadow-secondary/20">
+            <motion.div
+              animate={{ y: [0, -14, 0] }}
+              transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="relative z-10 drop-shadow-[0_40px_60px_rgba(0,0,0,0.18)]"
+              style={{ perspective: '1000px' }}
+            >
               <img
                 src={coursesHero}
                 alt="Cursos Dra. Alexandra Vasconcelos"
-                className="w-full h-full object-cover"
+                className="w-[380px] md:w-[500px] lg:w-[580px] h-auto object-contain select-none"
+                style={{ transform: 'rotateY(6deg) rotateX(2deg)', transformStyle: 'preserve-3d' }}
               />
-            </div>
+            </motion.div>
+
             {/* Ground shadow */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[80%] h-[30px] bg-black/10 rounded-full blur-2xl" />
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[260px] h-[28px] bg-black/5 rounded-full blur-xl" />
           </motion.div>
 
         </div>

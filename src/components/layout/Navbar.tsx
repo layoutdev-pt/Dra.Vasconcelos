@@ -54,8 +54,8 @@ export const Navbar: React.FC = () => {
     }`}>
       <nav className={`w-full transition-all duration-500 ease-in-out relative ${
         isScrolled
-          ? 'max-w-[1100px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl md:rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-white/60 dark:border-slate-800/60'
-          : 'max-w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-white/20 dark:border-slate-800/80 rounded-none'
+          ? 'max-w-[1100px] bg-nav-bg backdrop-blur-xl rounded-2xl md:rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-surface-border/60'
+          : 'max-w-full bg-nav-bg backdrop-blur-md border-b border-surface-border/20 rounded-none'
       }`}>
         <div className={`mx-auto transition-all duration-500 ${
           isScrolled ? 'px-4 md:px-8' : 'px-6 lg:px-8 2xl:px-12 max-w-[1400px] 2xl:max-w-[1600px]'
@@ -77,7 +77,7 @@ export const Navbar: React.FC = () => {
                   alt="Dra. Alexandra Vasconcelos Ícone"
                   className={`w-auto transition-all duration-300 absolute left-0 origin-left ${
                     isScrolled ? 'h-10 md:h-12 opacity-100 scale-100 relative' : 'h-14 md:h-16 opacity-0 scale-110 pointer-events-none'
-                  }`}
+                  } ${theme === 'dark' ? 'invert brightness-0 object-contain' : ''}`}
                 />
               </Link>
             </div>
@@ -89,7 +89,7 @@ export const Navbar: React.FC = () => {
                   <Link
                     key={link.to}
                     to={link.to}
-                    className="text-gray-500 dark:text-gray-300 hover:text-secondary dark:hover:text-secondary px-4 py-2 text-sm font-medium transition-colors rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800"
+                    className="text-site-text-muted hover:text-secondary px-4 py-2 text-sm font-medium transition-colors rounded-lg hover:bg-surface-muted"
                   >
                     {link.label}
                   </Link>
@@ -103,8 +103,8 @@ export const Navbar: React.FC = () => {
               {/* Botão Dark Mode Desktop */}
               <button
                 onClick={toggleTheme}
-                className={`hidden md:flex items-center justify-center rounded-full transition-all w-10 h-10 text-gray-500 dark:text-gray-300 hover:text-secondary hover:bg-gray-50 dark:hover:bg-slate-800 ${
-                  !isScrolled && 'border border-gray-200 dark:border-slate-700'
+                className={`hidden md:flex items-center justify-center rounded-full transition-all w-10 h-10 text-site-text-muted hover:text-secondary hover:bg-surface-muted ${
+                  !isScrolled && 'border border-surface-border'
                 }`}
                 title="Alternar Tema"
               >
@@ -123,8 +123,8 @@ export const Navbar: React.FC = () => {
                         onClick={e => { e.stopPropagation(); setUserMenuOpen(v => !v); }}
                         className={`flex items-center justify-center rounded-full transition-all ${
                           isScrolled 
-                            ? 'w-10 h-10 border border-secondary/20 dark:border-secondary/40 hover:border-secondary/50 bg-white dark:bg-slate-800 shadow-sm focus:outline-none' 
-                            : 'gap-2.5 px-4 py-2 border border-secondary/30 bg-secondary/5 hover:bg-secondary/10 text-primary dark:text-white font-semibold text-sm'
+                            ? 'w-10 h-10 border border-secondary/20 hover:border-secondary/50 bg-surface shadow-sm focus:outline-none' 
+                            : 'gap-2.5 px-4 py-2 border border-secondary/30 bg-secondary/5 hover:bg-secondary/10 text-site-text font-semibold text-sm'
                         }`}
                       >
                         {avatarUrl ? (
@@ -138,15 +138,15 @@ export const Navbar: React.FC = () => {
                       </button>
 
                       <AnimatedDropdown open={userMenuOpen}>
-                        <Link to="/perfil" className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-secondary transition-colors rounded-t-xl">
+                        <Link to="/perfil" className="flex items-center gap-2 px-4 py-2.5 text-sm text-site-text hover:bg-surface-muted hover:text-secondary transition-colors rounded-t-xl">
                           <Settings className="w-4 h-4" /> Meu Perfil
                         </Link>
                         {isAdmin && (
-                          <Link to="/admin" className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-secondary transition-colors">
+                          <Link to="/admin" className="flex items-center gap-2 px-4 py-2.5 text-sm text-site-text hover:bg-surface-muted hover:text-secondary transition-colors">
                             <LayoutDashboard className="w-4 h-4" /> Dashboard Admin
                           </Link>
                         )}
-                        <button onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors rounded-b-xl w-full text-left border-t border-gray-50 dark:border-slate-700">
+                        <button onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10 transition-colors rounded-b-xl w-full text-left border-t border-surface-border">
                           <LogOut className="w-4 h-4" /> Terminar Sessão
                         </button>
                       </AnimatedDropdown>
@@ -168,7 +168,7 @@ export const Navbar: React.FC = () => {
               {/* Botão Dark Mode Mobile */}
               <button
                 onClick={toggleTheme}
-                className="md:hidden p-2 rounded-lg text-primary dark:text-gray-300 hover:text-secondary transition-colors ml-1"
+                className="md:hidden p-2 rounded-lg text-site-text hover:text-secondary transition-colors ml-1"
               >
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
@@ -183,7 +183,7 @@ export const Navbar: React.FC = () => {
               {/* Ícone de utilizador mobile */}
               <Link
                 to={user ? (isAdmin ? '/admin' : '/perfil') : '/entrar'}
-                className="md:hidden flex items-center justify-center w-9 h-9 rounded-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 text-gray-500 dark:text-gray-300 hover:text-secondary transition-colors ml-1"
+                className="md:hidden flex items-center justify-center w-9 h-9 rounded-full bg-surface-muted border border-surface-border text-site-text hover:text-secondary transition-colors ml-1"
               >
                 {user && avatarUrl ? (
                   <img src={avatarUrl} alt="Perfil" className="w-full h-full rounded-full object-cover" />
@@ -195,7 +195,7 @@ export const Navbar: React.FC = () => {
               {/* Hamburger Mobile */}
               <button
                 onClick={toggleMobileMenu}
-                className="md:hidden p-2 rounded-lg text-primary dark:text-gray-300 hover:text-secondary transition-colors ml-1"
+                className="md:hidden p-2 rounded-lg text-site-text hover:text-secondary transition-colors ml-1"
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -204,7 +204,7 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Painel do Menu Mobile */}
-        <div className={`md:hidden absolute left-0 w-full bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-xl transition-all duration-300 ease-in-out origin-top ${
+        <div className={`md:hidden absolute left-0 w-full bg-site-bg backdrop-blur-2xl border border-surface-border shadow-2xl transition-all duration-300 ease-in-out origin-top ${
           isMobileMenuOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'
         } ${isScrolled ? 'top-[calc(100%+0.5rem)] rounded-2xl' : 'top-full'}`}>
           <div className="px-6 pt-3 pb-6 space-y-1 flex flex-col">
@@ -213,23 +213,23 @@ export const Navbar: React.FC = () => {
                 key={link.to}
                 to={link.to}
                 onClick={toggleMobileMenu}
-                className="text-gray-600 dark:text-gray-300 hover:text-secondary hover:bg-gray-50 dark:hover:bg-slate-800 block px-4 py-3 rounded-xl text-base font-medium transition-colors"
+                className="text-site-text-muted hover:text-secondary hover:bg-surface-muted block px-4 py-3 rounded-xl text-base font-medium transition-colors"
               >
                 {link.label}
               </Link>
             ))}
-            <div className="pt-3 mt-1 border-t border-gray-100 dark:border-slate-800">
+            <div className="pt-3 mt-1 border-t border-surface-border">
               {user ? (
                 <>
-                  <Link to="/perfil" onClick={toggleMobileMenu} className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-secondary hover:bg-gray-50 dark:hover:bg-slate-800 px-4 py-3 rounded-xl text-base font-medium transition-colors">
+                  <Link to="/perfil" onClick={toggleMobileMenu} className="flex items-center gap-2 text-site-text-muted hover:text-secondary hover:bg-surface-muted px-4 py-3 rounded-xl text-base font-medium transition-colors">
                     <Settings className="w-4 h-4" /> Meu Perfil
                   </Link>
                   {isAdmin && (
-                    <Link to="/admin" onClick={toggleMobileMenu} className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-secondary hover:bg-gray-50 dark:hover:bg-slate-800 px-4 py-3 rounded-xl text-base font-medium transition-colors">
+                    <Link to="/admin" onClick={toggleMobileMenu} className="flex items-center gap-2 text-site-text-muted hover:text-secondary hover:bg-surface-muted px-4 py-3 rounded-xl text-base font-medium transition-colors">
                       <LayoutDashboard className="w-4 h-4" /> Dashboard Admin
                     </Link>
                   )}
-                  <button onClick={() => { toggleMobileMenu(); handleSignOut(); }} className="w-full flex items-center gap-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 px-4 py-3 rounded-xl text-base font-medium transition-colors">
+                  <button onClick={() => { toggleMobileMenu(); handleSignOut(); }} className="w-full flex items-center gap-2 text-red-500 hover:bg-red-500/10 px-4 py-3 rounded-xl text-base font-medium transition-colors">
                     <LogOut className="w-4 h-4" /> Terminar Sessão
                   </button>
                 </>
@@ -248,7 +248,7 @@ export const Navbar: React.FC = () => {
 
 /* ─── Dropdown Animado ─────────────────────────────────────────────────── */
 const AnimatedDropdown: React.FC<{ open: boolean; children: React.ReactNode }> = ({ open, children }) => (
-  <div className={`absolute right-0 top-[calc(100%+0.5rem)] w-56 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden transition-all duration-200 origin-top-right ${
+  <div className={`absolute right-0 top-[calc(100%+0.5rem)] w-56 bg-surface rounded-xl shadow-xl border border-surface-border overflow-hidden transition-all duration-200 origin-top-right ${
     open ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
   }`}>
     {children}

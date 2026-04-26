@@ -22,7 +22,7 @@ export const BooksSection: React.FC = () => {
         
         {/* BESTSELLERS SECTION */}
         {featuredBooks.length > 0 && (
-          <div className="pt-20 border-t border-gray-100 dark:border-white/5">
+          <div className="pt-20 border-t border-surface-border">
             <div className="text-center mb-16">
               <span className="text-secondary font-bold tracking-widest uppercase text-xs mb-2 block">
                 Seleção Especial

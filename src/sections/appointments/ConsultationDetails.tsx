@@ -23,7 +23,7 @@ export const ConsultationDetails: React.FC = () => {
   const [activeTab, setActiveTab] = useState(TABS[0].id);
 
   return (
-    <section className="py-20 bg-[#FAFBFF]">
+    <section className="py-20 bg-site-bg">
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
         <div className="flex flex-col gap-16">
           
@@ -35,19 +35,19 @@ export const ConsultationDetails: React.FC = () => {
               viewport={{ once: true, margin: '-60px' }}
               className="text-center mb-10"
             >
-              <motion.h2 variants={fadeInUp} custom={0} className="text-3xl md:text-4xl font-bold text-primary mb-4">
+              <motion.h2 variants={fadeInUp} custom={0} className="text-3xl md:text-4xl font-bold text-site-text mb-4">
                 A Nossa Metodologia
               </motion.h2>
-              <motion.p variants={fadeInUp} custom={1} className="text-gray-500 font-light max-w-2xl mx-auto">
+              <motion.p variants={fadeInUp} custom={1} className="text-site-text-muted font-light max-w-2xl mx-auto">
                 Uma abordagem integrativa onde desenhamos a sua biologia única num plano totalmente personalizado.
               </motion.p>
             </motion.div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
               {[
-                { icon: Clock, iconBg: 'bg-orange-50', iconColor: 'text-secondary', title: 'Tempo de Qualidade', desc: 'Consultas com duração até 2 horas. Tempo dedicado para ouvir a sua história completa com total dedicação.' },
-                { icon: BriefcaseMedical, iconBg: 'bg-blue-50', iconColor: 'text-blue-500', title: 'Medicina Funcional', desc: 'Investigação profunda das raízes dos distúrbios e análise rigorosa de parâmetros e biomarcadores.' },
-                { icon: ClipboardList, iconBg: 'bg-green-50', iconColor: 'text-green-500', title: 'Plano Personalizado', desc: 'Nutrição, suplementação e estilo de vida desenhados para as suas necessidades biofísicas exclusivas.' },
+                { icon: Clock, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', title: 'Tempo de Qualidade', desc: 'Consultas com duração até 2 horas. Tempo dedicado para ouvir a sua história completa com total dedicação.' },
+                { icon: BriefcaseMedical, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400', title: 'Medicina Funcional', desc: 'Investigação profunda das raízes dos distúrbios e análise rigorosa de parâmetros e biomarcadores.' },
+                { icon: ClipboardList, iconBg: 'bg-green-500/10', iconColor: 'text-green-400', title: 'Plano Personalizado', desc: 'Nutrição, suplementação e estilo de vida desenhados para as suas necessidades biofísicas exclusivas.' },
               ].map((card, i) => (
                 <motion.div
                   key={i}
@@ -55,13 +55,13 @@ export const ConsultationDetails: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-40px' }}
                   transition={{ duration: 0.5, delay: i * 0.15, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-                  className="bg-white p-8 rounded-4xl shadow-sm border border-gray-100 flex flex-col items-center text-center group hover:shadow-md transition-shadow"
+                  className="bg-surface p-8 rounded-4xl shadow-sm border border-surface-border flex flex-col items-center text-center group hover:shadow-md transition-shadow"
                 >
                   <div className={`w-16 h-16 rounded-2xl ${card.iconBg} flex items-center justify-center mb-6`}>
                     <card.icon className={`w-7 h-7 ${card.iconColor}`} />
                   </div>
-                  <h3 className="font-bold text-xl text-primary mb-3">{card.title}</h3>
-                  <p className="text-gray-500 font-light leading-relaxed text-sm">{card.desc}</p>
+                  <h3 className="font-bold text-xl text-site-text mb-3">{card.title}</h3>
+                  <p className="text-site-text-muted font-light leading-relaxed text-sm">{card.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -77,7 +77,7 @@ export const ConsultationDetails: React.FC = () => {
           >
             
             {/* Tabs Selector */}
-            <div className="flex flex-wrap justify-center gap-2 mb-8 bg-white p-2 rounded-full border border-gray-100 shadow-sm mx-auto">
+            <div className="flex flex-wrap justify-center gap-2 mb-8 bg-surface p-2 rounded-full border border-surface-border shadow-sm mx-auto">
               {TABS.map((tab) => (
                  <button
                    key={tab.id}
@@ -85,7 +85,7 @@ export const ConsultationDetails: React.FC = () => {
                    className={`px-6 py-2.5 rounded-full text-sm md:text-base font-semibold transition-all duration-300 ${
                      activeTab === tab.id 
                        ? 'bg-secondary text-white shadow-md' 
-                       : 'text-gray-500 hover:text-primary hover:bg-gray-50'
+                       : 'text-site-text-muted hover:text-site-text hover:bg-surface-muted'
                    }`}
                  >
                    {tab.label}
@@ -94,7 +94,7 @@ export const ConsultationDetails: React.FC = () => {
             </div>
 
             {/* Tab Content Canvas */}
-            <div className="bg-white w-full p-8 md:p-12 lg:p-16 rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-[#E8EFF5] min-h-[480px]">
+            <div className="bg-surface w-full p-8 md:p-12 lg:p-16 rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-surface-border min-h-[480px]">
               <AnimatePresence mode="wait">
                 
                 {/* 1. Consulta */}
@@ -106,10 +106,10 @@ export const ConsultationDetails: React.FC = () => {
                     exit={{ opacity: 0, y: -15 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <h3 className="text-2xl md:text-3xl font-bold text-primary mb-8 text-center">
+                    <h3 className="text-2xl md:text-3xl font-bold text-site-text mb-8 text-center">
                       O que deve saber sobre a consulta
                     </h3>
-                    <div className="max-w-3xl mx-auto space-y-6 text-gray-600 font-light leading-relaxed text-lg">
+                    <div className="max-w-3xl mx-auto space-y-6 text-site-text-muted font-light leading-relaxed text-lg">
                       <p>
                         A consulta tem uma duração aproximada de <strong>2 horas</strong>, durante as quais serão abordados todos os fatores de risco que possam contribuir para o seu envelhecimento acelerado e para o surgimento de doenças. O principal objetivo é identificar e corrigir as causas que levam a estes distúrbios.
                       </p>
@@ -119,8 +119,8 @@ export const ConsultationDetails: React.FC = () => {
                       <p>
                         Na consulta, são propostas medidas e estratégias para reverter doenças e promover um envelhecimento saudável. Estas podem incluir alterações no estilo de vida e na alimentação, adaptadas à situação clínica e às necessidades específicas de cada pessoa, bem como a eliminação de fatores tóxicos.
                       </p>
-                      <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100/50 mt-8">
-                        <p className="m-0 text-gray-700">
+                      <div className="bg-secondary/10 p-6 rounded-2xl border border-secondary/20 mt-8">
+                        <p className="m-0 text-site-text">
                           Também será proposto um conjunto de suplementos específicos para cada pessoa e, se necessário, alguns exames no âmbito do envelhecimento saudável personalizado, como testes genéticos, metabólicos, alimentares, de disbiose, entre outros.
                         </p>
                       </div>
@@ -137,32 +137,32 @@ export const ConsultationDetails: React.FC = () => {
                     exit={{ opacity: 0, y: -15 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <h3 className="text-2xl md:text-3xl font-bold text-primary mb-8 text-center">
+                    <h3 className="text-2xl md:text-3xl font-bold text-site-text mb-8 text-center">
                       Para quem se dirige a consulta?
                     </h3>
                     <div className="max-w-4xl mx-auto">
-                      <p className="text-gray-600 font-light leading-relaxed mb-8 text-center text-lg">A consulta é destinada a todos os que se interessam pela sua saúde, como:</p>
+                      <p className="text-site-text-muted font-light leading-relaxed mb-8 text-center text-lg">A consulta é destinada a todos os que se interessam pela sua saúde, como:</p>
                       
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                        <div className="bg-gray-50/50 p-6 rounded-3xl border border-gray-100/50 flex flex-col items-center text-center">
+                        <div className="bg-surface-muted p-6 rounded-3xl border border-surface-border flex flex-col items-center text-center">
                           <CheckCircle2 className="w-8 h-8 text-green-500 mb-4" />
-                          <span className="text-gray-700 font-medium leading-relaxed">Pessoas que estão saudáveis, mas que pretendem prevenir doenças prematuras e aumentar a longevidade.</span>
+                          <span className="text-site-text font-medium leading-relaxed">Pessoas que estão saudáveis, mas que pretendem prevenir doenças prematuras e aumentar a longevidade.</span>
                         </div>
-                        <div className="bg-gray-50/50 p-6 rounded-3xl border border-gray-100/50 flex flex-col items-center text-center">
+                        <div className="bg-surface-muted p-6 rounded-3xl border border-surface-border flex flex-col items-center text-center">
                           <CheckCircle2 className="w-8 h-8 text-green-500 mb-4" />
-                          <span className="text-gray-700 font-medium leading-relaxed">Pessoas que já sentem alguns desequilíbrios e incómodos, sejam eles do foro físico ou emocional.</span>
+                          <span className="text-site-text font-medium leading-relaxed">Pessoas que já sentem alguns desequilíbrios e incómodos, sejam eles do foro físico ou emocional.</span>
                         </div>
-                        <div className="bg-gray-50/50 p-6 rounded-3xl border border-gray-100/50 flex flex-col items-center text-center">
+                        <div className="bg-surface-muted p-6 rounded-3xl border border-surface-border flex flex-col items-center text-center">
                           <CheckCircle2 className="w-8 h-8 text-green-500 mb-4" />
-                          <span className="text-gray-700 font-medium leading-relaxed">Pessoas que já estão doentes e precisam de melhorar a sua qualidade de vida e travar a evolução médica da doença.</span>
+                          <span className="text-site-text font-medium leading-relaxed">Pessoas que já estão doentes e precisam de melhorar a sua qualidade de vida e travar a evolução médica da doença.</span>
                         </div>
                       </div>
 
                       <div className="text-center">
-                        <p className="text-gray-600 font-bold mb-6 text-lg">Dirige-se transversalmente a pessoas com preocupações específicas de:</p>
+                        <p className="text-site-text font-bold mb-6 text-lg">Dirige-se transversalmente a pessoas com preocupações específicas de:</p>
                         <div className="flex flex-wrap justify-center gap-3">
                           {['Envelhecimento saudável', 'Menopausa', 'Equilíbrio intestinal', 'Fadiga crónica', 'Desequilíbrios hormonais', 'Peso e síndrome metabólica', 'Doenças autoimunes', 'Doença oncológica', 'Gravidez e pré/pós-parto'].map((tag) => (
-                            <span key={tag} className="px-5 py-2.5 bg-white border border-gray-200 rounded-full text-sm text-gray-700 font-medium shadow-sm">{tag}</span>
+                            <span key={tag} className="px-5 py-2.5 bg-surface border border-surface-border rounded-full text-sm text-site-text font-medium shadow-sm">{tag}</span>
                           ))}
                         </div>
                       </div>
@@ -181,8 +181,8 @@ export const ConsultationDetails: React.FC = () => {
                   >
                     <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
                       <div>
-                        <h4 className="text-2xl font-bold text-primary mb-6 border-b border-gray-100 pb-4 inline-block">Em que consiste:</h4>
-                        <ul className="space-y-5 text-gray-600 font-light">
+                        <h4 className="text-2xl font-bold text-site-text mb-6 border-b border-surface-border pb-4 inline-block">Em que consiste:</h4>
+                        <ul className="space-y-5 text-site-text-muted font-light">
                           {['Tratamentos de desintoxicação', 'Alimentação personalizada', 'Neutralização de radicais livres', 'Aporte de nutrientes essenciais', 'Técnicas de gestão de stress', 'Reequilíbrio enzimático com minerais e vitaminas', 'Avaliação de metais pesados', 'Avaliação do microbioma intestinal e disfunções gastrointestinais', 'Diagnóstico associado por determinação de respostas obtidas por bioressonância'].map((item, i) => (
                             <li key={i} className="flex items-start gap-3">
                               <div className="w-2 h-2 rounded-full bg-secondary mt-2 shrink-0"></div>
@@ -192,8 +192,8 @@ export const ConsultationDetails: React.FC = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="text-2xl font-bold text-primary mb-6 border-b border-gray-100 pb-4 inline-block">Com determinação de:</h4>
-                        <ul className="space-y-5 text-gray-600 font-light">
+                        <h4 className="text-2xl font-bold text-site-text mb-6 border-b border-surface-border pb-4 inline-block">Com determinação de:</h4>
+                        <ul className="space-y-5 text-site-text-muted font-light">
                           {['Teste de Parasitas, Protozoários, Fungos, Vírus e Cândidas', 'Teste de sistemas e subsistemas de órgãos', 'Grau de inflamação e degeneração', 'Determinação da toxicidade e bloqueios no mesênquima', 'Teste de priorização', 'Medição de Adaptação e Reservas de Energia', 'Medição de Índice de DNA', 'Medição de cargas psicológicas e psiconeurológicas', 'Medição de deficiências nutricionais'].map((item, i) => (
                             <li key={i} className="flex items-start gap-3">
                               <div className="w-2 h-2 rounded-full bg-secondary mt-2 shrink-0"></div>
@@ -217,13 +217,13 @@ export const ConsultationDetails: React.FC = () => {
                     className="max-w-4xl mx-auto"
                   >
                     <div className="text-center mb-10">
-                      <div className="w-16 h-16 bg-[#F1FAFF] rounded-3xl flex items-center justify-center rotate-3 mb-6 mx-auto">
-                        <BriefcaseMedical className="w-8 h-8 text-[#40C4FF] -rotate-3" />
+                      <div className="w-16 h-16 bg-blue-500/10 rounded-3xl flex items-center justify-center rotate-3 mb-6 mx-auto">
+                        <BriefcaseMedical className="w-8 h-8 text-blue-400 -rotate-3" />
                       </div>
-                      <h3 className="text-2xl md:text-3xl font-bold text-primary mb-3">
+                      <h3 className="text-2xl md:text-3xl font-bold text-site-text mb-3">
                         Medicina Preventiva Personalizada
                       </h3>
-                      <p className="text-gray-500 font-light max-w-2xl mx-auto">
+                      <p className="text-site-text-muted font-light max-w-2xl mx-auto">
                         Através de bioressonância e testes avançados, identificamos desequilíbrios antes que se manifestem em doença.
                       </p>
                     </div>
@@ -245,11 +245,11 @@ export const ConsultationDetails: React.FC = () => {
                         { label: 'Deficiências Nutricionais', desc: 'Identificação de carências de vitaminas e minerais.' },
                         { label: 'Testes Genéticos', desc: 'Análise de variações genéticas para medicina preventiva (doenças cardiovasculares, metabólicas, diabetes, neurodegenerativas e cancro).' },
                       ].map((item, i) => (
-                        <div key={i} className="flex items-start gap-3 bg-gray-50/60 rounded-2xl p-4 border border-gray-100">
+                        <div key={i} className="flex items-start gap-3 bg-surface-muted rounded-2xl p-4 border border-surface-border">
                           <div className="w-2 h-2 rounded-full bg-secondary mt-2 shrink-0" />
                           <div>
-                            <p className="font-semibold text-primary text-sm leading-snug">{item.label}</p>
-                            <p className="text-gray-500 font-light text-sm leading-relaxed mt-0.5">{item.desc}</p>
+                            <p className="font-semibold text-site-text text-sm leading-snug">{item.label}</p>
+                            <p className="text-site-text-muted font-light text-sm leading-relaxed mt-0.5">{item.desc}</p>
                           </div>
                         </div>
                       ))}

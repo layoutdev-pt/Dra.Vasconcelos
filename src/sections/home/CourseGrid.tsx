@@ -44,7 +44,7 @@ export const CourseGrid: React.FC = () => {
           <h2 className="text-3xl md:text-4xl font-extrabold text-site-text mb-4 uppercase tracking-wider">
             Cursos
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto font-light">
+          <p className="text-site-text-muted text-lg max-w-2xl mx-auto font-light">
             Programas exclusivos desenhados para elevar os seus conhecimentos e potenciar a sua saúde ao longo da vida.
           </p>
         </div>

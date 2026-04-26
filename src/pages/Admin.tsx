@@ -44,22 +44,22 @@ export const Admin: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 font-display">
+    <div className="min-h-screen bg-site-bg font-display transition-colors duration-500">
       {/* Top bar */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
+      <header className="bg-surface border-b border-surface-border sticky top-0 z-40 shadow-sm transition-colors duration-500">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <img src={simpleLogo} alt="Admin" className="h-9 w-auto" />
+            <img src={simpleLogo} alt="Admin" className="h-9 w-auto transition-all" />
             <div>
-              <h1 className="text-sm font-bold text-primary leading-tight">Dashboard Admin</h1>
-              <p className="text-xs text-gray-400">{user?.email}</p>
+              <h1 className="text-sm font-bold text-site-text leading-tight">Dashboard Admin</h1>
+              <p className="text-xs text-site-text-muted">{user?.email}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <a href="/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-secondary transition-colors">
+            <a href="/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-medium text-site-text-muted hover:text-secondary transition-colors">
               <ExternalLink className="w-3.5 h-3.5" /> Ver site
             </a>
-            <button onClick={handleSignOut} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-red-500 hover:border-red-200 transition-all">
+            <button onClick={handleSignOut} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-surface-border text-sm font-semibold text-site-text-muted hover:bg-surface-muted hover:text-red-500 hover:border-red-200 transition-all">
               <LogOut className="w-4 h-4" /> Sair
             </button>
           </div>
@@ -67,7 +67,7 @@ export const Admin: React.FC = () => {
       </header>
 
       {/* Tab Navigation */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-surface border-b border-surface-border transition-colors duration-500">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex gap-0">
             {TABS.map(tab => (
@@ -77,7 +77,7 @@ export const Admin: React.FC = () => {
                 className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold border-b-2 transition-all duration-200 ${
                   activeTab === tab.id
                     ? 'border-secondary text-secondary'
-                    : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-200'
+                    : 'border-transparent text-site-text-muted hover:text-site-text hover:border-surface-border'
                 }`}
               >
                 {tab.icon}

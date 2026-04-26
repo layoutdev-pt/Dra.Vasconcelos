@@ -4,7 +4,7 @@ import { Cookie } from 'lucide-react';
 
 export const CookiePolicy: React.FC = () => {
   return (
-    <div className="min-h-screen bg-white pt-32 pb-20">
+    <div className="min-h-screen bg-site-bg pt-32 pb-20 transition-colors duration-500">
       <div className="max-w-[1000px] mx-auto px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -16,21 +16,21 @@ export const CookiePolicy: React.FC = () => {
               <Cookie className="text-secondary w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-primary">Política de Cookies</h1>
-              <p className="text-gray-400 text-sm mt-1">Transparência sobre como utilizamos cookies no nosso website.</p>
+              <h1 className="text-3xl md:text-4xl font-bold text-site-text">Política de Cookies</h1>
+              <p className="text-site-text-muted text-sm mt-1">Transparência sobre como utilizamos cookies no nosso website.</p>
             </div>
           </div>
 
-          <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed space-y-8">
+          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed space-y-8">
             <section>
-              <h2 className="text-xl font-bold text-primary mb-4">O que são Cookies?</h2>
+              <h2 className="text-xl font-bold text-site-text mb-4">O que são Cookies?</h2>
               <p>
                 Os cookies são pequenos ficheiros de texto que são guardados no seu computador ou dispositivo móvel através do navegador (browser), retendo apenas informação relacionada com as suas preferências, não incluindo, como tal, os seus dados pessoais.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-primary mb-4">Cookies Essenciais (Técnicos)</h2>
+              <h2 className="text-xl font-bold text-site-text mb-4">Cookies Essenciais (Técnicos)</h2>
               <p>
                 A Clínica Dra. Alexandra Vasconcelos utiliza apenas cookies técnicos estritamente necessários para o funcionamento das funcionalidades básicas do site. Estes incluem:
               </p>
@@ -42,14 +42,14 @@ export const CookiePolicy: React.FC = () => {
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-primary mb-4">Cookies Analíticos</h2>
+              <h2 className="text-xl font-bold text-site-text mb-4">Cookies Analíticos</h2>
               <p>
                 Utilizamos cookies de análise anónima para recolher estatísticas sobre o volume de visitas e o comportamento dos utilizadores no site, sem nunca identificar individualmente o utilizador ou rastrear para fins publicitários.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-primary mb-4">Como Gerir Cookies?</h2>
+              <h2 className="text-xl font-bold text-site-text mb-4">Como Gerir Cookies?</h2>
               <p>
                 Pode, a qualquer momento, desativar a utilização de cookies nas definições do seu navegador. 
                 No entanto, alertamos que a desativação de cookies essenciais pode impedir o correto funcionamento de certas áreas do site (como o login ou o checkout).

@@ -25,10 +25,10 @@ export const BioReset: React.FC = () => {
     <section className="py-24 bg-site-bg relative overflow-hidden z-0 transition-colors duration-500">
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12 relative z-10">
         
-        <div className="bg-white dark:bg-slate-900/50 rounded-[2rem] p-8 lg:p-12 shadow-xl flex flex-col lg:flex-row items-center gap-12 border border-blue-50/50 dark:border-white/5 backdrop-blur-sm">
+        <div className="bg-surface rounded-[2rem] p-8 lg:p-12 shadow-xl flex flex-col lg:flex-row items-center gap-12 border border-surface-border backdrop-blur-sm">
           
           <div className="lg:w-1/2 space-y-6">
-            <div className="inline-block px-3 py-1 bg-blue-50 dark:bg-secondary/10 text-secondary text-[10px] font-bold uppercase rounded-full tracking-widest border dark:border-secondary/20">
+            <div className="inline-block px-3 py-1 bg-surface-muted text-secondary text-[10px] font-bold uppercase rounded-full tracking-widest border border-surface-border">
               {latestCourse.type === 'programa' ? 'Programa' : 'Curso'}
             </div>
             
@@ -36,14 +36,14 @@ export const BioReset: React.FC = () => {
               {latestCourse.title}
             </h2>
             
-            <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed font-light">
+            <p className="text-lg text-site-text-muted leading-relaxed font-light">
               {latestCourse.published_at && `Início: ${formattedDate}. `}
               {latestCourse.description}
             </p>
             
             <ul className="space-y-4 pt-2">
               {['Acompanhamento Especializado', 'Conteúdo Programático Exclusivo', 'Materiais de Apoio Digitais'].map((item, idx) => (
-                <li key={idx} className="flex items-center gap-3 text-gray-600 dark:text-gray-300 font-medium">
+                <li key={idx} className="flex items-center gap-3 text-site-text font-medium">
                   <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-50 dark:fill-green-500/10" />
                   <span>{item}</span>
                 </li>
@@ -58,7 +58,7 @@ export const BioReset: React.FC = () => {
           </div>
           
           <div className="lg:w-1/2 relative w-full mt-8 lg:mt-0">
-            <div className="relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-[3/2] shadow-sm border border-gray-100 dark:border-white/10">
+            <div className="relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-[3/2] shadow-sm border border-surface-border">
               <img 
                 src={latestCourse.image_url} 
                 alt={latestCourse.title} 

@@ -98,7 +98,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, index }) => {
 
           <div className="absolute -top-3 -left-3 z-30">
             <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest shadow-md ${
-              isEbook ? 'bg-blue-500 text-white' : 'bg-white text-primary border border-gray-200'
+              isEbook ? 'bg-blue-600 text-white' : 'bg-surface text-site-text border border-surface-border'
             }`}>
               {isEbook ? <Download className="w-2.5 h-2.5" /> : <BookOpen className="w-2.5 h-2.5" />}
               {isEbook ? 'Ebook' : 'Físico'}
@@ -142,12 +142,12 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, index }) => {
 
         <div className="text-center w-full max-w-[220px] min-h-[170px] flex flex-col justify-start">
           <p className="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">{book.author}</p>
-          <h3 className="text-base font-bold text-primary leading-snug mb-1 line-clamp-2">{book.title}</h3>
+          <h3 className="text-base font-bold text-site-text leading-snug mb-1 line-clamp-2">{book.title}</h3>
           <p className="text-xs text-secondary font-light leading-relaxed mb-4 line-clamp-2">{book.subtitle || 'Livro Alexandra Vasconcelos'}</p>
 
           <div className="flex items-center justify-center gap-3 mt-auto">
             {book.price != null ? (
-              <span className="text-lg font-extrabold text-primary">
+              <span className="text-lg font-extrabold text-site-text">
                 {book.currency === 'BRL' ? `R$ ${book.price.toFixed(2).replace('.', ',')}` : 
                  book.currency === 'USD' ? `$${book.price.toFixed(2).replace('.', ',')}` :
                  `${book.price.toFixed(2).replace('.', ',')}€`}
@@ -160,7 +160,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, index }) => {
               <div
                 className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all duration-200 group-hover:-translate-y-0.5 shadow-md ${
                   isEbook
-                    ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-blue-500/20'
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20'
                     : 'bg-secondary hover:bg-secondary/90 text-white shadow-secondary/20'
                 }`}
               >
@@ -168,7 +168,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, index }) => {
                 {isEbook ? 'Download' : 'Comprar'}
               </div>
             ) : (
-              <span className="text-xs text-gray-400">Em breve</span>
+              <span className="text-xs text-site-text-muted">Em breve</span>
             )}
           </div>
 

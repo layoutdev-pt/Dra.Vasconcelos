@@ -17,17 +17,17 @@ export const AboutBooks: React.FC = () => {
   const featuredBooks = books.filter(b => b.is_featured);
 
   return (
-    <section className="py-24 bg-white" id="publicacoes">
+    <section className="py-24 bg-site-bg" id="publicacoes">
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
         
         <div className="flex flex-col mb-16 gap-4 text-center">
           <span className="text-secondary font-bold tracking-widest uppercase text-xs">
             Publicações
           </span>
-          <h2 className="text-4xl font-extrabold text-primary">
+          <h2 className="text-4xl font-extrabold text-site-text">
             Autora de Bestsellers e Cursos Sobre Saúde
           </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
+          <p className="text-site-text-muted max-w-2xl mx-auto">
             {featuredBooks.length > 0 
               ? `Autora de livros que se tornaram best-sellers tais como: ${featuredBooks.map(b => `"${b.title}"`).join(', ')}.`
               : 'Autora de livros que se tornaram best-sellers, transformando a vida de milhares de pessoas.'

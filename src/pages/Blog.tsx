@@ -9,7 +9,7 @@ export const Blog: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-site-bg transition-colors duration-500">
       {slug ? (
         <BlogContent />
       ) : (

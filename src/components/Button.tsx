@@ -19,7 +19,7 @@ const BASE = "inline-flex justify-center items-center px-8 py-4 rounded-full fon
 const VARIANTS = {
   primary:   "bg-accent hover:bg-accent/90 text-white shadow-xl shadow-accent/20",
   secondary: "bg-[#2563EB] hover:bg-[#2563EB]/90 text-white",
-  outline:   "bg-white text-[#0f1729] border border-gray-200 hover:bg-gray-50 transition-colors",
+  outline:   "bg-surface text-site-text border border-surface-border hover:bg-surface-muted transition-colors",
   glass:     "bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md transition-all",
 };
 

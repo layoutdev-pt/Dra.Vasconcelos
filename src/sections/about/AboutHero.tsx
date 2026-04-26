@@ -4,7 +4,7 @@ import { ArrowDown } from 'lucide-react';
 
 export const AboutHero: React.FC = () => {
   return (
-    <section className="relative min-h-screen flex items-center bg-white overflow-hidden pt-24">
+    <section className="relative min-h-screen flex items-center bg-site-bg overflow-hidden pt-24">
       <div className="absolute top-0 left-0 w-1/2 h-full bg-surface-hero hidden lg:block" />
       
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12 relative z-10 h-full flex items-center">
@@ -14,11 +14,11 @@ export const AboutHero: React.FC = () => {
             <span className="text-secondary font-bold tracking-widest uppercase text-xs">
               A Minha Missão
             </span>
-            <h1 className="text-5xl lg:text-[4rem] font-extrabold text-primary leading-[1.05] tracking-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-extrabold text-site-text leading-[1.05] tracking-tight">
               Transformando Vidas <br/>
               Através da <span className="text-secondary">Ciência Humana.</span>
             </h1>
-            <p className="text-lg text-gray-500 max-w-lg leading-relaxed font-light">
+            <p className="text-lg text-site-text-muted max-w-lg leading-relaxed font-light">
               Uma jornada que une a ciência rigorosa ao cuidado holístico, focada em ajudar clinicamente na base do estilo de vida contemporâneo. A Dra. Alexandra combina rigor académico com uma abordagem humanizada para redefinir o bem-estar no século XXI.
             </p>
             
@@ -37,7 +37,7 @@ export const AboutHero: React.FC = () => {
             <img 
               src={draHero} 
               alt="Dra. Alexandra Vasconcelos" 
-              className="w-full h-full object-cover object-top rounded-[2rem] lg:rounded-[3rem] shadow-2xl border-4 border-white/50" 
+              className="w-full h-full object-cover object-top rounded-[2rem] lg:rounded-[3rem] shadow-2xl border-4 border-surface-border" 
             />
           </div>
 

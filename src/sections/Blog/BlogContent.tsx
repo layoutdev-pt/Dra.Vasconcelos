@@ -36,15 +36,15 @@ export const BlogContent: React.FC = () => {
   const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 
   return (
-    <section className="pt-32 pb-20 bg-white">
+    <section className="pt-32 pb-20 bg-site-bg transition-colors duration-500">
       <div className="max-w-[1300px] mx-auto px-4 md:px-8 w-full">
         <Link to="/blog" className="inline-flex items-center gap-2 text-secondary font-bold text-xs uppercase mb-8 hover:gap-3 transition-all">
           <ChevronLeft size={16} /> Voltar ao Blog
         </Link>
         
         <header className="mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold text-primary mb-6 leading-tight">{post.title}</h1>
-          <div className="flex items-center gap-6 text-sm text-gray-400">
+          <h1 className="text-4xl md:text-6xl font-bold text-site-text mb-6 leading-tight">{post.title}</h1>
+          <div className="flex items-center gap-6 text-sm text-site-text-muted">
             <div className="flex items-center gap-2"><Calendar size={16} className="text-secondary" /> {new Date(post.published_at!).toLocaleDateString()}</div>
             <div className="flex items-center gap-2"><Tag size={16} className="text-secondary" /> {post.category}</div>
           </div>
@@ -60,25 +60,25 @@ export const BlogContent: React.FC = () => {
           className="ql-snow"
         >
           <div 
-            className="ql-editor p-0! text-gray-600 font-light leading-relaxed mb-20 [&_h1]:text-primary [&_h2]:text-primary [&_h3]:text-primary [&_h4]:text-primary [&_h5]:text-primary [&_h6]:text-primary [&_strong]:text-primary [&_strong]:font-bold! [&_a]:text-secondary break-words w-full overflow-x-hidden [&_ol>li]:!list-decimal [&_ul>li]:!list-disc [&_ol>li]:!list-inside [&_ul>li]:!list-inside [&_ol]:!ml-2 [&_ul]:!ml-2 [&_li::before]:!hidden [&_p]:min-h-[1.5rem] [&_p]:mb-3"
+            className="ql-editor p-0! text-site-text-muted font-light leading-relaxed mb-20 [&_h1]:text-site-text [&_h2]:text-site-text [&_h3]:text-site-text [&_h4]:text-site-text [&_h5]:text-site-text [&_h6]:text-site-text [&_strong]:text-site-text [&_strong]:font-bold! [&_a]:text-secondary break-words w-full overflow-x-hidden [&_ol>li]:!list-decimal [&_ul>li]:!list-disc [&_ol>li]:!list-inside [&_ul>li]:!list-inside [&_ol]:!ml-2 [&_ul]:!ml-2 [&_li::before]:!hidden [&_p]:min-h-[1.5rem] [&_p]:mb-3"
             dangerouslySetInnerHTML={{ __html: post.content || '' }} 
           />
         </div>
 
         {/* Article Navigation */}
         {(prevPost || nextPost) && (
-          <div className="mt-16 pt-12 border-t border-gray-100">
+          <div className="mt-16 pt-12 border-t border-surface-border">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Previous (older) */}
               {prevPost ? (
                 <Link 
                   to={`/blog/${prevPost.slug}`}
-                  className="group flex items-center gap-4 p-5 bg-gray-50 hover:bg-secondary/5 border border-gray-100 hover:border-secondary/30 rounded-2xl transition-all"
+                  className="group flex items-center gap-4 p-5 bg-surface hover:bg-secondary/5 border border-surface-border hover:border-secondary/30 rounded-2xl transition-all"
                 >
-                  <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-secondary transition-colors shrink-0" />
+                  <ChevronLeft className="w-5 h-5 text-site-text-muted group-hover:text-secondary transition-colors shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Artigo Anterior</p>
-                    <p className="text-sm font-bold text-primary group-hover:text-secondary transition-colors line-clamp-2">{prevPost.title}</p>
+                    <p className="text-[10px] uppercase tracking-widest text-site-text-muted font-bold mb-1">Artigo Anterior</p>
+                    <p className="text-sm font-bold text-site-text group-hover:text-secondary transition-colors line-clamp-2">{prevPost.title}</p>
                   </div>
                 </Link>
               ) : <div />}
@@ -87,13 +87,13 @@ export const BlogContent: React.FC = () => {
               {nextPost ? (
                 <Link 
                   to={`/blog/${nextPost.slug}`}
-                  className="group flex items-center justify-end gap-4 p-5 bg-gray-50 hover:bg-secondary/5 border border-gray-100 hover:border-secondary/30 rounded-2xl transition-all text-right"
+                  className="group flex items-center justify-end gap-4 p-5 bg-surface hover:bg-secondary/5 border border-surface-border hover:border-secondary/30 rounded-2xl transition-all text-right"
                 >
                   <div className="min-w-0">
-                    <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Artigo Seguinte</p>
-                    <p className="text-sm font-bold text-primary group-hover:text-secondary transition-colors line-clamp-2">{nextPost.title}</p>
+                    <p className="text-[10px] uppercase tracking-widest text-site-text-muted font-bold mb-1">Artigo Seguinte</p>
+                    <p className="text-sm font-bold text-site-text group-hover:text-secondary transition-colors line-clamp-2">{nextPost.title}</p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-secondary transition-colors shrink-0" />
+                  <ChevronRight className="w-5 h-5 text-site-text-muted group-hover:text-secondary transition-colors shrink-0" />
                 </Link>
               ) : <div />}
             </div>

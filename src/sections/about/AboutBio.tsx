@@ -4,7 +4,7 @@ import { Quote, Globe2 } from 'lucide-react';
 
 export const AboutBio: React.FC = () => {
   return (
-    <section className="py-24 bg-[#FAFBFF] relative overflow-hidden">
+    <section className="py-24 bg-surface-hero relative overflow-hidden">
       
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-full h-full pointer-events-none overflow-hidden">
@@ -15,9 +15,9 @@ export const AboutBio: React.FC = () => {
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12 relative z-10">
         
         {/* Intro Block with Large Quote */}
-        <div className="relative bg-white rounded-3xl p-10 lg:p-16 shadow-xl border border-gray-100 mb-20 group">
+        <div className="relative bg-surface rounded-3xl p-10 lg:p-16 shadow-xl border border-surface-border mb-20 group">
           <Quote className="absolute top-6 left-6 lg:top-10 lg:left-10 w-16 h-16 text-secondary/10 group-hover:text-secondary/20 transition-colors" />
-          <p className="text-2xl lg:text-4xl text-primary font-bold leading-tight relative z-10 pl-6 lg:pl-12">
+          <p className="text-2xl lg:text-4xl text-site-text font-bold leading-tight relative z-10 pl-6 lg:pl-12">
             "Sempre soube que queria trabalhar na área da saúde e ajudar as pessoas a <span className="text-secondary">viver mais felizes.</span>"
           </p>
         </div>
@@ -33,11 +33,12 @@ export const AboutBio: React.FC = () => {
               </p>
             </div>
         </div>
+ 
 
         {/* Mission / Motivation Section */}
-        <div className="bg-linear-to-br from-white to-blue-50/50 rounded-3xl p-10 lg:p-16 border border-gray-100 shadow-sm flex flex-col items-center text-center max-w-4xl mx-auto">
+        <div className="bg-surface rounded-3xl p-10 lg:p-16 border border-surface-border shadow-sm flex flex-col items-center text-center max-w-4xl mx-auto">
           <Globe2 className="w-12 h-12 text-secondary mb-6" />
-          <p className="text-xl text-gray-600 font-light leading-relaxed mb-8">
+          <p className="text-xl text-site-text-muted font-light leading-relaxed mb-8">
             Hoje sou diretora e fundadora das Clínicas Viver: Medicina Integrativa em Lisboa e Porto, sou oradora em diversos congressos e cursos de especialização no âmbito da Nutrição Funcional, Saúde Intestinal, Doenças Autoimunes e Envelhecimento Saudável.
           </p>
           <div className="bg-primary/5 text-primary px-8 py-4 rounded-full border border-primary/10">

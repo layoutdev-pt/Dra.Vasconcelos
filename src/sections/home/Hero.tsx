@@ -61,7 +61,7 @@ export const Hero: React.FC = () => {
               </span>
             </h1>
             
-            <p className="text-lg text-gray-500 dark:text-gray-400 max-w-lg leading-relaxed font-light mt-[-20px] md:mt-[-40px]">
+            <p className="text-lg text-site-text-muted max-w-lg leading-relaxed font-light mt-[-20px] md:mt-[-40px]">
               Todas as vezes que vamos ao médico acreditamos tratar da nossa saúde, mas atuamos apenas no tratamento da doença. A biologia e medicina integrativa atuam em busca da sua causa na biologia celular.
             </p>
             
@@ -71,7 +71,7 @@ export const Hero: React.FC = () => {
               </Button>
             </div>
 
-            <div className="pt-6 flex items-center gap-8 text-sm text-gray-500 dark:text-gray-400 font-medium">
+            <div className="pt-6 flex items-center gap-8 text-sm text-site-text-muted font-medium">
               <div className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-secondary" /> Medicina Integrativa</div>
               <div className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-secondary" /> Abordagem Causal</div>
             </div>
@@ -85,7 +85,7 @@ export const Hero: React.FC = () => {
               </div>
 
               {/* Health Score Panel */}
-              <div className="absolute top-12 -left-4 md:-left-8 z-20 glass-panel-brand p-5 rounded-2xl text-white w-44 animate-float-gentle">
+              <div className="absolute top-48 md:top-12 -left-4 md:-left-8 z-20 glass-panel-brand p-5 rounded-2xl text-white w-44 animate-float-gentle">
                 <div className="flex items-center gap-2 mb-2">
                   <Heart className="w-4 h-4 fill-white" />
                   <span className="text-[10px] font-bold uppercase tracking-wider">Health Score</span>
@@ -95,12 +95,12 @@ export const Hero: React.FC = () => {
               </div>
 
               {/* Natural Panel usando glass-panel utilitário do index.css */}
-              <div className="absolute top-32 -right-4 md:-right-8 z-20 glass-panel p-3 rounded-2xl shadow-glass flex items-center gap-3">
+              <div className="absolute top-72 md:top-32 -right-4 md:-right-8 z-20 glass-panel p-3 rounded-2xl shadow-glass flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center shrink-0 border border-secondary/20">
                   <Leaf className="w-5 h-5 text-secondary" />
                 </div>
                 <div className="pr-4">
-                  <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Abordagem</p>
+                  <p className="text-[10px] text-site-text-muted font-semibold uppercase tracking-wider">Abordagem</p>
                   <p className="text-sm font-bold text-site-text">{naturalRate}% Natural</p>
                 </div>
               </div>

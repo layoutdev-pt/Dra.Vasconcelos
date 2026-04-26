@@ -38,9 +38,9 @@ export const BlogNewsletter: React.FC = () => {
   };
 
   return (
-    <section className="py-20 bg-primary">
+    <section className="py-20 bg-site-bg transition-colors duration-500">
       <div className="max-w-[1400px] mx-auto px-6">
-        <div className="bg-white/5 backdrop-blur-md rounded-[3rem] p-10 lg:p-16 border border-white/10 flex flex-col lg:flex-row items-center justify-between gap-12">
+        <div className="bg-primary rounded-[3rem] p-10 lg:p-16 border border-white/5 flex flex-col lg:flex-row items-center justify-between gap-12 shadow-2xl transition-all duration-500">
           <div className="max-w-xl">
             <div className="flex items-center gap-3 text-secondary mb-4">
               <Mail className="w-6 h-6" />
@@ -49,7 +49,7 @@ export const BlogNewsletter: React.FC = () => {
             <h2 className="text-4xl font-extrabold text-white mb-4">
               Receba conteúdos de saúde diretamente no seu e-mail.
             </h2>
-            <p className="text-blue-100/60 text-lg font-light">
+            <p className="text-gray-400 text-lg font-light">
               Assine para não perder os novos artigos sobre longevidade e medicina integrativa.
             </p>
           </div>
@@ -71,7 +71,7 @@ export const BlogNewsletter: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={status === 'loading'}
                   placeholder="Seu melhor e-mail" 
-                  className="px-8 py-5 rounded-2xl bg-white text-primary outline-none min-w-[300px] focus:ring-2 focus:ring-secondary transition-all disabled:opacity-50"
+                  className="px-8 py-5 rounded-2xl bg-white/5 text-white outline-none min-w-[300px] border border-white/10 focus:ring-2 focus:ring-secondary transition-all disabled:opacity-50"
                   required
                 />
                 {status === 'error' && (
@@ -83,7 +83,7 @@ export const BlogNewsletter: React.FC = () => {
               <button 
                 type="submit"
                 disabled={status === 'loading'}
-                className="bg-secondary hover:bg-secondary/90 text-white font-bold px-8 py-5 rounded-2xl flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1 shadow-lg shadow-black/20 disabled:opacity-50 disabled:hover:translate-y-0"
+                className="bg-secondary hover:bg-secondary/90 text-white font-bold px-8 py-5 rounded-2xl flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1 shadow-lg shadow-secondary/20 disabled:opacity-50 disabled:hover:translate-y-0"
               >
                 {status === 'loading' ? 'A processar...' : (
                   <>Subscrever <Send className="w-4 h-4" /></>

@@ -4,12 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2, Upload, X, User as UserIcon, Phone, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../config/supabase';
+import { Navbar } from '../components/layout/Navbar';
 import fullLogo from '../assets/logo/full1.svg';
 
 type Mode = 'login' | 'register' | 'forgot';
 
 const inputBase =
-  'w-full px-4 py-3.5 bg-gray-50 border rounded-xl text-sm text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all';
+  'w-full px-4 py-3.5 bg-surface-muted border border-surface-border rounded-xl text-sm text-site-text placeholder-site-text-muted/50 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all';
 
 export const Login: React.FC = () => {
   const { signIn, signUp, verifyCode, sendPasswordReset, verifyRecoveryCode, updatePassword } = useAuth();
@@ -240,8 +241,9 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-100 flex flex-col pt-32 pb-12">
-      <div className="flex-1 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-site-bg flex flex-col transition-colors duration-500">
+      <Navbar />
+      <div className="flex-1 flex items-center justify-center px-4 py-32">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -249,19 +251,19 @@ export const Login: React.FC = () => {
           className="w-full max-w-md"
         >
           <div className="flex justify-center mb-12">
-            <a href="/"><img src={fullLogo} alt="Dra. Alexandra Vasconcelos" className="h-32 w-auto" /></a>
+            <Link to="/"><img src={fullLogo} alt="Dra. Alexandra Vasconcelos" className="h-24 w-auto transition-all" /></Link>
           </div>
 
-          <div className="bg-white rounded-3xl shadow-[0_8px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden">
+          <div className="bg-surface rounded-3xl shadow-glass border border-surface-border overflow-hidden transition-colors duration-500">
             
             {showVerification && mode === 'register' ? (
               <div className="p-8">
-                <button onClick={() => setShowVerification(false)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-secondary mb-6 transition-colors">
+                <button onClick={() => setShowVerification(false)} className="flex items-center gap-2 text-sm text-site-text-muted hover:text-secondary mb-6 transition-colors">
                   <ArrowLeft className="w-4 h-4" /> Voltar
                 </button>
-                <h1 className="text-xl font-bold text-primary mb-2">Verifique o seu E-mail</h1>
-                <p className="text-sm text-gray-400 mb-6">
-                  Introduza o código numérico que enviámos para <span className="font-semibold text-primary">{email}</span>.
+                <h1 className="text-xl font-bold text-site-text mb-2">Verifique o seu E-mail</h1>
+                <p className="text-sm text-site-text-muted mb-6">
+                  Introduza o código numérico que enviámos para <span className="font-semibold text-site-text">{email}</span>.
                 </p>
 
                 <form onSubmit={handleVerifyOtpSignup} className="space-y-6">
@@ -274,7 +276,7 @@ export const Login: React.FC = () => {
                         onChange={(e) => handleOtpChange(index, e.target.value)}
                         onKeyDown={(e) => handleOtpKeyDown(index, e)}
                         onPaste={handleOtpPaste}
-                        className="w-10 h-12 sm:w-11 sm:h-14 text-center text-xl sm:text-2xl font-bold text-primary bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
+                        className="w-10 h-12 sm:w-11 sm:h-14 text-center text-xl sm:text-2xl font-bold text-site-text bg-surface-muted border border-surface-border rounded-xl focus:bg-surface focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
                       />
                     ))}
                   </div>
@@ -287,17 +289,17 @@ export const Login: React.FC = () => {
             ) : showRecoveryVerification && mode === 'forgot' ? (
               <div className="p-8">
                 {!isOtpVerified && (
-                  <button onClick={() => setShowRecoveryVerification(false)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-secondary mb-6 transition-colors">
+                  <button onClick={() => setShowRecoveryVerification(false)} className="flex items-center gap-2 text-sm text-site-text-muted hover:text-secondary mb-6 transition-colors">
                     <ArrowLeft className="w-4 h-4" /> Voltar
                   </button>
                 )}
 
-                <h1 className="text-xl font-bold text-primary mb-2">
+                <h1 className="text-xl font-bold text-site-text mb-2">
                   {!isOtpVerified ? 'Verifique o seu e-mail' : 'Nova Palavra-passe'}
                 </h1>
-                <p className="text-sm text-gray-400 mb-6">
+                <p className="text-sm text-site-text-muted mb-6">
                   {!isOtpVerified 
-                    ? <>Introduza o código enviado para <span className="font-semibold text-primary">{email}</span>.</> 
+                    ? <>Introduza o código enviado para <span className="font-semibold text-site-text">{email}</span>.</> 
                     : 'Crie uma palavra-passe nova e segura.'}
                 </p>
 
@@ -312,7 +314,7 @@ export const Login: React.FC = () => {
                           onChange={(e) => handleOtpChange(index, e.target.value)}
                           onKeyDown={(e) => handleOtpKeyDown(index, e)}
                           onPaste={handleOtpPaste}
-                          className="w-10 h-12 sm:w-11 sm:h-14 text-center text-xl sm:text-2xl font-bold text-primary bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
+                          className="w-10 h-12 sm:w-11 sm:h-14 text-center text-xl sm:text-2xl font-bold text-site-text bg-surface-muted border border-surface-border rounded-xl focus:bg-surface focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
                         />
                       ))}
                     </div>
@@ -328,7 +330,7 @@ export const Login: React.FC = () => {
                         type={showPassword ? 'text' : 'password'} value={newPassword} onChange={e => setNewPassword(e.target.value)}
                         placeholder="Nova palavra-passe" required minLength={6} className={`${inputBase} pl-11 pr-12`}
                       />
-                      <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                      <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-site-text-muted">
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
@@ -351,13 +353,13 @@ export const Login: React.FC = () => {
             ) : (
               <>
                 {mode !== 'forgot' && (
-                  <div className="flex border-b border-gray-100">
+                  <div className="flex border-b border-surface-border">
                     {(['login', 'register'] as Mode[]).map((m, i) => (
                       <button
                         key={m}
                         onClick={() => changeMode(m)}
                         className={`flex-1 py-5 text-sm font-bold transition-all duration-300 ${
-                          mode === m ? 'bg-white text-secondary border-b-2 border-secondary' : 'bg-gray-100/50 text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                          mode === m ? 'bg-surface text-secondary border-b-2 border-secondary' : 'bg-surface-muted/50 text-site-text-muted hover:text-site-text hover:bg-surface-muted'
                         } ${i === 0 ? 'rounded-tl-3xl' : 'rounded-tr-3xl'}`}
                       >
                         {m === 'login' ? 'Entrar' : 'Criar Conta'}
@@ -368,17 +370,17 @@ export const Login: React.FC = () => {
 
                 <div className="p-8">
                   {mode === 'forgot' && (
-                    <button onClick={() => changeMode('login')} className="flex items-center gap-2 text-sm text-gray-500 hover:text-secondary mb-6 transition-colors">
+                    <button onClick={() => changeMode('login')} className="flex items-center gap-2 text-sm text-site-text-muted hover:text-secondary mb-6 transition-colors">
                       <ArrowLeft className="w-4 h-4" /> Voltar ao Login
                     </button>
                   )}
 
                   <AnimatePresence mode="wait">
                     <motion.div key={mode} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="mb-7">
-                      <h1 className="text-xl font-bold text-primary">
+                      <h1 className="text-xl font-bold text-site-text">
                         {mode === 'login' ? 'Bem-vindo de volta' : mode === 'register' ? 'Criar nova conta' : 'Recuperar Palavra-passe'}
                       </h1>
-                      <p className="text-sm text-gray-400 mt-1">
+                      <p className="text-sm text-site-text-muted mt-1">
                         {mode === 'login' ? 'Introduza as suas credenciais para aceder.' : mode === 'register' ? 'Preencha os dados para criar a sua conta.' : 'Introduza o seu e-mail para receber um código.'}
                       </p>
                     </motion.div>
@@ -404,7 +406,7 @@ export const Login: React.FC = () => {
                       <div className="space-y-4">
                         <div className="flex gap-3">
                           <div className="relative flex-1">
-                            <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-site-text-muted" />
                             <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Nome" required className={`${inputBase} pl-11`} />
                           </div>
                           <div className="relative flex-1">
@@ -412,25 +414,25 @@ export const Login: React.FC = () => {
                           </div>
                         </div>
                         <div className="relative">
-                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-site-text-muted" />
                           <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Telefone (Opcional)" className={`${inputBase} pl-11`} />
                         </div>
                       </div>
                     )}
 
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-site-text-muted" />
                       <input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="O seu email" required className={`${inputBase} pl-11`} />
                     </div>
 
                     {mode !== 'forgot' && (
                       <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-site-text-muted" />
                         <input
                           id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
                           placeholder="A sua password" required minLength={6} className={`${inputBase} pl-11 pr-12`}
                         />
-                        <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                        <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-site-text-muted">
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
@@ -448,13 +450,13 @@ export const Login: React.FC = () => {
                       <div className="space-y-4">
                         <input type={showPassword ? 'text' : 'password'} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirmar password" required minLength={6} className={inputBase} />
                         
-                        <div className="relative border-2 border-dashed border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer">
+                        <div className="relative border-2 border-dashed border-surface-border rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer">
                           {avatarPreview ? (
                             <img src={avatarPreview} alt="Preview" className="w-16 h-16 rounded-full object-cover" />
                           ) : (
                             <Upload className="w-6 h-6 text-secondary" />
                           )}
-                          <span className="text-xs text-gray-400">Foto de Perfil (Opcional)</span>
+                          <span className="text-xs text-site-text-muted">Foto de Perfil (Opcional)</span>
                           <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={e => {
                             const file = e.target.files?.[0];
                             if (file) { setAvatarFile(file); setAvatarPreview(URL.createObjectURL(file)); }
@@ -462,8 +464,8 @@ export const Login: React.FC = () => {
                         </div>
 
                         <label className="flex items-start gap-3 cursor-pointer group">
-                          <input type="checkbox" checked={acceptTerms} onChange={e => setAcceptTerms(e.target.checked)} className="mt-1 w-4 h-4 rounded border-gray-300 text-secondary" required />
-                          <span className="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700">Li e aceito os <Link to="/termos" className="text-secondary font-bold hover:underline">Termos</Link> e a <Link to="/privacidade" className="text-secondary font-bold hover:underline">Privacidade</Link>.*</span>
+                          <input type="checkbox" checked={acceptTerms} onChange={e => setAcceptTerms(e.target.checked)} className="mt-1 w-4 h-4 rounded border-surface-border text-secondary" required />
+                          <span className="text-xs text-site-text-muted leading-relaxed group-hover:text-site-text">Li e aceito os <Link to="/termos" className="text-secondary font-bold hover:underline">Termos</Link> e a <Link to="/privacidade" className="text-secondary font-bold hover:underline">Privacidade</Link>.*</span>
                         </label>
                       </div>
                     )}

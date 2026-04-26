@@ -5,15 +5,15 @@ import { useCourses } from '../../hooks/useCourses';
 import { AlertCircle, BookOpen } from 'lucide-react';
 
 const CourseSkeleton: React.FC = () => (
-  <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col h-[400px] animate-pulse">
-    <div className="h-48 bg-gray-200"></div>
+  <div className="bg-surface rounded-2xl overflow-hidden shadow-sm border border-surface-border flex flex-col h-[400px] animate-pulse">
+    <div className="h-48 bg-surface-muted"></div>
     <div className="p-6 flex-1 flex flex-col">
-      <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-      <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-      <div className="h-4 bg-gray-200 rounded w-5/6 mb-6"></div>
-      <div className="mt-auto border-t border-gray-100 pt-4 flex justify-between">
-        <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-        <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+      <div className="h-6 bg-surface-muted rounded w-3/4 mb-4"></div>
+      <div className="h-4 bg-surface-muted rounded w-full mb-2"></div>
+      <div className="h-4 bg-surface-muted rounded w-5/6 mb-6"></div>
+      <div className="mt-auto border-t border-surface-border pt-4 flex justify-between">
+        <div className="h-4 bg-surface-muted rounded w-1/4"></div>
+        <div className="h-6 bg-surface-muted rounded w-1/4"></div>
       </div>
     </div>
   </div>
@@ -62,7 +62,7 @@ export const AcademyCourses: React.FC<AcademyCoursesProps> = ({
   }
 
   return (
-    <section className={`w-full ${showBorder ? 'py-24 border-t border-gray-100 dark:border-white/5' : ''}`}>
+    <section className={`w-full ${showBorder ? 'py-24 border-t border-surface-border' : ''}`}>
       {(title || subtitle) && (
         <div className="text-center mb-16 px-6">
           {subtitle && (

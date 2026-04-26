@@ -4,7 +4,7 @@ import { ShieldCheck } from 'lucide-react';
 
 export const PrivacyPolicy: React.FC = () => {
   return (
-    <div className="min-h-screen bg-white pt-32 pb-20">
+    <div className="min-h-screen bg-site-bg pt-32 pb-20 transition-colors duration-500">
       <div className="max-w-[1000px] mx-auto px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -16,17 +16,17 @@ export const PrivacyPolicy: React.FC = () => {
               <ShieldCheck className="text-secondary w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-primary">Política de Privacidade</h1>
-              <p className="text-gray-400 text-sm mt-1">Última atualização: 14 de abril de 2026</p>
-              <p className="text-gray-400 text-sm mt-1">Entidade Responsável: FB – Farmabiologica Lda. (NIPC/NIF: 515 122 971)</p>
-              <p className="text-gray-400 text-sm mt-1">Sede: Rua Braamcamp, 88 – 3º Esq, 1250-012 Lisboa, Portugal</p>
-              <p className="text-gray-400 text-sm mt-1">Contacto (Encarregado de Proteção de Dados): geral@draalexandravasconcelos.pt</p>
+              <h1 className="text-3xl md:text-4xl font-bold text-site-text">Política de Privacidade</h1>
+              <p className="text-site-text-muted text-sm mt-1">Última atualização: 14 de abril de 2026</p>
+              <p className="text-site-text-muted text-sm mt-1">Entidade Responsável: FB – Farmabiologica Lda. (NIPC/NIF: 515 122 971)</p>
+              <p className="text-site-text-muted text-sm mt-1">Sede: Rua Braamcamp, 88 – 3º Esq, 1250-012 Lisboa, Portugal</p>
+              <p className="text-site-text-muted text-sm mt-1">Contacto (Encarregado de Proteção de Dados): geral@draalexandravasconcelos.pt</p>
             </div>
           </div>
 
-          <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed space-y-8">
+          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed space-y-8">
             <section>
-              <h2 className="text-xl font-bold text-primary mb-4">1. Compromisso com a Privacidade </h2>
+              <h2 className="text-xl font-bold text-site-text mb-4">1. Compromisso com a Privacidade </h2>
               <p>
                 A FB – Farmabiologica Lda. garante a proteção e a confidencialidade dos dados pessoais de todos os utilizadores do website da Dra. Alexandra Vasconcelos. O tratamento de dados é efetuado em conformidade com o Regulamento Geral sobre a Proteção de Dados (RGPD) e com a legislação portuguesa vigente.
               </p>

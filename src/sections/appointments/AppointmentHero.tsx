@@ -27,7 +27,7 @@ export const AppointmentHero: React.FC = () => {
           initial="hidden"
           animate="visible"
           custom={0}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 font-medium text-xs md:text-sm mb-8 shadow-sm border border-blue-100"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 text-secondary font-medium text-xs md:text-sm mb-8 shadow-sm border border-secondary/20"
         >
           <Video className="w-4 h-4" />
           <span>Primeira consulta exclusivamente online</span>
@@ -39,7 +39,7 @@ export const AppointmentHero: React.FC = () => {
           initial="hidden"
           animate="visible"
           custom={1}
-          className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-primary leading-tight tracking-tight mb-6"
+          className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-site-text leading-tight tracking-tight mb-6"
         >
           Agende a sua Consulta de <br className="hidden md:block" />
           Saúde Integrativa
@@ -50,7 +50,7 @@ export const AppointmentHero: React.FC = () => {
           initial="hidden"
           animate="visible"
           custom={2}
-          className="text-lg md:text-xl text-gray-500 max-w-2xl font-light mb-10 leading-relaxed"
+          className="text-lg md:text-xl text-site-text-muted max-w-2xl font-light mb-10 leading-relaxed"
         >
           Uma abordagem personalizada que une a medicina convencional e funcional para tratar a causa raiz dos seus sintomas.
         </motion.p>
@@ -76,14 +76,14 @@ export const AppointmentHero: React.FC = () => {
           initial="hidden"
           animate="visible"
           custom={4}
-          className="bg-gray-50 border border-gray-100 rounded-2xl p-4 md:p-5 flex items-start text-left gap-4 max-w-3xl shadow-sm"
+          className="bg-surface-muted border border-surface-border rounded-2xl p-4 md:p-5 flex items-start text-left gap-4 max-w-3xl shadow-sm"
         >
-          <div className="bg-gray-200 text-gray-600 p-2 rounded-full shrink-0 mt-0.5">
+          <div className="bg-site-text-muted/10 text-site-text p-2 rounded-full shrink-0 mt-0.5">
             <Info className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="font-bold text-gray-800 text-sm md:text-base">Política de Cancelamento</h4>
-            <p className="text-gray-500 text-xs md:text-sm mt-1 leading-relaxed">
+            <h4 className="font-bold text-site-text text-sm md:text-base">Política de Cancelamento</h4>
+            <p className="text-site-text-muted text-xs md:text-sm mt-1 leading-relaxed">
               Informamos que as consultas marcadas não dão direito à devolução de valor em caso de cancelamento. É possível solicitar uma alteração na data, desde que o pedido seja efetuado com uma antecedência mínima de 48 horas.
             </p>
           </div>

@@ -58,7 +58,7 @@ const cardReveal = {
 
 export const Locations: React.FC = () => {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-site-bg">
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
 
         {/* Header */}
@@ -71,10 +71,10 @@ export const Locations: React.FC = () => {
           <motion.span variants={fadeInUp} custom={0} className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-bold uppercase tracking-widest mb-5">
             Onde Estamos
           </motion.span>
-          <motion.h2 variants={fadeInUp} custom={1} className="text-3xl md:text-4xl font-bold text-primary mb-4">
+          <motion.h2 variants={fadeInUp} custom={1} className="text-3xl md:text-4xl font-bold text-site-text mb-4">
             As Nossas Localizações
           </motion.h2>
-          <motion.p variants={fadeInUp} custom={2} className="text-gray-500 font-light text-lg">
+          <motion.p variants={fadeInUp} custom={2} className="text-site-text-muted font-light text-lg">
             Consultas presenciais em 4 locais em Portugal, com primeira consulta exclusivamente online.
           </motion.p>
         </motion.div>
@@ -89,7 +89,7 @@ export const Locations: React.FC = () => {
               whileInView="visible"
               viewport={{ once: true, margin: '-30px' }}
               custom={i}
-              className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-[0_8px_32px_0_rgba(124,176,176,0.18)] transition-shadow duration-300 flex flex-col group"
+              className="bg-surface rounded-3xl overflow-hidden border border-surface-border shadow-sm hover:shadow-[0_8px_32px_0_rgba(124,176,176,0.18)] transition-shadow duration-300 flex flex-col group"
             >
               {/* Map embed */}
               <div className="relative h-[250px] overflow-hidden">
@@ -108,7 +108,7 @@ export const Locations: React.FC = () => {
                 {/* City heading */}
                 <div className="flex items-center gap-2 mb-3">
                   <MapPin className="w-4 h-4 text-secondary shrink-0" />
-                  <h3 className="font-bold text-base text-primary leading-tight">{loc.city}</h3>
+                  <h3 className="font-bold text-base text-site-text leading-tight">{loc.city}</h3>
                 </div>
 
                 {/* Address */}
@@ -122,7 +122,7 @@ export const Locations: React.FC = () => {
                     href={loc.mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-gray-200 text-primary text-xs font-semibold hover:border-secondary hover:text-secondary transition-colors duration-200 shadow-sm group/btn"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-surface-border text-site-text text-xs font-semibold hover:border-secondary hover:text-secondary transition-colors duration-200 shadow-sm group/btn"
                   >
                     Abrir Mapa
                     <ExternalLink className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200" />

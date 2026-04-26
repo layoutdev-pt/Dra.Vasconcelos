@@ -3,23 +3,32 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-  /* 1. CORES BASE */
+  /* 1. CORES DE IDENTIDADE (Fixas) */
   --color-primary: #0f1729;
   --color-secondary: #7cb0b0;
   --color-secondary-light: #92cfd1;
   --color-accent: #df9d3b;
-  
-  /* 2. VARIÁVEIS DINÂMICAS (Mudam com o tema) */
+
+  /* 2. VARIÁVEIS SEMÂNTICAS (Mudam com o tema) */
+  /* Valores Padrão (Light Mode) */
   --color-site-bg: #f9fafa;
   --color-site-text: #0f1729;
+  --color-site-text-muted: #64748b;
+  
+  --color-surface: #ffffff;
+  --color-surface-muted: #f1f5f9;
+  --color-surface-border: #e2e8f0;
+
+  --color-nav-bg: rgba(255, 255, 255, 0.8);
   --color-hero-bg: #f2f6f6;
+  
   --color-panel-bg: rgba(255, 255, 255, 0.7);
   --color-panel-border: rgba(255, 255, 255, 0.4);
 
+  /* Tipografia & Animações */
   --font-display: "Inter", sans-serif;
-  
-  --shadow-glass: 0 8px 32px 0 rgba(124, 176, 176, 0.30);
-  --shadow-float: 0 20px 40px -10px rgba(0,0,0,0.15);
+  --shadow-glass: 0 8px 32px 0 rgba(124, 176, 176, 0.20);
+  --shadow-float: 0 20px 40px -10px rgba(0,0,0,0.1);
 
   @keyframes gentle-float {
     0%, 100% { transform: translateY(0); }
@@ -28,23 +37,44 @@
   --animate-float-gentle: gentle-float 6s ease-in-out infinite;
 }
 
-/* 3. CONFIGURAÇÃO DO MODO ESCURO (O que o Tailwind v4 precisa) */
+/* 3. REORGANIZAÇÃO DO MODO ESCURO */
 @layer base {
   .dark {
-    /* Aqui dizemos quais cores devem mudar quando a classe .dark existir */
-    --color-site-bg: #0f172a; /* Azul quase preto */
-    --color-site-text: #f9fafa; /* Branco neve */
-    --color-hero-bg: #020617; /* Fundo do hero bem escuro */
-    --color-panel-bg: rgba(15, 23, 42, 0.8); /* Painéis ficam escuros e transparentes */
-    --color-panel-border: rgba(255, 255, 255, 0.1);
+    --color-site-bg: #030712; /* Neutral 950 */
+    --color-site-text: #f8fafc; /* Neutral 50 */
+    --color-site-text-muted: #94a3b8; /* Neutral 400 */
+
+    --color-surface: #0f172a; /* Neutral 900 */
+    --color-surface-muted: #1e293b; /* Neutral 800 */
+    --color-surface-border: #334155; /* Neutral 700 */
+
+    --color-nav-bg: rgba(3, 7, 18, 0.85);
+    --color-hero-bg: #020617;
+    
+    --color-panel-bg: rgba(15, 23, 42, 0.8);
+    --color-panel-border: rgba(255, 255, 255, 0.08);
+
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    --shadow-float: 0 20px 40px -10px rgba(0,0,0,0.5);
+    
+    /* Ajustes específicos para garantir legibilidade no modo escuro */
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-site-bg);
+    color: var(--color-site-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    @apply antialiased font-sans;
   }
 }
 
-/* Utilitários atualizados para usar as variáveis dinâmicas */
+/* 4. UTILITÁRIOS CUSTOMIZADOS */
 @utility glass-panel {
   background: var(--color-panel-bg);
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-panel-border);
+  box-shadow: var(--shadow-glass);
 }
 
 @utility glass-panel-brand {

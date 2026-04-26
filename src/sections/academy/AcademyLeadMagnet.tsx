@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Mail, CheckCircle2 } from 'lucide-react';
+import { supabase } from '../../config/supabase';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -13,13 +14,41 @@ const fadeUp = {
 
 export const AcademyLeadMagnet: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
-    // TODO: integrate with Supabase to save email and trigger download
-    setSubmitted(true);
+
+    setStatus('loading');
+
+    try {
+      // 1. Save to Supabase
+      const { error: dbError } = await supabase
+        .from('leads')
+        .insert([{ email, source: 'ebook_academy' }]);
+
+      if (dbError && dbError.code !== '23505') throw dbError;
+
+      // 2. Trigger Edge Function for Email
+      await supabase.functions.invoke('send-lead-magnet', {
+        body: { email },
+      });
+
+      // 3. Direct Download for immediate gratification
+      const link = document.createElement('a');
+      link.href = '/docs/placeholderpdf.pdf';
+      link.download = 'Guia_Saude_Integrativa.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setStatus('success');
+      setEmail('');
+    } catch (err) {
+      console.error('Error in lead magnet:', err);
+      setStatus('error');
+    }
   };
 
   return (
@@ -29,7 +58,7 @@ export const AcademyLeadMagnet: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          className="bg-white rounded-4xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-gray-100 overflow-hidden"
+          className="bg-surface rounded-4xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-surface-border overflow-hidden"
         >
           <div className="flex flex-col md:flex-row items-center">
 
@@ -74,7 +103,7 @@ export const AcademyLeadMagnet: React.FC = () => {
               <motion.h3
                 variants={fadeUp}
                 custom={1}
-                className="text-2xl md:text-3xl font-bold text-primary mb-3"
+                className="text-2xl md:text-3xl font-bold text-site-text mb-3"
               >
                 Comece a ler hoje mesmo: <span className="text-secondary">Guia Digital Gratuito</span>
               </motion.h3>
@@ -82,21 +111,21 @@ export const AcademyLeadMagnet: React.FC = () => {
               <motion.p
                 variants={fadeUp}
                 custom={2}
-                className="text-gray-500 font-light leading-relaxed mb-8 max-w-lg"
+                className="text-site-text-muted font-light leading-relaxed mb-8 max-w-lg"
               >
                 Deixe o seu email abaixo para receber imediatamente a sua cópia digital com dicas práticas de saúde integrativa.
               </motion.p>
 
-              {submitted ? (
+              {status === 'success' ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="flex items-center gap-3 bg-green-50 border border-green-100 rounded-2xl px-6 py-4"
+                  className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-2xl px-6 py-4"
                 >
                   <CheckCircle2 className="w-6 h-6 text-green-500 shrink-0" />
                   <div>
-                    <p className="font-bold text-green-800 text-sm">Ebook enviado com sucesso!</p>
-                    <p className="text-green-600 text-xs mt-0.5">Verifique a sua caixa de entrada.</p>
+                    <p className="font-bold text-green-600 text-sm">Ebook enviado com sucesso!</p>
+                    <p className="text-green-500 text-xs mt-0.5 opacity-80">Verifique a sua caixa de entrada e o seu download automático.</p>
                   </div>
                 </motion.div>
               ) : (
@@ -107,21 +136,28 @@ export const AcademyLeadMagnet: React.FC = () => {
                   className="flex flex-col sm:flex-row gap-3 max-w-lg"
                 >
                   <div className="relative flex-1">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-site-text-muted" />
                     <input
                       type="email"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
+                      disabled={status === 'loading'}
                       placeholder="O seu melhor email"
                       required
-                      className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
+                      className="w-full pl-11 pr-4 py-3.5 bg-surface-muted border border-surface-border rounded-xl text-sm text-site-text placeholder-site-text-muted/60 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all disabled:opacity-50"
                     />
+                    {status === 'error' && (
+                      <span className="absolute -bottom-6 left-4 text-xs text-red-400 font-medium">
+                        Ocorreu um erro. Tente novamente.
+                      </span>
+                    )}
                   </div>
                   <button
                     type="submit"
-                    className="bg-accent hover:bg-accent/90 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-accent/20 whitespace-nowrap"
+                    disabled={status === 'loading'}
+                    className="bg-accent hover:bg-accent/90 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-accent/20 whitespace-nowrap disabled:opacity-50"
                   >
-                    Receber Ebook Grátis
+                    {status === 'loading' ? 'A processar...' : 'Receber Ebook Grátis'}
                   </button>
                 </motion.form>
               )}

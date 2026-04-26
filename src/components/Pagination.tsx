@@ -25,7 +25,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => goToPage(currentPage - 1)}
         disabled={currentPage === 1}
-        className="w-11 h-11 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-secondary hover:text-secondary transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+        className="w-11 h-11 rounded-full border border-surface-border flex items-center justify-center text-site-text-muted hover:border-secondary hover:text-secondary transition-all disabled:opacity-30 disabled:cursor-not-allowed"
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
@@ -38,7 +38,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           className={`w-11 h-11 rounded-full font-bold text-sm transition-all ${
             page === currentPage
               ? 'bg-secondary text-white shadow-lg shadow-secondary/20 scale-110'
-              : 'border border-gray-200 text-gray-500 hover:border-secondary hover:text-secondary'
+              : 'border border-surface-border text-site-text-muted hover:border-secondary hover:text-secondary'
           }`}
         >
           {page}
@@ -49,7 +49,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => goToPage(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="w-11 h-11 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:border-secondary hover:text-secondary transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+        className="w-11 h-11 rounded-full border border-surface-border flex items-center justify-center text-site-text-muted hover:border-secondary hover:text-secondary transition-all disabled:opacity-30 disabled:cursor-not-allowed"
       >
         <ChevronRight className="w-5 h-5" />
       </button>

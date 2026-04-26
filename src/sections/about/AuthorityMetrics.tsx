@@ -6,13 +6,13 @@ export const AuthorityMetrics: React.FC = () => {
 
   return (
     <>
-      <section className="py-24 bg-background-light relative overflow-hidden">
+      <section className="py-24 bg-site-bg relative overflow-hidden">
         <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12 z-10 relative">
           
           {/* Credentials Grid */}
           <div className="mb-12">
-            <h2 className="text-3xl font-extrabold text-primary mb-2">Credenciais & Reconhecimento</h2>
-            <p className="text-gray-500">Autoridade clínica com validação científica nacional e internacional.</p>
+            <h2 className="text-3xl font-extrabold text-site-text mb-2">Credenciais & Reconhecimento</h2>
+            <p className="text-site-text-muted">Autoridade clínica com validação científica nacional e internacional.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -33,24 +33,24 @@ export const AuthorityMetrics: React.FC = () => {
               </button>
             </div>
 
-            <div className="bg-white border border-gray-100 p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-surface border border-surface-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow">
               <GraduationCap className="w-8 h-8 text-secondary mb-4" />
-              <h4 className="text-xl font-bold text-primary mb-2">Mestrado Internacional</h4>
-              <p className="text-gray-500 text-sm">Universidade de Coimbra, Portugal e Formação Avançada na Suíça.</p>
+              <h4 className="text-xl font-bold text-site-text mb-2">Mestrado Internacional</h4>
+              <p className="text-site-text-muted text-sm">Universidade de Coimbra, Portugal e Formação Avançada na Suíça.</p>
             </div>
 
             <div className="bg-primary text-white p-8 rounded-3xl shadow-lg flex flex-col items-center justify-center text-center">
               <h4 className="text-5xl font-black mb-2 text-secondary">15.000+</h4>
-              <p className="text-gray-400 font-medium uppercase tracking-widest text-xs">Doentes Acompanhados</p>
+              <p className="text-white/60 font-medium uppercase tracking-widest text-xs">Doentes Acompanhados</p>
             </div>
 
           </div>
 
           {/* Full Professional Experience List */}
-          <div className="mt-20 pt-16 border-t border-gray-200">
+          <div className="mt-20 pt-16 border-t border-surface-border">
             <div className="text-center mb-12">
-              <h3 className="text-3xl font-extrabold text-primary">Carreira Clínica e Académica</h3>
-              <p className="text-gray-500 mt-2">Visão geral do trajeto de investigação, formações e filiações.</p>
+              <h3 className="text-3xl font-extrabold text-site-text">Carreira Clínica e Académica</h3>
+              <p className="text-site-text-muted mt-2">Visão geral do trajeto de investigação, formações e filiações.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
@@ -68,9 +68,9 @@ export const AuthorityMetrics: React.FC = () => {
                 "Membro da APMI (Associação Portuguesa de Medicina Integrativa)",
                 "Autora: \"Dairy Products: Impact on Prostate Cancer?\" (Frontiers Front. Nutr.)"
               ].map((exp, idx) => (
-                <div key={idx} className="flex items-start gap-4 p-5 bg-white rounded-xl shadow-sm border border-gray-100 hover:border-secondary/40 transition-colors">
-                  <div className="w-2 h-2 rounded-full bg-secondary shrink-0 mt-2" />
-                  <span className="text-gray-700 leading-snug">{exp}</span>
+                <div key={idx} className="flex items-start gap-4 p-5 bg-surface rounded-xl shadow-sm border border-surface-border hover:border-secondary/60 hover:-translate-y-1 hover:scale-[1.03] hover:shadow-md hover:bg-surface-muted transition-all duration-150 group cursor-default">
+                  <div className="w-2 h-2 rounded-full bg-secondary shrink-0 mt-2 group-hover:scale-150 transition-transform duration-150" />
+                  <span className="text-site-text leading-snug group-hover:text-secondary transition-colors duration-150">{exp}</span>
                 </div>
               ))}
             </div>
@@ -82,16 +82,16 @@ export const AuthorityMetrics: React.FC = () => {
       {/* Biography Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white w-full max-w-3xl rounded-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+          <div className="bg-surface w-full max-w-3xl rounded-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
-            <div className="p-6 md:p-8 flex items-center justify-between border-b border-gray-100">
-              <h2 className="text-2xl md:text-3xl font-extrabold text-primary">
+            <div className="p-6 md:p-8 flex items-center justify-between border-b border-surface-border">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-site-text">
                 Biografia Completa
               </h2>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-800"
+                className="p-2 rounded-full hover:bg-surface-muted transition-colors text-site-text-muted hover:text-site-text"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -99,11 +99,11 @@ export const AuthorityMetrics: React.FC = () => {
             
             {/* Modal Content */}
             <div className="p-6 md:p-8 overflow-y-auto">
-              <div className="text-gray-600 leading-relaxed font-light text-lg space-y-6">
+              <div className="text-site-text-muted leading-relaxed font-light text-lg space-y-6">
                 <p>
                   Alexandra Vasconcelos nasceu em Lisboa, em 1965. Licenciou-se em Ciências Farmacêuticas pela Universidade de Lisboa em 1989 e, nos primeiros 15 anos da sua carreira, dedicou-se à gestão e direção técnica da sua própria farmácia comunitária.
                 </p>
-                <p>acad
+                <p>
                   O acompanhamento próximo de doentes com patologias crónicas despertou nela a necessidade de explorar novas abordagens na promoção da saúde. Foi esta inquietação que a levou a especializar-se em terapias complementares, naturais e biológicas.
                 </p>
                 <p>
@@ -116,7 +116,7 @@ export const AuthorityMetrics: React.FC = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-6 md:p-8 bg-gray-50 border-t border-gray-100 text-right">
+            <div className="p-6 md:p-8 bg-surface-muted border-t border-surface-border text-right">
               <button 
                 onClick={() => setIsModalOpen(false)}
                 className="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-full font-bold transition-colors"
