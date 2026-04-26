@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookCard } from '../../components/BookCard';
+import { BookCard3D } from '../../components/BookCard3D';
 import { useBooks } from '../../hooks/useBooks';
 import { Loader2 } from 'lucide-react';
 
@@ -36,17 +36,11 @@ export const AboutBooks: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start justify-items-center mt-12 pb-12">
-          {featuredBooks.map((book) => (
+          {featuredBooks.map((book, index) => (
             <div key={book.id} className="transition-transform duration-500 w-full flex justify-center">
-                <BookCard 
-                  author={book.author.toUpperCase()}
-                  titleLine1={book.title.split(' ').slice(0, 2).join(' ')}
-                  titleLine2={book.title.split(' ').slice(2).join(' ')}
-                  bookName={book.title}
-                  image={book.cover_url}
-                  status={book.currency === 'BRL' ? `R$ ${book.price?.toFixed(2).replace('.', ',')}` : book.currency === 'USD' ? `$${book.price?.toFixed(2).replace('.', ',')}` : `${book.price?.toFixed(2).replace('.', ',')}€`}
-                  theme={book.type === 'ebook' ? 'blue' : 'dark'}
-                  size="lg"
+                <BookCard3D 
+                  book={book}
+                  index={index}
                 />
             </div>
           ))}

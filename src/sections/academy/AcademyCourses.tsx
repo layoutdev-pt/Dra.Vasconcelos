@@ -19,18 +19,24 @@ const CourseSkeleton: React.FC = () => (
   </div>
 );
 
-export const AcademyCourses: React.FC = () => {
+interface AcademyCoursesProps {
+  featuredOnly?: boolean;
+  showBorder?: boolean;
+  title?: string;
+  subtitle?: string;
+}
+
+export const AcademyCourses: React.FC<AcademyCoursesProps> = ({ 
+  featuredOnly = false, 
+  showBorder = false,
+  title,
+  subtitle
+}) => {
   const { courses, loading, error } = useCourses();
 
-  const mappedCourses: CourseCardProps[] = courses.map(course => ({
-    title: course.title,
-    description: course.description,
-    level: course.level,
-    modules: course.modules,
-    price: course.price,
-    image: course.image_url,
-    isPopular: course.is_featured
-  }));
+  const displayCourses = featuredOnly 
+    ? courses.filter(c => c.is_featured)
+    : courses;
 
   if (error) {
     return (
@@ -43,7 +49,8 @@ export const AcademyCourses: React.FC = () => {
     );
   }
 
-  if (!loading && mappedCourses.length === 0) {
+  if (!loading && displayCourses.length === 0) {
+    if (featuredOnly) return null; // Don't show anything on home if no featured courses
     return (
       <div className="py-20 flex flex-col items-center justify-center text-center">
         <div className="w-16 h-16 bg-gray-50 rounded-3xl flex items-center justify-center mb-4">
@@ -55,26 +62,49 @@ export const AcademyCourses: React.FC = () => {
   }
 
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 pt-4 pb-12">
-        {loading ? (
-          Array.from({ length: 3 }).map((_, i) => <CourseSkeleton key={i} />)
-        ) : (
-          courses.map((course) => (
-            <Link key={course.id} to={`/cursos/${course.slug || course.id}`} className="transition-transform duration-500 block h-full">
-              <CourseCard 
-                title={course.title}
-                description={course.description}
-                level={course.level}
-                modules={course.modules}
-                price={course.price}
-                image={course.image_url}
-                isPopular={course.is_featured}
-              />
-            </Link>
-          ))
-        )}
+    <section className={`w-full ${showBorder ? 'py-24 border-t border-gray-100 dark:border-white/5' : ''}`}>
+      {(title || subtitle) && (
+        <div className="text-center mb-16 px-6">
+          {subtitle && (
+            <span className="text-secondary font-bold tracking-widest uppercase text-xs mb-2 block">
+              {subtitle}
+            </span>
+          )}
+          {title && (
+            <h2 className="text-4xl font-extrabold text-site-text">
+              {title}
+            </h2>
+          )}
+        </div>
+      )}
+      
+      <div className={`${showBorder ? 'max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12' : 'w-full'}`}>
+        <div className="flex flex-wrap justify-center gap-8 lg:gap-12 pt-4 pb-12">
+          {loading ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-2rem)] max-w-[400px]">
+                <CourseSkeleton />
+              </div>
+            ))
+          ) : (
+            displayCourses.map((course) => (
+              <div key={course.id} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-2rem)] max-w-[400px]">
+                <Link to={`/cursos/${course.slug || course.id}`} className="transition-transform duration-500 hover:-translate-y-2 block h-full">
+                  <CourseCard 
+                    title={course.title}
+                    description={course.description}
+                    level={course.level}
+                    modules={course.modules}
+                    price={course.price}
+                    image={course.image_url}
+                    isPopular={course.is_featured}
+                  />
+                </Link>
+              </div>
+            ))
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };

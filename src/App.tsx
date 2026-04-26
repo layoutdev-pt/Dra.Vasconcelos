@@ -11,7 +11,8 @@ import { ThemeProvider } from './context/ThemeContext';
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const About = lazy(() => import('./pages/About').then(module => ({ default: module.About })));
 const Appointments = lazy(() => import('./pages/Appointments').then(module => ({ default: module.Appointments })));
-const Academy = lazy(() => import('./pages/Academy').then(module => ({ default: module.Academy })));
+const Courses = lazy(() => import('./pages/Courses').then(module => ({ default: module.Courses })));
+const Books = lazy(() => import('./pages/Books').then(module => ({ default: module.Books })));
 const CourseDetails = lazy(() => import('./pages/CourseDetails').then(module => ({ default: module.CourseDetails })));
 const Login = lazy(() => import('./pages/Login').then(module => ({ default: module.Login })));
 const Admin = lazy(() => import('./pages/Admin').then(module => ({ default: module.Admin })));
@@ -48,7 +49,8 @@ const AppShell: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/sobre" element={<About />} />
             <Route path="/consultas" element={<Appointments />} />
-            <Route path="/aprender" element={<Academy />} />
+            <Route path="/cursos" element={<Courses />} />
+            <Route path="/livros" element={<Books />} />
             <Route path="/cursos/:id" element={<CourseDetails />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<Blog />} />

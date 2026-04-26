@@ -10,7 +10,8 @@ const NAV_LINKS = [
   { to: '/', label: 'Home' },
   { to: '/sobre', label: 'Sobre' },
   { to: '/consultas', label: 'Consultas' },
-  { to: '/aprender', label: 'Aprender' },
+  { to: '/cursos', label: 'Cursos' },
+  { to: '/livros', label: 'Livros' },
   { to: '/blog', label: 'Blog' },
   { to: '/midia', label: 'Mídia' },
 ];

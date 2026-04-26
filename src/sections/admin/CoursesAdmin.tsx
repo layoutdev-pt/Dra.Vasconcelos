@@ -52,6 +52,7 @@ const emptyCourse = (): CourseDraft => ({
   type: 'curso', level: null, modules: null, price: null, buy_url: null, 
   is_featured: false, is_published: true,
   published_at: new Date().toISOString(),
+  enrollment_closes_at: null,
   parsedContent: { html: '', modules: [], testimonials: [] }
 });
 
@@ -137,7 +138,8 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
       type: draft.type,
       is_featured: draft.is_featured,
       is_published: draft.is_published,
-      published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null
+      published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null,
+      enrollment_closes_at: draft.enrollment_closes_at ? new Date(draft.enrollment_closes_at).toISOString() : null
     };
 
     const { error: dbErr } = course
@@ -187,11 +189,23 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
           {activeTab === 'geral' && (
             <div className="space-y-5 animate-in fade-in">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label className={labelCls}>Título *</label><input className={inputCls} value={draft.title} onChange={e => set('title', e.target.value)} placeholder="Ex: BioReset — Programa de 14 Dias" /></div>
+                <div>
+                  <label className={labelCls}>Título *</label>
+                  <input 
+                    className={inputCls} 
+                    value={draft.title} 
+                    onChange={e => {
+                      const val = e.target.value;
+                      set('title', val);
+                      if (!course) set('slug', val.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
+                    }} 
+                    placeholder="Ex: BioReset — Programa de 14 Dias" 
+                  />
+                </div>
                 <div><label className={labelCls}>Subtítulo</label><input className={inputCls} value={draft.subtitle ?? ''} onChange={e => set('subtitle', e.target.value || null)} placeholder="Subtítulo opcional" /></div>
                 <div><label className={labelCls}>Softlink / Slug (URL)</label><input className={inputCls} value={draft.slug ?? ''} onChange={e => set('slug', e.target.value.toLowerCase().replace(/\s+/g, '-'))} placeholder="ex: bioreset-14-dias" /></div>
               </div>
-              <div><label className={labelCls}>Descrição Curta *</label><textarea className={`${inputCls} resize-none`} rows={3} value={draft.description} onChange={e => set('description', e.target.value)} placeholder="Recupere sua vitalidade biológica e elimine o inchaço..." /></div>
+              <div><label className={labelCls}>Descrição Curta *</label><textarea className={`${inputCls} resize-vertical`} rows={5} value={draft.description} onChange={e => set('description', e.target.value)} placeholder="Recupere sua vitalidade biológica e elimine o inchaço..." /></div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -241,10 +255,15 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
                 <div><label className={labelCls}>Link Checkout</label><input className={inputCls} value={draft.buy_url ?? ''} onChange={e => set('buy_url', e.target.value || null)} placeholder="https://pay..." /></div>
               </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><label className={labelCls}>Data de Publicação</label><input type="datetime-local" className={inputCls} value={draft.published_at ? new Date(new Date(draft.published_at).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''} onChange={e => set('published_at', e.target.value ? new Date(e.target.value).toISOString() : null)} /></div>
+                <div><label className={labelCls}>Fecho das Inscrições (Countdown)</label><input type="datetime-local" className={inputCls} value={draft.enrollment_closes_at ? new Date(new Date(draft.enrollment_closes_at).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''} onChange={e => set('enrollment_closes_at', e.target.value ? new Date(e.target.value).toISOString() : null)} /></div>
+              </div>
+
               <div>
                 <label className={labelCls}>Conteúdo Detalhado Opcional (Fica no final da página)</label>
                 <div className="bg-white rounded-xl overflow-hidden border border-gray-200">
-                  <ReactQuill theme="snow" modules={activeQuillModules} value={draft.parsedContent.html || ''} onChange={val => setParsedContent('html', val)} className="h-48 border-none" />
+                  <ReactQuill theme="snow" modules={activeQuillModules} value={draft.parsedContent.html || ''} onChange={val => setParsedContent('html', val)} className="h-96 pb-12 border-none" />
                 </div>
               </div>
 

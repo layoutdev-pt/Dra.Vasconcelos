@@ -12,7 +12,12 @@ export const Home: React.FC = () => {
       <BooksSection />
       <BioReset />
       <LeadMagnet />
-      <AcademyCourses />
+      <AcademyCourses 
+        featuredOnly={true} 
+        showBorder={true}
+        subtitle="Educação e Saúde"
+        title="Cursos Online em Destaque"
+      />
     </div>
   );
 };
