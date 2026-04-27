@@ -1,4 +1,5 @@
 import React from 'react';
+import { FavoriteButton } from './FavoriteButton';
 
 // Tipagem flexível para alinhar com a BD
 export interface CourseCardProps {
@@ -7,6 +8,7 @@ export interface CourseCardProps {
   level?: string | null;
   modules?: number | null;
   price?: number | null;
+  id?: string | number;
   image: string;
   isPopular?: boolean;
 }
@@ -18,8 +20,10 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   modules, 
   price, 
   image, 
-  isPopular 
+  isPopular,
+  id
 }) => {
+  const itemId = id?.toString() || title;
   return (
     <div className={`group bg-surface rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-surface-border flex flex-col h-full relative ${isPopular ? 'shadow-md shadow-accent/10' : ''}`}>
       
@@ -31,14 +35,14 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       )}
       
       {/* Imagem e Nível */}
-      <div className="h-48 overflow-hidden relative bg-surface-muted">
+      <div className="relative bg-surface-muted overflow-hidden">
         <img 
           src={image} 
           alt={title} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+          className="w-full h-auto block transition-transform duration-500 group-hover:scale-105" 
         />
         {level && (
-          <div className="absolute top-4 left-4 bg-surface/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-site-text shadow-sm border border-surface-border">
+          <div className="absolute top-4 left-4 bg-surface/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-site-text shadow-sm border border-surface-border z-20">
             {level}
           </div>
         )}
@@ -46,7 +50,14 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       
       {/* Corpo do Cartão */}
       <div className="p-6 flex-1 flex flex-col">
-        <h3 className="text-xl font-bold text-site-text mb-2 line-clamp-2">{title}</h3>
+        <div className="flex justify-between items-start gap-4 mb-2">
+          <h3 className="text-xl font-bold text-site-text leading-tight">{title}</h3>
+          <FavoriteButton 
+            itemId={itemId} 
+            type="course" 
+            className="shrink-0 -mt-1" 
+          />
+        </div>
         <p className="text-site-text-muted text-sm mb-6 flex-1 leading-relaxed font-light line-clamp-3">
           {description}
         </p>

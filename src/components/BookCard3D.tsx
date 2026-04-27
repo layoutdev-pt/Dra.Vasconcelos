@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Download, BookOpen, Sparkles } from 'lucide-react';
+import { FavoriteButton } from './FavoriteButton';
 import type { Book } from '../types/book';
 
 interface BookCard3DProps {
@@ -96,7 +97,8 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, index }) => {
             </div>
           )}
 
-          <div className="absolute -top-3 -left-3 z-30">
+          <div className="absolute -top-3 -left-3 z-30 flex flex-col gap-2">
+            <FavoriteButton itemId={book.id} type="book" />
             <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest shadow-md ${
               isEbook ? 'bg-blue-600 text-white' : 'bg-surface text-site-text border border-surface-border'
             }`}>
@@ -117,8 +119,8 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, index }) => {
           >
             {hasImage ? (
               <div
-                className={`w-[180px] h-[260px] ${
-                  isEbook ? 'rounded-2xl border-4 border-gray-800 overflow-hidden' : 'rounded-r-lg'
+                className={`w-[180px] h-[260px] relative overflow-hidden ${
+                  isEbook ? 'rounded-2xl border-4 border-gray-800' : 'rounded-r-lg'
                 }`}
                 style={{
                   transform: isEbook ? 'rotateY(5deg) rotateX(-2deg)' : 'rotateY(-8deg) rotateX(2deg)',
@@ -129,7 +131,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, index }) => {
                   src={book.cover_url}
                   alt={book.title}
                   onError={() => setImgError(true)}
-                  className="w-full h-full object-cover mix-blend-multiply"
+                  className="w-full h-full object-cover"
                 />
               </div>
             ) : (
@@ -140,10 +142,10 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, index }) => {
           <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-[120px] h-[16px] bg-black/8 rounded-full blur-lg" />
         </div>
 
-        <div className="text-center w-full max-w-[220px] min-h-[170px] flex flex-col justify-start">
+        <div className="text-center w-full max-w-[220px] min-h-[180px] flex flex-col justify-start">
           <p className="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">{book.author}</p>
-          <h3 className="text-base font-bold text-site-text leading-snug mb-1 line-clamp-2">{book.title}</h3>
-          <p className="text-xs text-secondary font-light leading-relaxed mb-4 line-clamp-2">{book.subtitle || 'Livro Alexandra Vasconcelos'}</p>
+          <h3 className="text-base font-bold text-site-text leading-snug mb-1">{book.title}</h3>
+          <p className="text-xs text-secondary font-light leading-relaxed mb-4">{book.subtitle || 'Livro Alexandra Vasconcelos'}</p>
 
           <div className="flex items-center justify-center gap-3 mt-auto">
             {book.price != null ? (

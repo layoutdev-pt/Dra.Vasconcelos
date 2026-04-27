@@ -108,7 +108,7 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
         await notifyAllUsers(
           '📚 Novo Livro Disponível!',
           `Acabámos de publicar o livro: ${payload.title}. Descubra mais no nosso catálogo.`,
-          '/aprender' // Ou o link específico do detalhe do livro se existir
+          '/livros' // Ou o link específico do detalhe do livro se existir
         );
       }
 

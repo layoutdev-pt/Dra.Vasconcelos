@@ -4,7 +4,7 @@ import { Truck } from 'lucide-react';
 
 export const ShippingTerms: React.FC = () => {
   return (
-    <div className="min-h-screen bg-white pt-32 pb-20">
+    <div className="min-h-screen bg-site-bg pt-32 pb-20 transition-colors duration-500">
       <div className="max-w-[1000px] mx-auto px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -16,15 +16,15 @@ export const ShippingTerms: React.FC = () => {
               <Truck className="text-secondary w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-primary tracking-tight">Condições de Envio e Entrega</h1>
-              <p className="text-gray-400 text-sm mt-1 items-center flex gap-2">
+              <h1 className="text-3xl md:text-4xl font-bold text-site-text tracking-tight">Condições de Envio e Entrega</h1>
+              <p className="text-site-text-muted text-sm mt-1 items-center flex gap-2">
                 FB – Farmabiologica Lda.
               </p>
             </div>
           </div>
 
-          <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed font-light space-y-12">
-            <section className="bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
+          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed font-light space-y-12">
+            <section className="bg-surface-muted/30 p-6 rounded-2xl border border-surface-border">
               <p className="m-0 italic">
                 As condições de entrega variam consoante a natureza do produto adquirido (físico ou digital) e a plataforma onde a compra é processada.
               </p>
@@ -32,8 +32,8 @@ export const ShippingTerms: React.FC = () => {
 
             {/* SECTION 1 */}
             <section className="space-y-6">
-              <h2 className="text-2xl font-bold text-primary flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white text-sm">1</span>
+              <h2 className="text-2xl font-bold text-site-text flex items-center gap-3">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-white text-sm">1</span>
                 PRODUTOS DIGITAIS: Cursos e Ebooks (Hotmart)
               </h2>
               <p>
@@ -41,12 +41,12 @@ export const ShippingTerms: React.FC = () => {
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <div className="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
-                  <h4 className="font-bold text-primary mb-2 text-sm uppercase tracking-wider">Entrega Automática e Digital</h4>
+                <div className="p-5 border border-surface-border rounded-xl bg-surface shadow-sm">
+                  <h4 className="font-bold text-site-text mb-2 text-sm uppercase tracking-wider">Entrega Automática e Digital</h4>
                   <p className="text-sm m-0">Não há qualquer envio físico por correio. A entrega destes produtos é 100% digital e automática.</p>
                 </div>
-                <div className="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
-                  <h4 className="font-bold text-primary mb-2 text-sm uppercase tracking-wider">Acesso após Pagamento</h4>
+                <div className="p-5 border border-surface-border rounded-xl bg-surface shadow-sm">
+                  <h4 className="font-bold text-site-text mb-2 text-sm uppercase tracking-wider">Acesso após Pagamento</h4>
                   <p className="text-sm m-0">Imediatamente após a plataforma Hotmart confirmar a receção do seu pagamento, receberá um e-mail automático (enviado pela própria Hotmart) com o link de acesso ao curso ou com o ficheiro do ebook para descarregar.</p> 
                 </div>
               </div>
@@ -65,17 +65,17 @@ export const ShippingTerms: React.FC = () => {
 
             {/* SECTION 2 */}
             <section className="space-y-8">
-              <h2 className="text-2xl font-bold text-primary flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white text-sm">2</span>
+              <h2 className="text-2xl font-bold text-site-text flex items-center gap-3">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-white text-sm">2</span>
                 PRODUTOS FÍSICOS: Loja Direta (FB – Farmabiologica Lda.)
               </h2>
               <p>
                 Para produtos físicos expedidos diretamente pelas nossas instalações, aplicam-se as seguintes regras de envio:
               </p>
 
-              <div className="space-y-8 pl-4 border-l-2 border-gray-100">
+              <div className="space-y-8 pl-4 border-l-2 border-surface-border">
                 <div>
-                  <h3 className="text-lg font-bold text-primary mb-3">2.1. Processamento e Expedição</h3>
+                  <h3 className="text-lg font-bold text-site-text mb-3">2.1. Processamento e Expedição</h3>
                   <p className="text-sm mb-4">Sempre que os artigos se encontrem em stock, as encomendas são processadas e despachadas de acordo com o método de pagamento selecionado:</p>
                   <ul className="list-none p-0 space-y-3 text-sm">
                     <li className="flex gap-2"><strong>Contra-entrega:</strong> A expedição é iniciada após a receção e validação do pedido de encomenda.</li>
@@ -85,7 +85,7 @@ export const ShippingTerms: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-bold text-primary mb-3">2.2. Método de Transporte</h3>
+                  <h3 className="text-lg font-bold text-site-text mb-3">2.2. Método de Transporte</h3>
                   <p className="text-sm m-0">
                     Todas as encomendas de produtos físicos são enviadas via <strong>Transportadora</strong>. 
                     Nos casos em que o serviço da transportadora o permita, será fornecido ao cliente um link para acompanhamento online (tracking) do trajeto da encomenda.
@@ -93,7 +93,7 @@ export const ShippingTerms: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-bold text-primary mb-3">2.3. Prazos de Entrega</h3>
+                  <h3 className="text-lg font-bold text-site-text mb-3">2.3. Prazos de Entrega</h3>
                   <ul className="list-disc pl-6 space-y-2 text-sm">
                     <li>Regra geral, o prazo de entrega é de <strong>2 dias úteis</strong> para Portugal Continental.</li>
                     <li>O prazo máximo de entrega previsto pode variar entre <strong>6 a 10 dias úteis</strong>, consoante a complexidade logística ou destino.</li>
@@ -102,19 +102,19 @@ export const ShippingTerms: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-bold text-primary mb-3">2.4. Rutura de Stock</h3>
+                  <h3 className="text-lg font-bold text-site-text mb-3">2.4. Rutura de Stock</h3>
                   <p className="text-sm m-0">O prazo de entrega dependerá sempre do stock existente. Caso se verifique uma rutura de stock imprevista do artigo encomendado, o cliente será imediatamente contactado pela nossa equipa para ser informado do novo prazo previsto ou para acordar uma alternativa.</p>
                 </div>
 
-                <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
-                  <h3 className="text-lg font-bold text-primary mb-3">2.5. Verificação no Momento da Entrega (Garantia de Transporte)</h3>
-                  <p className="text-sm mb-4 font-semibold">Garantimos que todos os produtos são embalados segundo as normas rigorosas de acondicionamento, sem qualquer anomalia. Para assegurar o acionamento do seguro de transporte, o cliente deve cumprir o seguinte procedimento:</p>
+                <div className="bg-secondary/10 p-6 rounded-2xl border border-secondary/20">
+                  <h3 className="text-lg font-bold text-secondary mb-3">2.5. Verificação no Momento da Entrega (Garantia de Transporte)</h3>
+                  <p className="text-sm mb-4 font-semibold text-site-text">Garantimos que todos os produtos são embalados segundo as normas rigorosas de acondicionamento, sem qualquer anomalia. Para assegurar o acionamento do seguro de transporte, o cliente deve cumprir o seguinte procedimento:</p>
                   <ol className="list-decimal pl-6 space-y-3 text-sm">
                     <li>Ao receber a encomenda, deverá verificar o estado exterior da mesma e as quantidades perante o estafeta da transportadora.</li>
                     <li>Caso verifique que a embalagem foi danificada durante o envio, deve recusar a receção da mesma e realizar a respetiva queixa, escrevendo o motivo da recusa na guia do transportador nesse exato momento.</li>
                     <li>De seguida, deverá contactar a nossa equipa para transmitir o sucedido, efetivando o registo da ocorrência.</li>
                   </ol>
-                  <p className="text-xs mt-4 text-gray-500">
+                  <p className="text-xs mt-4 text-site-text-muted">
                     Garantimos que, caso ocorra algum dano no material durante o transporte e o cliente tenha seguido rigorosamente este procedimento (recusa com justificação), procederemos ao envio de uma nova encomenda igual à solicitada (caso exista stock), ficando os novos portes de envio por nossa conta. A FB – Farmabiologica Lda. não se responsabiliza por danos de transporte reclamados após a aceitação da encomenda sem anotações na guia da transportadora.
                   </p>
                 </div>

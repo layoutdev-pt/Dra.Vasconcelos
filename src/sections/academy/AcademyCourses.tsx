@@ -5,8 +5,8 @@ import { useCourses } from '../../hooks/useCourses';
 import { AlertCircle, BookOpen } from 'lucide-react';
 
 const CourseSkeleton: React.FC = () => (
-  <div className="bg-surface rounded-2xl overflow-hidden shadow-sm border border-surface-border flex flex-col h-[400px] animate-pulse">
-    <div className="h-48 bg-surface-muted"></div>
+  <div className="bg-surface rounded-2xl overflow-hidden shadow-sm border border-surface-border flex flex-col animate-pulse">
+    <div className="aspect-video bg-surface-muted"></div>
     <div className="p-6 flex-1 flex flex-col">
       <div className="h-6 bg-surface-muted rounded w-3/4 mb-4"></div>
       <div className="h-4 bg-surface-muted rounded w-full mb-2"></div>
@@ -91,6 +91,7 @@ export const AcademyCourses: React.FC<AcademyCoursesProps> = ({
               <div key={course.id} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-2rem)] max-w-[400px]">
                 <Link to={`/cursos/${course.slug || course.id}`} className="transition-transform duration-500 hover:-translate-y-2 block h-full">
                   <CourseCard 
+                    id={course.id}
                     title={course.title}
                     description={course.description}
                     level={course.level}

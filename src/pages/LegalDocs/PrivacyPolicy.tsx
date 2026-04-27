@@ -33,7 +33,7 @@ export const PrivacyPolicy: React.FC = () => {
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-primary mb-4">2. Dados Recolhidos e Finalidades</h2>
+              <h2 className="text-xl font-bold text-site-text mb-4">2. Dados Recolhidos e Finalidades</h2>
               <p>
                 Recolhemos apenas os dados estritamente necessários para prestar os nossos serviços de forma eficiente e segura:
               </p>
@@ -47,14 +47,14 @@ export const PrivacyPolicy: React.FC = () => {
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-primary mb-4">3. Prova de Consentimento</h2>
+              <h2 className="text-xl font-bold text-site-text mb-4">3. Prova de Consentimento</h2>
               <p>
                 De acordo com as exigências legais, a FB – Farmabiologica Lda. mantém um registo informático (log) que associa o seu endereço de e-mail à data e hora exatas em que aceitou os nossos Termos e a nossa Política de Privacidade, servindo como prova de consentimento válido.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-primary mb-4">4. Partilha de Dados com Terceiros</h2>
+              <h2 className="text-xl font-bold text-site-text mb-4">4. Partilha de Dados com Terceiros</h2>
               <p>
                 Não vendemos nem partilhamos os seus dados pessoais para fins publicitários de terceiros. A partilha ocorre apenas para a viabilização do serviço:
               <ul className="list-disc pl-6 space-y-2">
@@ -66,14 +66,14 @@ export const PrivacyPolicy: React.FC = () => {
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-primary mb-4">5. Conservação dos Dados</h2>
+              <h2 className="text-xl font-bold text-site-text mb-4">5. Conservação dos Dados</h2>
               <p>
                 Os dados relativos à conta de utilizador e interações (comentários) são conservados enquanto a conta estiver ativa. Dados de faturação são mantidos pelo prazo legal de 10 anos. 
               </p>
             </section>
             
             <section>
-              <h2 className="text-xl font-bold text-primary mb-4">6. Direitos do Utilizador (Direito a ser Esquecido)</h2>
+              <h2 className="text-xl font-bold text-site-text mb-4">6. Direitos do Utilizador (Direito a ser Esquecido)</h2>
               <p>
                 O utilizador tem o direito de aceder, retificar, limitar ou solicitar o apagamento definitivo dos seus dados e da sua conta. Para exercer estes direitos, poderá fazê-lo na sua área de cliente ou contactar-nos através do e-mail geral@draalexandravasconcelos.pt.
               </p>

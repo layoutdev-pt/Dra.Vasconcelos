@@ -4,7 +4,8 @@ import { User, LogOut, Heart, MessageSquare, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { ProfileForm } from '../sections/perfil/ProfileForm';
-import { UserComments } from '../sections/perfil/UserComments'; // Importação adicionada aqui
+import { UserComments } from '../sections/perfil/UserComments';
+import { UserFavorites } from '../sections/perfil/UserFavorites';
 
 export const Perfil: React.FC = () => {
   const { signOut } = useAuth();
@@ -93,21 +94,7 @@ export const Perfil: React.FC = () => {
                   >
                     <h2 className="text-xl font-bold text-site-text mb-6">Os meus Favoritos</h2>
                     
-                    {/* Placeholder Visual de "Vazio" para os favoritos */}
-                    <div className="text-center py-16 px-4 bg-surface-muted rounded-2xl border border-dashed border-surface-border transition-colors duration-500">
-                      <Heart className="w-12 h-12 text-site-text-muted/20 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-site-text">Ainda não guardou favoritos</h3>
-                      <p className="text-site-text-muted mt-2 max-w-sm mx-auto text-sm">
-                        Os cursos, livros ou artigos que marcar com o coração vão aparecer todos organizados aqui.
-                      </p>
-                      <button 
-                        onClick={() => navigate('/aprender')}
-                        className="mt-6 inline-flex items-center gap-2 px-6 py-2.5 bg-secondary text-white text-sm font-bold rounded-xl hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/20"
-                      >
-                        Explorar Cursos
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
+                    <UserFavorites />
                   </motion.div>
                 )}
 

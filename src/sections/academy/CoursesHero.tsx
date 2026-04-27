@@ -77,7 +77,7 @@ export const CoursesHero: React.FC = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-            className="flex-1 relative flex items-center justify-center min-h-[440px] md:min-h-[560px]"
+            className="flex-1 relative flex items-center justify-center min-h-[500px] md:min-h-[650px] lg:min-h-[750px]"
           >
             <motion.div
               animate={{ y: [0, -14, 0] }}
@@ -88,7 +88,7 @@ export const CoursesHero: React.FC = () => {
               <img
                 src={coursesHero}
                 alt="Cursos Dra. Alexandra Vasconcelos"
-                className="w-[380px] md:w-[500px] lg:w-[580px] h-auto object-contain select-none"
+                className="w-full max-w-[500px] md:max-w-[750px] lg:max-w-[950px] h-auto object-contain select-none transition-all duration-300"
                 style={{ transform: 'rotateY(6deg) rotateX(2deg)', transformStyle: 'preserve-3d' }}
               />
             </motion.div>

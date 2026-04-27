@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import whiteLogo from '../../assets/logo/full_white.svg';
 import { supabase } from '../../config/supabase';
+import { Instagram, Facebook, Youtube, ExternalLink, ShieldCheck, Mail, Phone } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -38,16 +39,31 @@ export const Footer: React.FC = () => {
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
               Empoderando pacientes através do conhecimento integrativo de ponta para um amanhã com mais vitalidade e saúde plena.
             </p>
+            <div className="flex items-center gap-4 pt-2">
+              <a href="https://www.instagram.com/dra.alexandravasconcelos/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-secondary hover:border-secondary hover:-translate-y-1 transition-all group">
+                <Instagram className="w-4 h-4 text-white group-hover:text-white" />
+              </a>
+              <a href="https://www.facebook.com/draalexandravasconcelos/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-secondary hover:border-secondary hover:-translate-y-1 transition-all group">
+                <Facebook className="w-4 h-4 text-white group-hover:text-white" />
+              </a>
+              <a href="https://www.youtube.com/@draalexandravasconcelos" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-secondary hover:border-secondary hover:-translate-y-1 transition-all group">
+                <Youtube className="w-4 h-4 text-white group-hover:text-white" />
+              </a>
+            </div>
           </div>
 
           {/* Coluna 2: Clínica & Conhecimento */}
           <div className="lg:col-span-3">
             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Clínica & Recursos</h4>
             <ul className="space-y-4 text-sm text-gray-400">
-              <li className="flex flex-col gap-1">
-                <span className="text-white/20 text-[10px] uppercase font-bold">Contactos</span>
-                <a href="tel:+351936150690" className="hover:text-secondary transition-colors font-medium">(+351) 936 150 690</a>
-                <a href="mailto:info@draalexandravasconcelos.pt" className="hover:text-secondary transition-colors font-medium text-xs break-all">info@draalexandravasconcelos.pt</a>
+              <li className="flex flex-col gap-2">
+                <span className="text-white/20 text-[10px] uppercase font-bold tracking-widest">Contactos Profissionais</span>
+                <a href="tel:+351936150690" className="flex items-center gap-2 hover:text-secondary transition-colors font-medium">
+                  <Phone className="w-3.5 h-3.5 text-secondary" /> (+351) 936 150 690
+                </a>
+                <a href="mailto:info@draalexandravasconcelos.pt" className="flex items-center gap-2 hover:text-secondary transition-colors font-medium text-xs break-all">
+                  <Mail className="w-3.5 h-3.5 text-secondary" /> info@draalexandravasconcelos.pt
+                </a>
               </li>
               <li className="pt-2 flex flex-col gap-3">
                 <Link to="/sobre" className="hover:text-secondary transition-colors">Sobre a Clínica</Link>
@@ -65,6 +81,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-3 text-xs text-gray-400">
               <li><Link to="/privacidade" className="hover:text-secondary transition-colors">Política de Privacidade</Link></li>
               <li><Link to="/cookies" className="hover:text-secondary transition-colors">Política de Cookies</Link></li>
+              <li><Link to="/termos" className="hover:text-secondary transition-colors">Termos e Condições</Link></li>
               <li><Link to="/termos-envio" className="hover:text-secondary transition-colors">Condições de Envio</Link></li>
               <li><Link to="/resolucao-litigios" className="hover:text-secondary transition-colors">Resolução de Litígios</Link></li>
               <li className="pt-1">

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Mail, CheckCircle2 } from 'lucide-react';
+import { Download, Mail, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { supabase } from '../../config/supabase';
 
 const fadeUp = {
@@ -37,8 +37,8 @@ export const AcademyLeadMagnet: React.FC = () => {
 
       // 3. Direct Download for immediate gratification
       const link = document.createElement('a');
-      link.href = '/docs/placeholderpdf.pdf';
-      link.download = 'Guia_Saude_Integrativa.pdf';
+      link.href = '/docs/Ebook-Probioticos.pdf';
+      link.download = 'Ebook-Probioticos.pdf';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

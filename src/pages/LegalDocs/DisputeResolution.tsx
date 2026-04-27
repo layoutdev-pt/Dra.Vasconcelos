@@ -4,7 +4,7 @@ import { Scale, ExternalLink } from 'lucide-react';
 
 export const DisputeResolution: React.FC = () => {
   return (
-    <div className="min-h-screen bg-white pt-32 pb-20">
+    <div className="min-h-screen bg-site-bg pt-32 pb-20 transition-colors duration-500">
       <div className="max-w-[1000px] mx-auto px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -16,18 +16,18 @@ export const DisputeResolution: React.FC = () => {
               <Scale className="text-secondary w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-primary tracking-tight">Resolução de Litígios Online</h1>
-              <p className="text-gray-400 text-sm mt-1">Meios alternativos de resolução de conflitos de consumo.</p>
+              <h1 className="text-3xl md:text-4xl font-bold text-site-text tracking-tight">Resolução de Litígios Online</h1>
+              <p className="text-site-text-muted text-sm mt-1">Meios alternativos de resolução de conflitos de consumo.</p>
             </div>
           </div>
 
-          <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed font-light space-y-12">
+          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed font-light space-y-12">
             <section className="space-y-6">
               <p>
                 A União Europeia criou uma plataforma online para apoiar os consumidores na apresentação das suas reclamações sobre qualquer litígio em que estejam envolvidos.
               </p>
               
-              <div className="bg-gray-50/50 p-8 rounded-[2rem] border border-gray-100 space-y-6">
+              <div className="bg-surface-muted/30 p-8 rounded-[2rem] border border-surface-border space-y-6">
                 <p className="m-0">
                   Neste âmbito, a <strong>FB – Farmabiologica Lda.</strong> disponibiliza toda a informação para que possa exercer o seu direito de reclamação junto de uma entidade oficial, terceira e imparcial ao processo.
                 </p>
@@ -48,11 +48,11 @@ export const DisputeResolution: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-blue-50/30 p-6 rounded-2xl border border-blue-100 flex gap-4">
-                <div className="shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Scale className="w-5 h-5 text-blue-600" />
+              <div className="bg-secondary/10 p-6 rounded-2xl border border-secondary/20 flex gap-4">
+                <div className="shrink-0 w-10 h-10 bg-secondary/20 rounded-full flex items-center justify-center">
+                  <Scale className="w-5 h-5 text-secondary" />
                 </div>
-                <p className="text-sm m-0 italic text-blue-800">
+                <p className="text-sm m-0 italic text-site-text">
                   Salientamos que eventuais litígios relacionados com aquisições de produtos digitais ou físicos efetuadas em plataformas parceiras (<strong>Hotmart, Wook, Planeta de Livros</strong>) deverão ser geridos através dos mecanismos de resolução dessas mesmas plataformas.
                 </p>
               </div>
@@ -60,8 +60,8 @@ export const DisputeResolution: React.FC = () => {
 
             <section className="space-y-8">
               <div>
-                <h2 className="text-2xl font-bold text-primary mb-4">Sugestão de Entidades RAL</h2>
-                <p className="text-base text-gray-500">
+                <h2 className="text-2xl font-bold text-site-text mb-4">Sugestão de Entidades RAL</h2>
+                <p className="text-base text-site-text-muted">
                   Em alternativa, a nível nacional, poderá recorrer a uma das seguintes entidades de Resolução Alternativa de Litígios de Consumo (RAL):
                 </p>
               </div>
@@ -74,13 +74,13 @@ export const DisputeResolution: React.FC = () => {
                   { name: "CACC do Vale do Ave / Tribunal Arbitral", url: "www.triave.pt" },
                   { name: "CIMPAS – Centro de Informação, Medição e Provedoria de Seguros", url: "www.cimpas.pt" }
                 ].map((item, idx) => (
-                  <div key={idx} className="p-6 border border-gray-100 rounded-2xl hover:border-secondary/30 transition-colors group">
-                    <h4 className="font-bold text-primary text-sm mb-3 group-hover:text-secondary transition-colors">{item.name}</h4>
+                  <div key={idx} className="p-6 border border-surface-border rounded-2xl hover:border-secondary/30 transition-colors bg-surface group">
+                    <h4 className="font-bold text-site-text text-sm mb-3 group-hover:text-secondary transition-colors">{item.name}</h4>
                     <a 
                       href={`https://${item.url}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-gray-400 text-xs hover:text-secondary flex items-center gap-2 group-hover:underline"
+                      className="text-site-text-muted text-xs hover:text-secondary flex items-center gap-2 group-hover:underline"
                     >
                       {item.url}
                       <ExternalLink className="w-3 h-3" />

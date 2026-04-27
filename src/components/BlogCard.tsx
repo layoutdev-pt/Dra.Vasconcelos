@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, ArrowRight } from 'lucide-react';
+import { FavoriteButton } from './FavoriteButton';
 import type { BlogPost } from '../types/blog';
 
 export const BlogCard: React.FC<{ post: BlogPost }> = ({ post }) => {
@@ -27,7 +28,7 @@ export const BlogCard: React.FC<{ post: BlogPost }> = ({ post }) => {
             alt={post.title} 
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
           />
-          <div className="absolute top-4 left-4">
+          <div className="absolute top-4 left-4 z-30">
             <span className="bg-surface/90 backdrop-blur-sm text-secondary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm">
               {post.category}
             </span>
@@ -49,9 +50,16 @@ export const BlogCard: React.FC<{ post: BlogPost }> = ({ post }) => {
           </span>
         </div>
 
-        <h3 className="text-xl font-bold text-site-text mb-3 leading-tight group-hover:text-secondary transition-colors line-clamp-2">
-          {post.title}
-        </h3>
+        <div className="flex justify-between items-start gap-4 mb-3">
+          <h3 className="text-xl font-bold text-site-text leading-tight group-hover:text-secondary transition-colors line-clamp-2">
+            {post.title}
+          </h3>
+          <FavoriteButton 
+            itemId={post.id} 
+            type="blog" 
+            className="shrink-0 -mt-1" 
+          />
+        </div>
 
         <p className="text-site-text-muted text-sm font-light line-clamp-3 mb-6 flex-grow">
           {displayText}

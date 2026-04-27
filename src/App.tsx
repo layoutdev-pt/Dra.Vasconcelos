@@ -6,6 +6,7 @@ import { CookieBanner } from './components/common/CookieBanner';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ThemeProvider } from './context/ThemeContext';
+import { Toaster } from 'react-hot-toast';
 
 // Lazy loaded pages
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
@@ -19,6 +20,13 @@ const Admin = lazy(() => import('./pages/Admin').then(module => ({ default: modu
 const Blog = lazy(() => import('./pages/Blog').then(module => ({ default: module.Blog })));
 const Midia = lazy(() => import('./pages/Midia').then(module => ({ default: module.Midia })));
 const Perfil = lazy(() => import('./pages/Perfil').then(module => ({ default: module.Perfil })));
+
+// Legal Pages
+const PrivacyPolicy = lazy(() => import('./pages/LegalDocs/PrivacyPolicy').then(module => ({ default: module.PrivacyPolicy })));
+const CookiePolicy = lazy(() => import('./pages/LegalDocs/CookiePolicy').then(module => ({ default: module.CookiePolicy })));
+const ShippingTerms = lazy(() => import('./pages/LegalDocs/ShippingTerms').then(module => ({ default: module.ShippingTerms })));
+const DisputeResolution = lazy(() => import('./pages/LegalDocs/DisputeResolution').then(module => ({ default: module.DisputeResolution })));
+const Terms = lazy(() => import('./pages/LegalDocs/Terms').then(module => ({ default: module.Terms })));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -58,6 +66,13 @@ const AppShell: React.FC = () => {
             <Route path="/entrar" element={<Login />} />
             <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
             <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
+            
+            {/* Legal Routes */}
+            <Route path="/privacidade" element={<PrivacyPolicy />} />
+            <Route path="/cookies" element={<CookiePolicy />} />
+            <Route path="/termos-envio" element={<ShippingTerms />} />
+            <Route path="/resolucao-litigios" element={<DisputeResolution />} />
+            <Route path="/termos" element={<Terms />} />
           </Routes>
         </Suspense>
       </main>
@@ -74,6 +89,7 @@ export const App: React.FC = () => {
       <ThemeProvider>
         <AuthProvider>
           <ScrollToTop />
+          <Toaster position="bottom-right" reverseOrder={false} />
           <AppShell />
         </AuthProvider>
       </ThemeProvider>
