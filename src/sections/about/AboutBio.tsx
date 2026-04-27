@@ -41,8 +41,8 @@ export const AboutBio: React.FC = () => {
           <p className="text-xl text-site-text-muted font-light leading-relaxed mb-8">
             Hoje sou diretora e fundadora das Clínicas Viver: Medicina Integrativa em Lisboa e Porto, sou oradora em diversos congressos e cursos de especialização no âmbito da Nutrição Funcional, Saúde Intestinal, Doenças Autoimunes e Envelhecimento Saudável.
           </p>
-          <div className="bg-primary/5 text-primary px-8 py-4 rounded-full border border-primary/10">
-            <p className="font-bold text-lg">
+          <div className="bg-secondary/10 text-secondary px-8 py-4 rounded-2xl border border-secondary/20">
+            <p className="font-bold text-lg text-site-text">
               "E sinto que a minha missão é cada vez mais essencial para o bem-estar das pessoas."
             </p>
           </div>

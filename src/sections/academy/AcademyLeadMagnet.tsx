@@ -57,7 +57,6 @@ export const AcademyLeadMagnet: React.FC = () => {
         >
           <div className="flex flex-col md:flex-row items-center">
 
-            {/* Left — Ebook mockup */}
             <motion.div
               variants={fadeUp}
               custom={0}
@@ -67,29 +66,17 @@ export const AcademyLeadMagnet: React.FC = () => {
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
                 style={{ perspective: '800px' }}
+                className="relative"
               >
-                <div
-                  className="w-[180px] h-[260px] rounded-xl shadow-[0_25px_50px_-12px_rgba(124,176,176,0.35)] bg-gradient-to-br from-secondary via-secondary to-secondary-light overflow-hidden border border-secondary/20"
-                  style={{
-                    transform: 'rotateY(-5deg) rotateX(2deg)',
-                    transformStyle: 'preserve-3d',
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent pointer-events-none" />
-                  <div className="relative z-10 p-5 flex flex-col h-full justify-between">
-                    <div>
-                      <p className="text-[8px] uppercase tracking-[0.2em] text-white/60 mb-2">Ebook Gratuito</p>
-                      <h4 className="text-sm font-bold text-white leading-tight">
-                        Guia Digital<br />de Saúde<br />
-                        <span className="text-accent">Integrativa</span>
-                      </h4>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Download className="w-3.5 h-3.5 text-white/70" />
-                      <span className="text-[9px] text-white/70 font-medium uppercase tracking-wider">PDF Gratuito</span>
-                    </div>
-                  </div>
+                <div className="w-[200px] h-[280px] rounded-lg shadow-2xl overflow-hidden border border-surface-border transform rotate-y-[-5deg] rotate-x-[2deg]">
+                  <img 
+                    src="/images/ebook-probioticos.png" 
+                    alt="Capa Ebook Probióticos" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
+                {/* Efeito de brilho na capa */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none rounded-lg" />
               </motion.div>
             </motion.div>
 
