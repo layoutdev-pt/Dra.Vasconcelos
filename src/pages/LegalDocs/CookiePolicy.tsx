@@ -21,7 +21,7 @@ export const CookiePolicy: React.FC = () => {
             </div>
           </div>
 
-          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed space-y-8">
+          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed space-y-8 [&_strong]:text-site-text [&_strong]:font-bold">
             <section>
               <h2 className="text-xl font-bold text-site-text mb-4">O que são Cookies?</h2>
               <p>

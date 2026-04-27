@@ -15,27 +15,30 @@ export const LeadMagnet: React.FC = () => {
     setErrorMessage('');
 
     try {
-      const { error } = await supabase
+      const { error: dbError } = await supabase
         .from('leads')
         .insert([{ email, source: 'ebook' }]);
 
-      if (error && error.code !== '23505') throw error;
+      if (dbError && dbError.code !== '23505') throw dbError;
 
-      const { error: fnError } = await supabase.functions.invoke('send-lead-magnet', {
-        body: { email },
-      });
-
-      if (fnError) console.error('Edge Function error:', fnError);
+      // 2. Direct Download for immediate gratification
+      const link = document.createElement('a');
+      link.href = '/docs/ebook-probioticos.pdf';
+      link.download = 'ebook-probioticos.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       setStatus('success');
       setEmail('');
     } catch (error: any) {
+      console.error('Submit error:', error);
       setStatus('error');
       if (error.code === '23505') {
         setStatus('success');
         setEmail('');
       } else {
-        setErrorMessage('Ocorreu um erro na submissão. Tente novamente.');
+        setErrorMessage(error.message || 'Ocorreu um erro na submissão. Tente novamente.');
       }
     }
   };
@@ -64,13 +67,13 @@ export const LeadMagnet: React.FC = () => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto relative">
-            <div className="flex-grow relative">
+            <div className="grow relative">
               <input 
                 type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={status === 'loading'}
-                placeholder="Insira o seu email" 
+                placeholder="O seu melhor email" 
                 className="w-full px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary transition-all disabled:opacity-50 backdrop-blur-md" 
                 required 
               />

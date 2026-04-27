@@ -23,7 +23,7 @@ export const ShippingTerms: React.FC = () => {
             </div>
           </div>
 
-          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed font-light space-y-12">
+          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed font-light space-y-12 [&_strong]:text-site-text [&_strong]:font-bold [&_b]:text-site-text [&_b]:font-bold">
             <section className="bg-surface-muted/30 p-6 rounded-2xl border border-surface-border">
               <p className="m-0 italic">
                 As condições de entrega variam consoante a natureza do produto adquirido (físico ou digital) e a plataforma onde a compra é processada.

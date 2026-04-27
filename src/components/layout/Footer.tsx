@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import whiteLogo from '../../assets/logo/full_white.svg';
 import { supabase } from '../../config/supabase';
-import { Instagram, Facebook, Youtube, ExternalLink, ShieldCheck, Mail, Phone } from 'lucide-react';
+import { ExternalLink, ShieldCheck, Mail, Phone } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -39,17 +39,6 @@ export const Footer: React.FC = () => {
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
               Empoderando pacientes através do conhecimento integrativo de ponta para um amanhã com mais vitalidade e saúde plena.
             </p>
-            <div className="flex items-center gap-4 pt-2">
-              <a href="https://www.instagram.com/dra.alexandravasconcelos/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-secondary hover:border-secondary hover:-translate-y-1 transition-all group">
-                <Instagram className="w-4 h-4 text-white group-hover:text-white" />
-              </a>
-              <a href="https://www.facebook.com/draalexandravasconcelos/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-secondary hover:border-secondary hover:-translate-y-1 transition-all group">
-                <Facebook className="w-4 h-4 text-white group-hover:text-white" />
-              </a>
-              <a href="https://www.youtube.com/@draalexandravasconcelos" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-secondary hover:border-secondary hover:-translate-y-1 transition-all group">
-                <Youtube className="w-4 h-4 text-white group-hover:text-white" />
-              </a>
-            </div>
           </div>
 
           {/* Coluna 2: Clínica & Conhecimento */}

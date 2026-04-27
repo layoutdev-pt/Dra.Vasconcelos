@@ -9,9 +9,12 @@ interface Comment {
   id: string;
   content: string;
   created_at: string;
-  post_id: string;
+  post_id?: string;
+  course_id?: string;
   parent_id: string | null;
-  replies?: Comment[]; // Lista para guardar as respostas a este comentário
+  replies?: Comment[];
+  posts?: { slug: string };
+  courses?: { slug: string };
 }
 
 export const UserComments: React.FC = () => {
@@ -28,7 +31,7 @@ export const UserComments: React.FC = () => {
         // 1. Puxa todos os comentários DESTE utilizador
         const { data: myComments, error: myError } = await supabase
           .from('comments') 
-          .select('*')
+          .select('*, posts(slug), courses(slug)')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
 
@@ -102,12 +105,17 @@ export const UserComments: React.FC = () => {
       {comments.map((comment) => (
         <div 
           key={comment.id}
-          onClick={() => navigate(`/blog/${comment.post_id}`)} 
-          className="bg-white shadow-sm border border-gray-100 rounded-2xl p-5 hover:border-secondary/50 hover:shadow-md transition-all group cursor-pointer relative"
+          onClick={() => {
+            if (comment.course_id) {
+              navigate(`/cursos/${comment.courses?.slug || comment.course_id}`);
+            } else {
+              navigate(`/blog/${comment.posts?.slug || comment.post_id}`);
+            }
+          }} 
+          className="bg-surface shadow-sm border border-surface-border rounded-2xl p-5 hover:border-secondary/50 hover:shadow-md transition-all group cursor-pointer relative"
         >
-          {/* O seu comentário */}
           <div className="flex justify-between items-start mb-3">
-            <div className="flex items-center gap-2 text-xs text-gray-400">
+            <div className="flex items-center gap-2 text-xs text-site-text-muted">
               <Calendar className="w-3.5 h-3.5" />
               {new Date(comment.created_at).toLocaleDateString('pt-PT', {
                 day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -115,11 +123,11 @@ export const UserComments: React.FC = () => {
             </div>
 
             <div className="text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-xs font-bold">
-              Ver Artigo <ExternalLink className="w-3.5 h-3.5" />
+              Ver {comment.course_id ? 'Curso' : 'Artigo'} <ExternalLink className="w-3.5 h-3.5" />
             </div>
           </div>
           
-          <p className="text-sm text-primary leading-relaxed italic line-clamp-3">
+          <p className="text-sm text-site-text leading-relaxed italic line-clamp-3">
             "{comment.content}"
           </p>
 
@@ -127,8 +135,8 @@ export const UserComments: React.FC = () => {
           {comment.replies && comment.replies.length > 0 && (
             <div className="mt-4 pl-4 border-l-2 border-secondary/20 space-y-3">
               {comment.replies.map(reply => (
-                <div key={reply.id} className="bg-gray-50/80 p-3 rounded-xl border border-gray-100">
-                  <div className="flex items-center gap-2 text-xs text-gray-400 mb-1.5">
+                <div key={reply.id} className="bg-surface-muted/50 p-3 rounded-xl border border-surface-border">
+                  <div className="flex items-center gap-2 text-xs text-site-text-muted mb-1.5">
                     <CornerDownRight className="w-3.5 h-3.5 text-secondary" />
                     <span>
                       Resposta recebida em {new Date(reply.created_at).toLocaleDateString('pt-PT', {
@@ -136,7 +144,7 @@ export const UserComments: React.FC = () => {
                       })}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-site-text-muted">
                     "{reply.content}"
                   </p>
                 </div>

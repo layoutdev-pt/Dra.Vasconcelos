@@ -24,7 +24,7 @@ export const PrivacyPolicy: React.FC = () => {
             </div>
           </div>
 
-          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed space-y-8">
+          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed space-y-8 [&_strong]:text-site-text [&_strong]:font-bold [&_b]:text-site-text [&_b]:font-bold">
             <section>
               <h2 className="text-xl font-bold text-site-text mb-4">1. Compromisso com a Privacidade </h2>
               <p>

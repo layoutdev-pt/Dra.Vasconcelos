@@ -30,22 +30,17 @@ export const AcademyLeadMagnet: React.FC = () => {
 
       if (dbError && dbError.code !== '23505') throw dbError;
 
-      // 2. Trigger Edge Function for Email
-      await supabase.functions.invoke('send-lead-magnet', {
-        body: { email },
-      });
-
-      // 3. Direct Download for immediate gratification
+      // 2. Direct Download for immediate gratification
       const link = document.createElement('a');
-      link.href = '/docs/Ebook-Probioticos.pdf';
-      link.download = 'Ebook-Probioticos.pdf';
+      link.href = '/docs/ebook-probioticos.pdf';
+      link.download = 'ebook-probioticos.pdf';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
       setStatus('success');
       setEmail('');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error in lead magnet:', err);
       setStatus('error');
     }

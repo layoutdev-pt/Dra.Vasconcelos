@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, ShoppingCart, ShieldCheck, Quote, Star, Moon, Battery, Activity } from 'lucide-react';
 import { supabase } from '../config/supabase';
 import type { Course } from '../types/course';
+import { CourseComments } from '../sections/academy/CourseComments';
 import { motion } from 'framer-motion';
 import { FavoriteButton } from '../components/FavoriteButton';
 import DOMPurify from 'dompurify';
@@ -27,7 +28,7 @@ const BarChart = () => (
         whileInView={{ height: `${h}%` }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, delay: i * 0.1, ease: 'easeOut' }}
-        className={`w-8 rounded-t-md ${i === 4 ? 'bg-accent' : 'bg-accent/30'}`}
+        className={`w-8 rounded-t-md ${i === 4 ? 'bg-secondary' : 'bg-secondary/30'}`}
       />
     ))}
   </div>
@@ -39,7 +40,7 @@ const DonutChart = () => (
       <circle cx="50" cy="50" r="40" stroke="#f1f5f9" strokeWidth="12" fill="none" />
       <motion.circle 
         cx="50" cy="50" r="40" 
-        stroke="#df9d3b" strokeWidth="12" fill="none"
+        stroke="var(--color-secondary)" strokeWidth="12" fill="none"
         strokeDasharray="251.2"
         initial={{ strokeDashoffset: 251.2 }}
         whileInView={{ strokeDashoffset: 251.2 * 0.08 }}
@@ -59,16 +60,16 @@ const LineChart = () => (
       <motion.path 
         d="M5 35 Q 25 30, 50 20 T 95 5" 
         fill="none" 
-        stroke="#df9d3b" 
+        stroke="var(--color-secondary)" 
         strokeWidth="2.5"
         initial={{ pathLength: 0 }}
         whileInView={{ pathLength: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
       />
-      <motion.circle cx="5" cy="35" r="3" fill="#df9d3b" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.2 }} />
-      <motion.circle cx="50" cy="20" r="3" fill="#df9d3b" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.8 }} />
-      <motion.circle cx="95" cy="5" r="3" fill="#df9d3b" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 1.4 }} />
+      <motion.circle cx="5" cy="35" r="3" fill="var(--color-secondary)" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.2 }} />
+      <motion.circle cx="50" cy="20" r="3" fill="var(--color-secondary)" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.8 }} />
+      <motion.circle cx="95" cy="5" r="3" fill="var(--color-secondary)" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 1.4 }} />
     </svg>
   </div>
 );
@@ -91,11 +92,18 @@ const Countdown = ({ targetDate }: { targetDate: string }) => {
   if (timeLeft <= 0) return <span className="font-bold text-red-200">INSCRIÇÕES ENCERRADAS</span>;
 
   return (
-    <div className="flex gap-2 text-xl font-bold">
-      {days > 0 && <span className="bg-secondary/20 px-3 py-1 rounded text-site-text">{days}d</span>}
-      <span className="bg-secondary/20 px-3 py-1 rounded text-site-text">{hours.toString().padStart(2, '0')}</span>:
-      <span className="bg-secondary/20 px-3 py-1 rounded text-site-text">{minutes.toString().padStart(2, '0')}</span>:
-      <span className="bg-secondary/20 px-3 py-1 rounded text-site-text">{seconds.toString().padStart(2, '0')}</span>
+    <div className="flex gap-2 text-xl font-extrabold items-center">
+      {days > 0 && (
+        <>
+          <span className="text-white">{days}d</span>
+          <span className="text-white opacity-60">|</span>
+        </>
+      )}
+      <span className="text-white">{hours.toString().padStart(2, '0')}</span>
+      <span className="text-white opacity-60">:</span>
+      <span className="text-white">{minutes.toString().padStart(2, '0')}</span>
+      <span className="text-white opacity-60">:</span>
+      <span className="text-white">{seconds.toString().padStart(2, '0')}</span>
     </div>
   );
 };
@@ -322,8 +330,8 @@ export const CourseDetails: React.FC = () => {
         
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-primary mb-6">Pronto para dar o próximo passo?</h2>
-            <p className="text-lg text-gray-500 leading-relaxed mb-10 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-site-text mb-6">Pronto para dar o próximo passo?</h2>
+            <p className="text-lg text-site-text-muted leading-relaxed mb-10 max-w-2xl mx-auto">
               Junte-se a centenas de pessoas que já transformaram a sua saúde com o {course.title}. Não deixe para amanhã a vitalidade que pode conquistar hoje.
             </p>
             
@@ -348,11 +356,11 @@ export const CourseDetails: React.FC = () => {
 
       {/* 5. SUCCESS STORIES */}
       {testimonials && testimonials.length > 0 && (
-        <section className="py-24 bg-gray-50">
+        <section className="py-24 bg-surface-hero border-y border-surface-border">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-extrabold text-primary mb-4">Histórias de Sucesso</h2>
-              <p className="text-gray-500 max-w-2xl mx-auto">Veja o que dizem aqueles que transformaram sua saúde e vitalidade com o método.</p>
+              <h2 className="text-3xl font-extrabold text-site-text mb-4">Histórias de Sucesso</h2>
+              <p className="text-site-text-muted max-w-2xl mx-auto">Veja o que dizem aqueles que transformaram sua saúde e vitalidade com o método.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -386,7 +394,7 @@ export const CourseDetails: React.FC = () => {
       )}
 
       {/* 6. GUARANTEE */}
-      <section className="py-24 bg-site-bg border-t border-surface-border">
+      <section className="py-24 bg-secondary/[0.03] dark:bg-secondary/[0.05] border-y border-secondary/10">
         <div className="max-w-3xl mx-auto px-6 text-center flex flex-col items-center">
           <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center mb-8">
             <ShieldCheck className="w-10 h-10 text-secondary" />
@@ -448,6 +456,10 @@ export const CourseDetails: React.FC = () => {
         </section>
       )}
 
+      {/* 8. COMMENTS SECTION */}
+      <div className="pb-32 px-6">
+        <CourseComments courseId={course.id} />
+      </div>
     </div>
   );
 };

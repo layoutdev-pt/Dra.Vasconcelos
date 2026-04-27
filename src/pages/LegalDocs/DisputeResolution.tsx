@@ -21,7 +21,7 @@ export const DisputeResolution: React.FC = () => {
             </div>
           </div>
 
-          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed font-light space-y-12">
+          <div className="prose prose-lg max-w-none text-site-text-muted leading-relaxed font-light space-y-12 [&_strong]:text-site-text [&_strong]:font-bold [&_b]:text-site-text [&_b]:font-bold">
             <section className="space-y-6">
               <p>
                 A União Europeia criou uma plataforma online para apoiar os consumidores na apresentação das suas reclamações sobre qualquer litígio em que estejam envolvidos.
