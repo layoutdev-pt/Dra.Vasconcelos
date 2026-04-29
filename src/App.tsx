@@ -5,6 +5,7 @@ import { Footer } from './components/layout/Footer';
 import { CookieBanner } from './components/common/CookieBanner';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { WhatsAppButton } from './components/WhatsAppButton';
 import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 
@@ -78,6 +79,7 @@ const AppShell: React.FC = () => {
       </main>
 
       {!isStandalone && <Footer />}
+      {!isStandalone && <WhatsAppButton />}
       <CookieBanner />
     </div>
   );

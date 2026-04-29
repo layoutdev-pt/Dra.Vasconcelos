@@ -74,22 +74,44 @@ const LineChart = () => (
   </div>
 );
 
-const Countdown = ({ targetDate }: { targetDate: string }) => {
-  const [timeLeft, setTimeLeft] = useState(() => Math.max(0, Date.parse(targetDate) - Date.now()));
+const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+const getOrResetDeadline = (courseId: string): number => {
+  const key = `countdown_deadline_${courseId}`;
+  const stored = localStorage.getItem(key);
+  if (stored) {
+    const deadline = parseInt(stored, 10);
+    if (deadline > Date.now()) return deadline;
+  }
+  const newDeadline = Date.now() + ONE_WEEK_MS;
+  localStorage.setItem(key, newDeadline.toString());
+  return newDeadline;
+};
+
+const Countdown = ({ courseId }: { courseId: string }) => {
+  const [deadline, setDeadline] = useState(() => getOrResetDeadline(courseId));
+  const [timeLeft, setTimeLeft] = useState(() => Math.max(0, deadline - Date.now()));
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeLeft(Math.max(0, Date.parse(targetDate) - Date.now()));
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) {
+        // Reset to a new week
+        const newDeadline = Date.now() + ONE_WEEK_MS;
+        localStorage.setItem(`countdown_deadline_${courseId}`, newDeadline.toString());
+        setDeadline(newDeadline);
+        setTimeLeft(ONE_WEEK_MS);
+      } else {
+        setTimeLeft(remaining);
+      }
     }, 1000);
     return () => clearInterval(interval);
-  }, [targetDate]);
+  }, [deadline, courseId]);
 
   const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
   const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
   const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
   const seconds = Math.floor((timeLeft / 1000) % 60);
-
-  if (timeLeft <= 0) return <span className="font-bold text-red-200">INSCRIÇÕES ENCERRADAS</span>;
 
   return (
     <div className="flex gap-2 text-xl font-extrabold items-center">
@@ -227,18 +249,16 @@ export const CourseDetails: React.FC = () => {
       </section>
 
       {/* 2. OFFER BAR (STICKY OR STATIC) */}
-      {course.enrollment_closes_at && (
         <div className="bg-accent text-white py-4 shadow-md sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-6 text-sm font-medium">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
               OFERTA POR TEMPO LIMITADO
             </div>
-            <Countdown targetDate={course.enrollment_closes_at} />
+            <Countdown courseId={course.id} />
             <p>Garanta a sua inscrição antes que esgote.</p>
           </div>
         </div>
-      )}
 
       {/* 3. CLINICAL RESULTS */}
       <section className="py-24 bg-site-bg border-y border-surface-border">
