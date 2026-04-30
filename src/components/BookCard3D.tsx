@@ -29,11 +29,11 @@ const BookMockup3D: React.FC<{ book: Book }> = ({ book }) => {
   if (isEbook) {
     return (
       <div
-        className="w-[180px] h-[260px] rounded-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] overflow-hidden border-4 border-gray-800 bg-gray-900"
+        className="w-[180px] h-[260px] rounded-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] overflow-hidden bg-gray-900"
         style={{ transform: 'rotateY(5deg) rotateX(-2deg)', transformStyle: 'preserve-3d' }}
       >
-        <div className={`w-full h-full bg-gradient-to-br ${bgClass} flex flex-col justify-between p-5`}>
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+        <div className={`w-full h-full bg-linear-to-br ${bgClass} flex flex-col justify-between p-5`}>
+          <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent pointer-events-none" />
           <div className="relative z-10">
             <p className={`text-[8px] uppercase tracking-[0.2em] ${accentColor} mb-2`}>{book.author}</p>
             <h4 className="text-sm font-bold text-white leading-tight">{line1}<br />{line2}</h4>
@@ -52,9 +52,9 @@ const BookMockup3D: React.FC<{ book: Book }> = ({ book }) => {
       className={`w-[180px] h-[260px] rounded-r-lg shadow-[0_30px_60px_-12px_rgba(0,0,0,0.3)] overflow-hidden relative`}
       style={{ transform: 'rotateY(-8deg) rotateX(2deg)', transformStyle: 'preserve-3d' }}
     >
-      <div className="absolute left-0 top-0 bottom-0 w-3.5 bg-gradient-to-r from-black/30 to-black/5 z-20" />
-      <div className={`absolute inset-0 bg-gradient-to-br ${bgClass}`}>
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-3.5 bg-linear-to-r from-black/30 to-black/5 z-20" />
+      <div className={`absolute inset-0 bg-linear-to-br ${bgClass}`}>
+        <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent pointer-events-none" />
         <div className="relative z-10 p-5 pl-7 flex flex-col justify-between h-full">
           <div>
             <p className={`text-[8px] uppercase tracking-[0.2em] ${accentColor} mb-3`}>{book.author}</p>
@@ -120,7 +120,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, index }) => {
             {hasImage ? (
               <div
                 className={`w-[180px] h-[260px] relative overflow-hidden ${
-                  isEbook ? 'rounded-2xl border-4 border-gray-800' : 'rounded-r-lg'
+                  isEbook ? 'rounded-2xl' : 'rounded-r-lg'
                 }`}
                 style={{
                   transform: isEbook ? 'rotateY(5deg) rotateX(-2deg)' : 'rotateY(-8deg) rotateX(2deg)',
