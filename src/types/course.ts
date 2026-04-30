@@ -7,7 +7,7 @@ export interface Course {
   content: string; // The rich text content for the landing page
   image_url: string;
   secondary_image_url: string | null;
-  type: 'curso' | 'programa';
+  type: 'curso' | 'programa' | 'presencial';
   level: string | null;
   modules: number | null;
   price: number | null;

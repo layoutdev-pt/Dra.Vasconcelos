@@ -275,6 +275,7 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
                   <select className={inputCls} value={draft.type} onChange={e => set('type', e.target.value as Course['type'])}>
                     <option value="curso">Curso Online</option>
                     <option value="programa">Programa ao Vivo</option>
+                    <option value="presencial">Presencial</option>
                   </select>
                 </div>
                 <div><label className={labelCls}>Preço (€)</label><input type="number" step="0.01" min="0" className={inputCls} value={draft.price ?? ''} onChange={e => set('price', e.target.value ? parseFloat(e.target.value) : null)} placeholder="97.00" /></div>
@@ -532,8 +533,8 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
                       {course.is_featured && <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold uppercase tracking-wider">Destaque</span>}
                     </td>
                     <td className="px-4 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${course.type === 'programa' ? 'bg-purple-50 text-purple-600' : 'bg-primary/10 text-primary'}`}>
-                        {course.type === 'programa' ? 'Programa' : 'Curso'}
+                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${course.type === 'programa' ? 'bg-purple-50 text-purple-600' : course.type === 'presencial' ? 'bg-amber-50 text-amber-600' : 'bg-primary/10 text-primary'}`}>
+                        {course.type === 'programa' ? 'Programa' : course.type === 'presencial' ? 'Presencial' : 'Curso'}
                       </span>
                     </td>
                     <td className="px-4 py-4 font-semibold text-primary">{course.price != null ? `${course.price.toFixed(2).replace('.', ',')}€` : '—'}</td>

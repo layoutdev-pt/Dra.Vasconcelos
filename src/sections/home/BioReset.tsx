@@ -29,7 +29,7 @@ export const BioReset: React.FC = () => {
           
           <div className="lg:w-1/2 space-y-6">
             <div className="inline-block px-3 py-1 bg-surface-muted text-secondary text-[10px] font-bold uppercase rounded-full tracking-widest border border-surface-border">
-              {latestCourse.type === 'programa' ? 'Programa' : 'Curso'}
+              {latestCourse.type === 'programa' ? 'Programa' : latestCourse.type === 'presencial' ? 'Presencial' : 'Curso'}
             </div>
             
             <h2 className="text-3xl lg:text-4xl font-extrabold text-site-text">
