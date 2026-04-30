@@ -58,11 +58,11 @@ export const BioReset: React.FC = () => {
           </div>
           
           <div className="lg:w-1/2 relative w-full mt-8 lg:mt-0">
-            <div className="relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-[3/2] shadow-sm border border-surface-border">
+            <div className="relative rounded-2xl overflow-hidden shadow-sm border border-surface-border">
               <img 
                 src={latestCourse.image_url} 
                 alt={latestCourse.title} 
-                className="w-full h-full object-cover" 
+                className="w-full h-auto block" 
               />
             </div>
           </div>
