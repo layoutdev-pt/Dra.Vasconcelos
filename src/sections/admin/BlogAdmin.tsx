@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../config/supabase';
 import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle, Send, CheckCircle2 } from 'lucide-react';
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.snow.css';
+import RichTextEditor from '../../components/RichTextEditor';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { BlogPost } from '../../types/blog';
 
@@ -32,18 +31,7 @@ const notifyAllUsers = async (title: string, message: string, link: string) => {
 
 /* ─── CONFIGURAÇÕES E HELPERS ────────────────────────────────────────────── */
 
-const quillModules = {
-  toolbar: [
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-    [{ 'size': ['small', false, 'large', 'huge'] }],
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }, { 'background': [] }],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'align': [] }],
-    ['link', 'image', 'video'],
-    ['clean']
-  ]
-};
+
 
 const inputCls = 'w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all';
 const labelCls = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
@@ -170,11 +158,9 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
 
           <div><label className={labelCls}>Resumo do Artigo</label><textarea className={`${inputCls} resize-none`} rows={2} value={draft.summary || ''} onChange={e => set('summary', e.target.value)} /></div>
 
-          <div className="flex-1 pb-16">
+          <div className="flex-1 pb-4">
             <label className={labelCls}>Corpo do Artigo</label>
-            <div className="bg-white rounded-xl overflow-hidden border border-gray-200">
-              <ReactQuill theme="snow" modules={quillModules} value={draft.content || ''} onChange={val => set('content', val)} className="h-64 border-none" />
-            </div>
+            <RichTextEditor value={draft.content || ''} onChange={val => set('content', val)} placeholder="Escreva o conteúdo do artigo…" minHeight="16rem" />
           </div>
           
           <div className="pt-4 border-t border-gray-100 flex flex-col md:flex-row md:items-center gap-6">

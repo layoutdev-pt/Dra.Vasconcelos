@@ -3,8 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, Plus, Pencil, Trash2, Eye, EyeOff, X, Save, AlertCircle, Loader2, GripVertical, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '../../config/supabase';
 import type { Course } from '../../types/course';
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.snow.css';
+import RichTextEditor from '../../components/RichTextEditor';
 
 /* ─── ESTILOS REUTILIZÁVEIS ────────────────────────────────────────────── */
 
@@ -25,18 +24,7 @@ const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: 
   </label>
 );
 
-const activeQuillModules = {
-  toolbar: [
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-    [{ 'size': ['small', false, 'large', 'huge'] }],
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }, { 'background': [] }],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'align': [] }],
-    ['link', 'image', 'video'],
-    ['clean']
-  ]
-};
+
 
 export type CourseModule = { title: string; description: string };
 export type CourseTestimonial = { quote: string; author: string; role: string; image_url: string };
@@ -300,9 +288,7 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
 
               <div>
                 <label className={labelCls}>Conteúdo Detalhado Opcional (Fica no final da página)</label>
-                <div className="bg-white rounded-xl overflow-hidden border border-gray-200">
-                  <ReactQuill theme="snow" modules={activeQuillModules} value={draft.parsedContent.html || ''} onChange={val => setParsedContent('html', val)} className="h-96 pb-12 border-none" />
-                </div>
+                <RichTextEditor value={draft.parsedContent.html || ''} onChange={val => setParsedContent('html', val)} placeholder="Escreva o conteúdo detalhado do curso…" minHeight="24rem" />
               </div>
 
               <div className="flex flex-wrap gap-6 pt-4 border-t border-gray-100">

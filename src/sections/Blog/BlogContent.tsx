@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../../config/supabase';
 import type { BlogPost } from '../../types/blog';
 import { Calendar, ChevronLeft, ChevronRight, Tag, Loader2 } from 'lucide-react';
-import 'react-quill-new/dist/quill.snow.css';
 import { BlogComments } from './BlogComments';
 
 export const BlogContent: React.FC = () => {
@@ -57,13 +56,9 @@ export const BlogContent: React.FC = () => {
         )}
 
         <div 
-          className="ql-snow"
-        >
-          <div 
-            className="ql-editor p-0! text-site-text font-light leading-relaxed mb-20 [&_h1]:text-site-text [&_h2]:text-site-text [&_h3]:text-site-text [&_h4]:text-site-text [&_h5]:text-site-text [&_h6]:text-site-text [&_strong]:text-site-text [&_strong]:font-bold! [&_a]:text-secondary! [&_a]:underline! break-words w-full overflow-x-hidden [&_ol>li]:!list-decimal [&_ul>li]:!list-disc [&_ol>li]:!list-inside [&_ul>li]:!list-inside [&_ol]:!ml-2 [&_ul]:!ml-2 [&_li::before]:!hidden [&_p]:min-h-[1.5rem] [&_p]:mb-3 [&_*]:!bg-transparent [&_*]:!text-site-text [&_a_*]:!text-inherit"
-            dangerouslySetInnerHTML={{ __html: post.content || '' }} 
-          />
-        </div>
+          className="tiptap-content text-site-text font-light leading-relaxed mb-20 [&_h1]:text-site-text [&_h2]:text-site-text [&_h3]:text-site-text [&_strong]:text-site-text [&_strong]:font-bold! [&_a]:text-secondary! [&_a]:underline! break-words w-full overflow-x-hidden"
+          dangerouslySetInnerHTML={{ __html: post.content || '' }} 
+        />
 
         {/* Article Navigation */}
         {(prevPost || nextPost) && (
