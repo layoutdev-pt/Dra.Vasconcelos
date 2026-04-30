@@ -140,7 +140,7 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
             <div><label className={labelCls}>Título *</label><input className={inputCls} value={draft.title} onChange={e => set('title', e.target.value)} placeholder="Título do livro" /></div>
             <div><label className={labelCls}>Subtítulo</label><input className={inputCls} value={draft.subtitle ?? ''} onChange={e => set('subtitle', e.target.value || null)} placeholder="Subtítulo opcional" /></div>
           </div>
-          <div><label className={labelCls}>Autor</label><input className={inputCls} value={draft.author} onChange={e => set('author', e.target.value)} /></div>
+          <div><label className={labelCls}>Autor(a)</label><input className={inputCls} value={draft.author} onChange={e => set('author', e.target.value)} /></div>
           <div><label className={labelCls}>Descrição (Opcional)</label><textarea className={`${inputCls} resize-none`} rows={3} value={draft.description ?? ''} onChange={e => set('description', e.target.value || null)} placeholder="Sinopse breve (aparecerá apenas no detalhe)..." /></div>
           <div>
             <label className={labelCls}>Capa do Livro</label>
