@@ -2,7 +2,7 @@ import React from 'react';
 import { Hero } from '../sections/home/Hero';
 import { BooksSection } from '../sections/home/BooksSection';
 import { AcademyCourses } from '../sections/academy/AcademyCourses';
-import { BioReset } from '../sections/home/BioReset';
+import { PalestraSection } from '../sections/home/PalestraSection';
 import { LeadMagnet } from '../sections/home/LeadMagnet';
 
 export const Home: React.FC = () => {
@@ -10,7 +10,7 @@ export const Home: React.FC = () => {
     <div className="w-full">
       <Hero />
       <BooksSection />
-      <BioReset />
+      <PalestraSection />
       <LeadMagnet />
       <AcademyCourses 
         featuredOnly={true} 

@@ -69,12 +69,12 @@ export const Admin: React.FC = () => {
       {/* Tab Navigation */}
       <div className="bg-surface border-b border-surface-border transition-colors duration-500">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="flex gap-0">
+          <div className="flex gap-0 overflow-x-auto scrollbar-hide -mx-6 px-6 md:mx-0 md:px-0">
             {TABS.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold border-b-2 transition-all duration-200 ${
+                className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold border-b-2 transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
                   activeTab === tab.id
                     ? 'border-secondary text-secondary'
                     : 'border-transparent text-site-text-muted hover:text-site-text hover:border-surface-border'

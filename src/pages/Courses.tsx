@@ -1,7 +1,7 @@
 import React from 'react';
 import { CoursesHero } from '../sections/academy/CoursesHero';
 import { AcademyMetrics } from '../sections/academy/AcademyMetrics';
-import { AcademyLeadMagnet } from '../sections/academy/AcademyLeadMagnet';
+import { PalestraSection } from '../sections/home/PalestraSection';
 import { AcademyTrustBadge } from '../sections/academy/AcademyTrustBadge';
 import { AcademyCourses } from '../sections/academy/AcademyCourses';
 import { motion } from 'framer-motion';
@@ -32,7 +32,7 @@ export const Courses: React.FC = () => {
         </div>
       </section>
 
-      <AcademyLeadMagnet />
+      <PalestraSection />
       <AcademyTrustBadge />
     </div>
   );

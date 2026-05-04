@@ -4,7 +4,7 @@ import { Trash2, Loader2, Download, Filter } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import type { Lead } from '../../types/lead';
 
-type SourceFilter = 'all' | 'ebook' | 'blog' | 'footer';
+type SourceFilter = 'all' | 'ebook' | 'blog' | 'footer' | 'palestra';
 
 export const LeadsAdmin: React.FC = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -54,11 +54,12 @@ export const LeadsAdmin: React.FC = () => {
   const totalEbook = leads.filter(l => l.source === 'ebook').length;
   const totalBlog = leads.filter(l => l.source === 'blog').length;
   const totalFooter = leads.filter(l => l.source === 'footer').length;
+  const totalPalestra = leads.filter(l => l.source === 'palestra').length;
 
   const exportCSV = () => {
-    const csv = ['Email,Origem,Subscrito,Data'];
+    const csv = ['Nome,Telemóvel,Email,Origem,Subscrito,Data'];
     leads.forEach(l => {
-      csv.push(`${l.email},${l.source},${(l as any).subscribed !== false ? 'Sim' : 'Não'},${new Date(l.created_at).toLocaleDateString()}`);
+      csv.push(`${l.name || ''},${l.phone || ''},${l.email},${l.source},${(l as any).subscribed !== false ? 'Sim' : 'Não'},${new Date(l.created_at).toLocaleDateString()}`);
     });
     const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -72,17 +73,19 @@ export const LeadsAdmin: React.FC = () => {
     ebook: 'Lead Magnet',
     blog: 'Blog',
     footer: 'Footer',
+    palestra: 'Palestra',
   };
 
   const sourceColors: Record<string, string> = {
     ebook: 'bg-orange-50 text-orange-600',
     blog: 'bg-blue-50 text-blue-600',
     footer: 'bg-purple-50 text-purple-600',
+    palestra: 'bg-indigo-50 text-indigo-600',
   };
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h3 className="text-xl font-bold text-gray-800">Leads & Newsletter</h3>
         <button onClick={exportCSV} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl font-semibold flex items-center gap-2 hover:bg-gray-200">
           <Download className="w-4 h-4" /> Exportar CSV
@@ -90,7 +93,7 @@ export const LeadsAdmin: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
           <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Total Leads</p>
           <p className="text-3xl font-extrabold text-primary">{leads.length}</p>
@@ -100,8 +103,8 @@ export const LeadsAdmin: React.FC = () => {
           <p className="text-3xl font-extrabold text-green-600">{totalSubscribed}</p>
         </div>
         <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-          <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Via Lead Magnet</p>
-          <p className="text-3xl font-extrabold text-orange-500">{totalEbook}</p>
+          <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Via Lead Magnet / Palestra</p>
+          <p className="text-3xl font-extrabold text-orange-500">{totalEbook + totalPalestra}</p>
         </div>
         <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
           <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Via Blog / Footer</p>
@@ -127,10 +130,10 @@ export const LeadsAdmin: React.FC = () => {
       )}
 
       {/* Filter Bar */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <Filter className="w-4 h-4 text-gray-400" />
         <span className="text-xs text-gray-400 uppercase font-bold tracking-wider">Filtrar por origem:</span>
-        {(['all', 'ebook', 'blog', 'footer'] as SourceFilter[]).map(f => (
+        {(['all', 'ebook', 'palestra', 'blog', 'footer'] as SourceFilter[]).map(f => (
           <button
             key={f}
             onClick={() => setSourceFilter(f)}
@@ -150,9 +153,12 @@ export const LeadsAdmin: React.FC = () => {
         <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-secondary" /></div>
       ) : (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <table className="w-full text-left">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left whitespace-nowrap min-w-max">
             <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold tracking-wider">
               <tr>
+                <th className="px-6 py-4">Nome</th>
+                <th className="px-6 py-4">Telemóvel</th>
                 <th className="px-6 py-4">E-mail</th>
                 <th className="px-4 py-4">Origem</th>
                 <th className="px-4 py-4">Estado</th>
@@ -163,6 +169,8 @@ export const LeadsAdmin: React.FC = () => {
             <tbody className="divide-y divide-gray-100">
               {filteredLeads.map(l => (
                 <tr key={l.id} className="hover:bg-gray-50/50">
+                  <td className="px-6 py-4 font-medium text-gray-800">{l.name || '-'}</td>
+                  <td className="px-6 py-4 text-gray-600">{l.phone || '-'}</td>
                   <td className="px-6 py-4 font-medium text-primary">{l.email}</td>
                   <td className="px-4 py-4">
                     <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${sourceColors[l.source] || 'bg-gray-100 text-gray-500'}`}>
@@ -188,10 +196,11 @@ export const LeadsAdmin: React.FC = () => {
                 </tr>
               ))}
               {filteredLeads.length === 0 && (
-                <tr><td colSpan={5} className="px-6 py-12 text-center text-gray-500">Nenhum email capturado ainda.</td></tr>
+                <tr><td colSpan={7} className="px-6 py-12 text-center text-gray-500">Nenhum email capturado ainda.</td></tr>
               )}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       )}
     </div>
