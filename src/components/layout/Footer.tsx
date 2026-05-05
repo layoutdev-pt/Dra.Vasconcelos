@@ -142,7 +142,7 @@ export const Footer: React.FC = () => {
             >
               Configuração de Cookies
             </button>
-            <a href="https://vortex-ui.com" target="_blank" className="hover:text-secondary transition-colors opacity-50">Vortex 2024</a>
+            <a href="https://layoutagency.pt/" target="_blank" className="hover:text-secondary transition-colors opacity-50">Desenvolvido por: Layout Agency</a>
           </div>
         </div>
         
