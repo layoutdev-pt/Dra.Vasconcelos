@@ -18,7 +18,7 @@ export function useBooks() {
         .from('books')
         .select('*')
         .eq('is_published', true)
-        .order('published_at', { ascending: false })
+        .order('position', { ascending: true })
         .order('created_at', { ascending: false });
 
       if (cancelled) return;

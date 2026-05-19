@@ -131,15 +131,8 @@ export const TestimonialsSlider: React.FC = () => {
                       </p>
                       
                       <div className="flex items-center justify-center gap-4 mt-6 shrink-0">
-                        <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-secondary/50 shrink-0">
-                          <img 
-                            src={testimonial.avatar} 
-                            alt={testimonial.name} 
-                            className="w-full h-full object-cover" 
-                          />
-                        </div>
                         <div className="text-left">
-                          <h4 className="font-bold text-site-text text-lg leading-snug">
+                          <h4 className="font-bold text-site-text text-lg leading-snug text-center">
                             {testimonial.name}
                           </h4>
                           <p className="text-secondary tracking-widest uppercase text-xs font-semibold">

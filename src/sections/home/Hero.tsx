@@ -73,7 +73,7 @@ export const Hero: React.FC = () => {
 
             <div className="pt-6 flex items-center gap-8 text-sm text-site-text-muted font-medium">
               <div className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-secondary" /> Medicina Integrativa</div>
-              <div className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-secondary" /> Abordagem Causal</div>
+              <div className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-secondary" /> Abordagem Individual</div>
             </div>
           </div>
 

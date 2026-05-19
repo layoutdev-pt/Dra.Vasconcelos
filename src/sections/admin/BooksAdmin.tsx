@@ -1,8 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Plus, Pencil, Trash2, Eye, EyeOff, X, Save, AlertCircle, Loader2 } from 'lucide-react';
+import { BookOpen, Plus, Pencil, Trash2, Eye, EyeOff, X, Save, AlertCircle, Loader2, GripVertical } from 'lucide-react';
 import { supabase } from '../../config/supabase';
 import type { Book } from '../../types/book';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 /* ─── ESTILOS REUTILIZÁVEIS ────────────────────────────────────────────── */
 
@@ -57,7 +61,51 @@ const emptyBook = (): BookDraft => ({
   published_at: new Date().toISOString(),
 });
 
-const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () => void }> = ({ book, onClose, onSaved }) => {
+const SortableBookRow: React.FC<{ book: Book; onToggle: (b: Book) => void; onEdit: (b: Book) => void; onDelete: (id: string) => void; deletingId: string | null }> = ({ book, onToggle, onEdit, onDelete, deletingId }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: book.id });
+  const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 1 };
+
+  return (
+    <div ref={setNodeRef} style={style} className={`grid grid-cols-[40px_80px_minmax(200px,_1fr)_100px_100px_100px_120px] items-center gap-4 px-6 py-4 transition-colors ${isDragging ? 'bg-white shadow-lg border border-gray-200 rounded-xl relative' : 'hover:bg-gray-50/50'}`}>
+      <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 rounded">
+        <GripVertical className="w-5 h-5" />
+      </div>
+      <div>
+        <div className="w-10 h-14 rounded-lg overflow-hidden bg-gray-100 shadow-sm shrink-0">
+          {book.cover_url ? <img src={book.cover_url} alt={book.title} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gradient-to-br from-secondary/30 to-secondary/10 flex items-center justify-center"><BookOpen className="w-4 h-4 text-secondary/50" /></div>}
+        </div>
+      </div>
+      <div className="max-w-[240px]">
+        <p className="font-semibold text-primary truncate">{book.title}</p>
+        {book.is_featured && <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold uppercase tracking-wider">Destaque</span>}
+      </div>
+      <div>
+        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${book.type === 'ebook' ? 'bg-blue-50 text-blue-600' : 'bg-secondary/10 text-secondary'}`}>
+          {book.type === 'ebook' ? 'Ebook' : 'Físico'}
+        </span>
+      </div>
+      <div className="font-semibold text-primary">{book.price != null ? `${book.price.toFixed(2)}€` : '—'}</div>
+      <div>
+        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${book.is_published ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+          {book.is_published ? 'Publicado' : 'Oculto'}
+        </span>
+      </div>
+      <div className="flex items-center justify-end gap-2">
+        <button onClick={() => onToggle(book)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-primary transition-colors">
+          {book.is_published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+        </button>
+        <button onClick={() => onEdit(book)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-secondary transition-colors">
+          <Pencil className="w-4 h-4" />
+        </button>
+        <button onClick={() => onDelete(book.id)} disabled={deletingId === book.id} className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
+          {deletingId === book.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const BookModal: React.FC<{ book: Book | null; maxPosition: number; onClose: () => void; onSaved: () => void }> = ({ book, maxPosition, onClose, onSaved }) => {
   const [draft, setDraft] = useState<BookDraft>(book ? { ...book } : emptyBook());
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
@@ -84,6 +132,8 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
         finalCoverUrl = publicUrl;
       }
 
+      const isNew = !book;
+
       const payload = { 
         ...draft, 
         cover_url: finalCoverUrl, 
@@ -92,10 +142,9 @@ const BookModal: React.FC<{ book: Book | null; onClose: () => void; onSaved: () 
         price: draft.price ?? null,
         currency: draft.currency || 'EUR',
         description: draft.description?.trim() || null,
-        published_at: new Date(pubYear, pubMonth, 1).toISOString()
+        published_at: new Date(pubYear, pubMonth, 1).toISOString(),
+        ...(isNew ? { position: maxPosition + 1 } : {})
       };
-
-      const isNew = !book;
 
       const { error: dbErr } = book
         ? await supabase.from('books').update(payload).eq('id', book.id)
@@ -227,12 +276,38 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
 
   const fetch = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.from('books').select('*').order('published_at', { ascending: false }).order('created_at', { ascending: false });
+    const { data } = await supabase.from('books').select('*').order('position', { ascending: true }).order('created_at', { ascending: false });
     setBooks((data as Book[]) ?? []);
     setLoading(false);
   }, []);
 
   useEffect(() => { fetch(); }, [fetch]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = books.findIndex((item) => item.id === active.id);
+      const newIndex = books.findIndex((item) => item.id === over.id);
+      const newBooks = arrayMove(books, oldIndex, newIndex);
+      
+      setBooks(newBooks);
+
+      const payload = newBooks.map((b, index) => ({ id: b.id, position: index }));
+      try {
+        const { error } = await supabase.rpc('update_books_order', { payload });
+        if (error) throw error;
+      } catch (err: any) {
+        console.error('Error updating order:', err);
+        showToast('Erro ao atualizar a ordem dos livros.');
+        fetch();
+      }
+    }
+  };
 
   const openNew = () => { setEditing(null); setModalOpen(true); };
   const openEdit = (b: Book) => { setEditing(b); setModalOpen(true); };
@@ -282,65 +357,32 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
             <p className="text-gray-400 font-light">Nenhum livro ainda. Clica em "Novo Livro" para começar.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50/50">
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Capa</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Título</th>
-                  <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Tipo</th>
-                  <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Preço</th>
-                  <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Estado</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {books.map(book => (
-                  <tr key={book.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="w-10 h-14 rounded-lg overflow-hidden bg-gray-100 shadow-sm shrink-0">
-                        {book.cover_url ? <img src={book.cover_url} alt={book.title} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gradient-to-br from-secondary/30 to-secondary/10 flex items-center justify-center"><BookOpen className="w-4 h-4 text-secondary/50" /></div>}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 max-w-[240px]">
-                      <p className="font-semibold text-primary truncate">{book.title}</p>
-                      {book.is_featured && <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold uppercase tracking-wider">Destaque</span>}
-                    </td>
-                    <td className="px-4 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${book.type === 'ebook' ? 'bg-blue-50 text-blue-600' : 'bg-secondary/10 text-secondary'}`}>
-                        {book.type === 'ebook' ? 'Ebook' : 'Físico'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4 font-semibold text-primary">{book.price != null ? `${book.price.toFixed(2)}€` : '—'}</td>
-                    <td className="px-4 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${book.is_published ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
-                        {book.is_published ? 'Publicado' : 'Oculto'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => handleToggle(book)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-primary transition-colors">
-                          {book.is_published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                        <button onClick={() => openEdit(book)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-secondary transition-colors">
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button onClick={() => handleDelete(book.id)} disabled={deletingId === book.id} className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
-                          {deletingId === book.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="w-full text-sm text-left">
+            <div className="grid grid-cols-[40px_80px_minmax(200px,_1fr)_100px_100px_100px_120px] gap-4 border-b border-gray-100 bg-gray-50/50 px-6 py-4">
+              <div></div>
+              <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">Capa</div>
+              <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">Título</div>
+              <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">Tipo</div>
+              <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">Preço</div>
+              <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">Estado</div>
+              <div className="text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Ações</div>
+            </div>
+            <div className="divide-y divide-gray-50">
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={books.map(b => b.id)} strategy={verticalListSortingStrategy}>
+                  {books.map(book => (
+                    <SortableBookRow key={book.id} book={book} onToggle={handleToggle} onEdit={openEdit} onDelete={handleDelete} deletingId={deletingId} />
+                  ))}
+                </SortableContext>
+              </DndContext>
+            </div>
           </div>
         )}
       </div>
 
       <AnimatePresence>
         {modalOpen && (
-          <BookModal book={editing} onClose={() => setModalOpen(false)} onSaved={() => { fetch(); showToast('Livro guardado com sucesso!'); }} />
+          <BookModal book={editing} maxPosition={books.length > 0 ? Math.max(...books.map(b => b.position ?? 0)) : 0} onClose={() => setModalOpen(false)} onSaved={() => { fetch(); showToast('Livro guardado com sucesso!'); }} />
         )}
       </AnimatePresence>
     </>

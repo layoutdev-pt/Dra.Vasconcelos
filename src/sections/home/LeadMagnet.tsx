@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { BookOpenText } from 'lucide-react';
 import { supabase } from '../../config/supabase';
 
 export const LeadMagnet: React.FC = () => {
@@ -48,8 +47,12 @@ export const LeadMagnet: React.FC = () => {
     <section className="py-24 bg-primary relative overflow-hidden flex flex-col items-center justify-center transition-colors duration-500">
       <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
         
-        <div className="w-16 h-16 mx-auto bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mb-8 shadow-sm">
-          <BookOpenText className="w-8 h-8 text-secondary" strokeWidth={1.5} />
+        <div className="w-48 md:w-56 mx-auto mb-8 flex items-center justify-center">
+          <img 
+            src="/images/ebook-probioticos.png" 
+            alt="Capa Ebook Probióticos" 
+            className="w-full h-auto rounded-lg shadow-2xl"
+          />
         </div>
         
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">

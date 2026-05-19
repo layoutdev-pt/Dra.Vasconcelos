@@ -11,6 +11,7 @@ export interface Book {
   buy_url: string | null;
   is_featured: boolean;
   is_published: boolean;
+  position?: number;
   published_at: string | null;
   created_at: string;
 }
