@@ -170,7 +170,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, index }) => {
                 {isEbook ? 'Download' : 'Comprar'}
               </div>
             ) : (
-              <span className="text-xs text-site-text-muted">Em breve</span>
+              <span className="text-xs text-site-text-muted">Indisponível</span>
             )}
           </div>
 

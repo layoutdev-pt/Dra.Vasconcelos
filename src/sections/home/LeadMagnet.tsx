@@ -44,7 +44,7 @@ export const LeadMagnet: React.FC = () => {
 
   return (
     /* bg-primary é mantido por ser uma seção de destaque, mas adicionamos transição */
-    <section className="py-24 bg-primary relative overflow-hidden flex flex-col items-center justify-center transition-colors duration-500">
+    <section id="leadmagnet" className="py-24 bg-primary relative overflow-hidden flex flex-col items-center justify-center transition-colors duration-500">
       <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
         
         <div className="w-48 md:w-56 mx-auto mb-8 flex items-center justify-center">
