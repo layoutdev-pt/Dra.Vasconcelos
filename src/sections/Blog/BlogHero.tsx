@@ -8,7 +8,7 @@ export const BlogHero: React.FC = () => {
           Artigos e Novidades
         </span>
         <h1 className="text-5xl lg:text-6xl font-extrabold text-site-text mt-4">
-          Blog da <span className="text-secondary">Dra. Alexandra</span>
+          Blog da <span className="text-secondary">Dra. Alexandra Vasconcelos</span>
         </h1>
         <p className="text-site-text-muted mt-6 max-w-2xl mx-auto text-lg font-light">
           Explore conteúdos exclusivos sobre medicina integrativa, longevidade e saúde funcional.
