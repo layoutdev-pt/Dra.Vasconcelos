@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GraduationCap, Award, Globe, X } from 'lucide-react';
+import { Award, X } from 'lucide-react';
 
 export const AuthorityMetrics: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,15 +15,16 @@ export const AuthorityMetrics: React.FC = () => {
             <p className="text-site-text-muted">Autoridade clínica com validação científica nacional e internacional.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Grelha alterada para 2 colunas para permitir divisão matemática exata a 50% */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
-            {/* Highlight Card */}
-            <div className="lg:col-span-2 bg-[#F97316] text-white rounded-3xl p-8 lg:p-10 shadow-lg relative overflow-hidden group">
+            {/* Highlight Card - Ocupação Total (100%) */}
+            <div className="md:col-span-2 bg-[#F97316] text-white rounded-3xl p-8 lg:p-10 shadow-lg relative overflow-hidden group">
               <div className="absolute right-0 top-0 w-64 h-full bg-white/10 -skew-x-12 translate-x-32 group-hover:translate-x-10 transition-transform duration-700" />
               <Award className="w-8 h-8 mb-6 opacity-80" />
               <h3 className="text-3xl font-extrabold mb-4">Especialização em Medicina Integrativa</h3>
               <p className="opacity-90 max-w-md text-lg leading-relaxed">
-                Mais de uma década de prática clínica na vanguarda da neurociência e abordagens integrativas avançadas focado nas causas profundas.
+                Mais de duas décadas de prática clínica na vanguarda da neurociência e abordagens integrativas avançadas focado nas causas profundas.
               </p>
               <button 
                 onClick={() => setIsModalOpen(true)}
@@ -33,15 +34,19 @@ export const AuthorityMetrics: React.FC = () => {
               </button>
             </div>
 
-            <div className="bg-surface border border-surface-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow">
-              <GraduationCap className="w-8 h-8 text-secondary mb-4" />
-              <h4 className="text-xl font-bold text-site-text mb-2">Mestrado Internacional</h4>
-              <p className="text-site-text-muted text-sm">Universidade de Coimbra, Portugal e Formação Avançada na Suíça.</p>
+            {/* 30.000+ Card - Ocupação Parcial (50%) */}
+            <div className="bg-primary text-white p-8 rounded-3xl shadow-lg flex flex-col items-center justify-center text-center">
+              <h4 className="text-5xl font-black mb-2 text-secondary">30.000+</h4>
+              <p className="text-white/60 font-medium uppercase tracking-widest text-xs">Doentes Acompanhados</p>
             </div>
 
-            <div className="bg-primary text-white p-8 rounded-3xl shadow-lg flex flex-col items-center justify-center text-center">
-              <h4 className="text-5xl font-black mb-2 text-secondary">15.000+</h4>
-              <p className="text-white/60 font-medium uppercase tracking-widest text-xs">Doentes Acompanhados</p>
+            {/* +20 Anos Card - Ocupação Parcial (50%) */}
+            <div className="bg-surface border border-surface-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row items-center justify-center text-center sm:text-left gap-6">
+              <h4 className="text-5xl lg:text-6xl font-black text-primary">+20</h4>
+              <div className="flex flex-col">
+                <p className="text-site-text font-bold text-lg mb-1">Anos de Experiência</p>
+                <p className="text-site-text-muted font-medium uppercase tracking-widest text-xs">Prática Clínica Integrativa (Desde 2003)</p>
+              </div>
             </div>
 
           </div>

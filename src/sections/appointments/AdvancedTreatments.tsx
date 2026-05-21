@@ -4,7 +4,7 @@ import { motion, AnimatePresence, type Variants } from 'framer-motion';
 
 /* ─── Data ─────────────────────────────────────────────────────────────── */
 
-const PRONUTRI_STEPS = [
+/* const PRONUTRI_STEPS = [
   {
     num: '01',
     label: 'Método',
@@ -21,6 +21,7 @@ const PRONUTRI_STEPS = [
     desc: 'Medir a resposta do corpo a alimentos e substâncias químicas, identificando reações tóxicas ou metabólicas com precisão.',
   },
 ];
+*/
 
 const COMPLEMENTARY_EXAMS = [
   {
@@ -45,11 +46,11 @@ const COMPLEMENTARY_EXAMS = [
 
 const THERMOGRAPHY_SYSTEMS = [
   'Respiratório', 'Digestivo', 'Circulatório',
-  'Endócrino', 'Ginecológico', 'Neurológico', 'Locomotor',
+  'Endócrino', 'Ginecológico (Mama)', 'Neurológico', 'Locomotor',
 ];
 
 const TABS = [
-  { id: 'pronutri', label: 'Bioressonância', icon: Activity },
+  /* { id: 'pronutri', label: 'Bioressonância', icon: Activity }, */
   { id: 'thermography', label: 'Termografia', icon: Thermometer },
   { id: 'lab', label: 'Laboratório', icon: FlaskConical },
 ];
@@ -138,7 +139,7 @@ export const AdvancedTreatments: React.FC = () => {
         <div className="max-w-5xl mx-auto bg-surface rounded-[2.5rem] border border-surface-border shadow-[0_12px_40px_-10px_rgba(124,176,176,0.2)] overflow-hidden min-h-[480px]">
           <AnimatePresence mode="wait">
 
-            {/* TAB: Pronutri */}
+            {/* TAB: Pronutri 
             {activeTab === 'pronutri' && (
               <motion.div
                 key="pronutri"
@@ -180,6 +181,7 @@ export const AdvancedTreatments: React.FC = () => {
                 </div>
               </motion.div>
             )}
+            */}
 
             {/* TAB: Termografia */}
             {activeTab === 'thermography' && (

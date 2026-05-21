@@ -62,7 +62,7 @@ export const Hero: React.FC = () => {
             </h1>
             
             <p className="text-lg text-site-text-muted max-w-lg leading-relaxed font-light mt-[-20px] md:mt-[-40px]">
-              Todas as vezes que vamos ao médico acreditamos tratar da nossa saúde, mas atuamos apenas no tratamento da doença. A biologia e medicina integrativa atuam em busca da sua causa na biologia celular.
+              Todas as vezes que vai ao médico acredita que está a cuidar da sua saúde. Mas tratar sintomas não é o mesmo que tratar a causa. A medicina integrativa procura compreender a origem da doença e restaurar a saúde a partir da biologia celular.
             </p>
             
             <div className="pt-2">

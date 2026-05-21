@@ -10,7 +10,7 @@ export const Courses: React.FC = () => {
   return (
     <div className="w-full">
       <CoursesHero />
-      <AcademyMetrics />
+      {/* <AcademyMetrics /> */}
       
       <section className="py-24 bg-site-bg" id="catalogo">
         <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">

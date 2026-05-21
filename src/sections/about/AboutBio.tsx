@@ -39,11 +39,11 @@ export const AboutBio: React.FC = () => {
         <div className="bg-surface rounded-3xl p-10 lg:p-16 border border-surface-border shadow-sm flex flex-col items-center text-center max-w-4xl mx-auto">
           <Globe2 className="w-12 h-12 text-secondary mb-6" />
           <p className="text-xl text-site-text-muted font-light leading-relaxed mb-8">
-            Hoje sou diretora e fundadora das Clínicas Viver: Medicina Integrativa em Lisboa e Porto, sou oradora em diversos congressos e cursos de especialização no âmbito da Nutrição Funcional, Saúde Intestinal, Doenças Autoimunes e Envelhecimento Saudável.
+            Hoje sou fundadora e diretora da Clínica Dra. Alexandra Vasconcelos, onde desenvolvo uma abordagem integrativa e personalizada da saúde. Ao longo de mais de 20 anos, fui fundadora e diretora das Clínicas Viver, em Lisboa e Porto. Sou também oradora em congressos e cursos de especialização nas áreas da Nutrição Funcional, Saúde Intestinal, Doenças Autoimunes e Envelhecimento Saudável.
           </p>
           <div className="bg-secondary/10 text-secondary px-8 py-4 rounded-2xl border border-secondary/20">
             <p className="font-bold text-lg text-site-text">
-              "E sinto que a minha missão é cada vez mais essencial para o bem-estar das pessoas."
+              "O meu propósito é ajudar cada pessoa a compreender melhor o seu corpo e, hoje mais do que nunca, recuperar saúde, energia e qualidade de vida através de uma abordagem verdadeiramente integrada e personalizada"
             </p>
           </div>
         </div>

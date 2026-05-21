@@ -46,7 +46,7 @@ export const AcademyHero: React.FC = () => {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-primary leading-tight tracking-tight mb-6"
             >
               Conhecimento que <br className="hidden md:block" />
-              <span className="text-secondary">Transforma</span>, em <br className="hidden lg:block" />
+              <span className="text-secondary">Transforma Vidas</span>, em <br className="hidden lg:block" />
               qualquer formato.
             </motion.h1>
 

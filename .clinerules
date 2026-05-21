@@ -1,0 +1,4 @@
+1. PROIBIÇÃO DE AUTONOMIA: Nunca planeies arquiteturas ou inicies refatorizações não solicitadas. Atua puramente como um executor do plano fornecido.
+2. AGREGAÇÃO DE EDIÇÕES: Agrupa alterações. Nunca gastes ciclos a editar ficheiros individualmente se puderes processar múltiplos componentes num único output.
+3. ISOLAMENTO DE CONTEXTO: Lê e analisa apenas os ficheiros explicitamente referidos na instrução. Ignora o resto da árvore do projeto.
+4. MUTAÇÃO DIRETA: Fornece o diff imediatamente. Não elabores sobre a teoria da alteração, limita-te a substituir o código.

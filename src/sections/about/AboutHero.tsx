@@ -16,10 +16,10 @@ export const AboutHero: React.FC = () => {
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-[4rem] font-extrabold text-site-text leading-[1.05] tracking-tight">
               Transformando Vidas <br/>
-              Através da <span className="text-secondary">Ciência Humana.</span>
+              com <span className="text-secondary">Ciência, Precisão e Propósito</span>
             </h1>
             <p className="text-lg text-site-text-muted max-w-lg leading-relaxed font-light">
-              Uma jornada que une a ciência rigorosa ao cuidado holístico, focada em ajudar clinicamente na base do estilo de vida contemporâneo. A Dra. Alexandra combina rigor académico com uma abordagem humanizada para redefinir o bem-estar no século XXI.
+              Uma jornada que une ciência, precisão e uma visão integrativa da saúde. A Dra. Alexandra alia rigor científico a uma abordagem humanizada, ajudando a compreender e tratar as verdadeiras causas dos desequilíbrios do estilo de vida moderno, redefinindo o bem-estar no século XXI.
             </p>
             
             <div className="pt-4">

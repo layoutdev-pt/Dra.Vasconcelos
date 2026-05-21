@@ -45,9 +45,9 @@ export const ConsultationDetails: React.FC = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
               {[
-                { icon: Clock, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', title: 'Tempo de Qualidade', desc: 'Consultas com duração até 2 horas. Tempo dedicado para ouvir a sua história completa com total dedicação.' },
-                { icon: BriefcaseMedical, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400', title: 'Medicina Funcional', desc: 'Investigação profunda das raízes dos distúrbios e análise rigorosa de parâmetros e biomarcadores.' },
-                { icon: ClipboardList, iconBg: 'bg-green-500/10', iconColor: 'text-green-400', title: 'Plano Personalizado', desc: 'Nutrição, suplementação e estilo de vida desenhados para as suas necessidades biofísicas exclusivas.' },
+                { icon: Clock, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', title: 'Tempo de Qualidade', desc: 'Consultas com duração até 2 horas. Tempo dedicado para ouvir e interpretar a sua história completa com total dedicação.' },
+                { icon: BriefcaseMedical, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400', title: 'Medicina Funcional', desc: 'Avaliação avançada da saúde com foco na prevenção, equilíbrio e otimização do organismo.' },
+                { icon: ClipboardList, iconBg: 'bg-green-500/10', iconColor: 'text-green-400', title: 'Plano Personalizado', desc: 'Uma abordagem personalizada de nutrição, suplementação e estilo de vida baseada na sua individualidade biológica e genética.' },
               ].map((card, i) => (
                 <motion.div
                   key={i}
@@ -161,7 +161,7 @@ export const ConsultationDetails: React.FC = () => {
                       <div className="text-center">
                         <p className="text-site-text font-bold mb-6 text-lg">Dirige-se transversalmente a pessoas com preocupações específicas de:</p>
                         <div className="flex flex-wrap justify-center gap-3">
-                          {['Envelhecimento saudável', 'Menopausa', 'Equilíbrio intestinal', 'Fadiga crónica', 'Desequilíbrios hormonais', 'Peso e síndrome metabólica', 'Doenças autoimunes', 'Doença oncológica', 'Gravidez e pré/pós-parto'].map((tag) => (
+                          {['Envelhecimento saudável e longevidade', 'Menopausa e saúde hormonal feminina', 'Equilíbrio intestinal e inflamação crónica', 'Fadiga crónica, stress e burnout', 'Sono, energia e performance cognitiva', 'Desequilíbrios hormonais e imunidade', 'Peso, resistência à insulina e síndrome metabólica', 'Doenças autoimunes', 'Acompanhamento integrativo em oncologia'].map((tag) => (                            
                             <span key={tag} className="px-5 py-2.5 bg-surface border border-surface-border rounded-full text-sm text-site-text font-medium shadow-sm">{tag}</span>
                           ))}
                         </div>
@@ -183,8 +183,19 @@ export const ConsultationDetails: React.FC = () => {
                       <div>
                         <h4 className="text-2xl font-bold text-site-text mb-6 border-b border-surface-border pb-4 inline-block">Em que consiste:</h4>
                         <ul className="space-y-5 text-site-text-muted font-light">
-                          {['Tratamentos de desintoxicação', 'Alimentação personalizada', 'Neutralização de radicais livres', 'Aporte de nutrientes essenciais', 'Técnicas de gestão de stress', 'Reequilíbrio enzimático com minerais e vitaminas', 'Avaliação de metais pesados', 'Avaliação do microbioma intestinal e disfunções gastrointestinais', 'Diagnóstico associado por determinação de respostas obtidas por bioressonância'].map((item, i) => (
-                            <li key={i} className="flex items-start gap-3">
+                          {[
+                            'Estratégias de desintoxicação e redução da carga tóxica',
+                            'Alimentação personalizada e anti-inflamatória',
+                            'Otimização nutricional com vitaminas, minerais e compostos bioativos',
+                            'Suporte ao equilíbrio metabólico, hormonal e intestinal',
+                            'Avaliação do microbioma intestinal e disfunções gastrointestinais',
+                            'Gestão de stress, sono e recuperação celular',
+                            'Estratégias de suporte antioxidante e saúde celular',
+                            'Avaliação de metais pesados e fatores ambientais',
+                            'Abordagem focada na epigenética e nos fatores que influenciam a expressão genética',
+                            'Avaliação funcional através de biomarcadores e exames complementares',
+                            'Métodos complementares de avaliação bioenergética, incluindo bioressonância'
+                          ].map((item, i) => (                            <li key={i} className="flex items-start gap-3">
                               <div className="w-2 h-2 rounded-full bg-secondary mt-2 shrink-0"></div>
                               <span className="leading-relaxed">{item}</span>
                             </li>
