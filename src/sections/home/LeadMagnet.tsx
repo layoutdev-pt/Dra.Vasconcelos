@@ -1,3 +1,4 @@
+// src/sections/home/LeadMagnet.tsx
 import React, { useState } from 'react';
 import { supabase } from '../../config/supabase';
 
@@ -14,16 +15,26 @@ export const LeadMagnet: React.FC = () => {
     setErrorMessage('');
 
     try {
+      // 1. Inserção na Base de Dados (Supabase Leads)
       const { error: dbError } = await supabase
         .from('leads')
         .insert([{ email, source: 'ebook' }]);
 
-      if (dbError && dbError.code !== '23505') throw dbError;
+      if (dbError && dbError.code !== '23505') throw dbError; // 23505 = unique_violation
 
-      // 2. Direct Download for immediate gratification
+      // 2. Acionar Edge Functions (Resend Email & Closum Newsletter)
+      // Executamos ambas em paralelo sem bloquear a UI com await Promise.all
+      // Se a Edge Function do Closum não estiver ativa neste ambiente, o erro será tratado no bloco catch, mas o download avançará.
+      supabase.functions.invoke('send-lead-magnet', { body: { email } }).catch(console.error);
+      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
+
+      // 3. Forçar o Download Imediato do PDF
+      // A barra inicial '/' assegura que o servidor resolve a partir da raiz (pasta public)
       const link = document.createElement('a');
-      link.href = '/docs/ebook-probioticos.pdf';
-      link.download = 'ebook-probioticos.pdf';
+      link.href = '/docs/Ebook-Probioticos.pdf'; 
+      link.download = 'Ebook-Probioticos.pdf';
+      
+      // O DOM exige a apendagem do elemento antes do clique na maioria dos browsers
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -43,7 +54,6 @@ export const LeadMagnet: React.FC = () => {
   };
 
   return (
-    /* bg-primary é mantido por ser uma seção de destaque, mas adicionamos transição */
     <section id="leadmagnet" className="py-24 bg-primary relative overflow-hidden flex flex-col items-center justify-center transition-colors duration-500">
       <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
         
@@ -65,8 +75,8 @@ export const LeadMagnet: React.FC = () => {
         
         {status === 'success' ? (
           <div className="bg-green-500/20 border border-green-500/30 text-green-400 p-6 rounded-xl max-w-lg mx-auto backdrop-blur-sm">
-            <p className="font-bold text-lg mb-1 text-white">Guia enviado com sucesso!</p>
-            <p className="text-sm opacity-90">Verifique a sua caixa de entrada para aceder ao documento.</p>
+            <p className="font-bold text-lg mb-1 text-white">Guia descarregado com sucesso!</p>
+            <p className="text-sm opacity-90">Verifique os seus downloads. Enviámos também uma cópia para o seu email.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto relative">
@@ -89,7 +99,7 @@ export const LeadMagnet: React.FC = () => {
             <button 
               type="submit" 
               disabled={status === 'loading'}
-              className="px-8 py-4 rounded-full bg-accent hover:bg-accent/90 text-white font-bold whitespace-nowrap transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50"
+              className="px-8 py-4 rounded-full bg-accent hover:bg-accent/90 text-white font-bold whitespace-nowrap transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 cursor-pointer"
             >
               {status === 'loading' ? 'A processar...' : 'Download Gratuito'}
             </button>

@@ -1,3 +1,4 @@
+// src/config/supabase.ts
 // @ts-nocheck — Este ficheiro corre no Deno (Supabase Edge Functions), não no Node.js
 // supabase/functions/send-lead-magnet/index.ts
 // Sends the free PDF ebook to new subscribers via Resend
