@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { Mail, Send, CheckCircle2 } from 'lucide-react';
-import { supabase } from '../../config/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// Inicialização direta para contornar problemas de resolução do módulo no ambiente
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export const BlogNewsletter: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -15,25 +20,27 @@ export const BlogNewsletter: React.FC = () => {
     setErrorMessage('');
 
     try {
-      const { error } = await supabase
-        .from('leads')
-        .insert([{ email, source: 'blog' }]);
+      // Invocação rigorosa da Edge Function configurada no backend
+      const { data, error } = await supabase.functions.invoke('send-newsletter', {
+        body: { email }
+      });
 
+      // Validação de erros de rede ou falhas na execução do Deno
       if (error) {
-        if (error.code === '23505') {
-          // Already subscribed — treat as success
-          setStatus('success');
-          setEmail('');
-          return;
-        }
-        throw error;
+        throw new Error(`Falha na Edge Function: ${error.message}`);
+      }
+
+      // Validação de erros lógicos retornados pelo Closum através da Edge Function
+      if (data && data.success === false) {
+         throw new Error(data.error || 'Erro no processamento da subscrição pelo Closum.');
       }
 
       setStatus('success');
       setEmail('');
     } catch (err: any) {
+      console.error("Erro no processamento da subscrição:", err);
       setStatus('error');
-      setErrorMessage('Ocorreu um erro. Tente novamente.');
+      setErrorMessage('Erro na comunicação com o servidor. Tente novamente.');
     }
   };
 
@@ -83,7 +90,7 @@ export const BlogNewsletter: React.FC = () => {
               <button 
                 type="submit"
                 disabled={status === 'loading'}
-                className="bg-secondary hover:bg-secondary/90 text-white font-bold px-8 py-5 rounded-2xl flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1 shadow-lg shadow-secondary/20 disabled:opacity-50 disabled:hover:translate-y-0"
+                className="bg-secondary hover:bg-secondary/90 text-white font-bold px-8 py-5 rounded-2xl flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1 shadow-lg shadow-secondary/20 disabled:opacity-50 disabled:hover:translate-y-0 cursor-pointer"
               >
                 {status === 'loading' ? 'A processar...' : (
                   <>Subscrever <Send className="w-4 h-4" /></>
