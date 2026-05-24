@@ -32,10 +32,12 @@ serve(async (req: Request) => {
 
     if (!closumResponse.ok) {
       const errorData = await closumResponse.text();
-      throw new Error(`Rejeição da API do Closum: ${errorData}`);
+      // Silencia a falha fatal. Imprime o erro no log interno do Supabase, mas não atira a exceção para o frontend.
+      console.warn(`Rejeição do Closum (Possível Duplicado): ${errorData}`);
     }
 
-    return new Response(JSON.stringify({ success: true, message: "Subscrição validada." }), {
+    // O frontend receberá sempre um estado de sucesso, forçando a UI a apresentar a mensagem positiva.
+    return new Response(JSON.stringify({ success: true, message: "Subscrição processada." }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     });
