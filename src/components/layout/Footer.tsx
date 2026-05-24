@@ -59,7 +59,7 @@ export const Footer: React.FC = () => {
               <li className="flex flex-col gap-2">
                 <span className="text-white/20 text-[10px] uppercase font-bold tracking-widest">Contactos Profissionais</span>
                 <a href="tel:+351936150690" className="flex items-center gap-2 hover:text-secondary transition-colors font-medium">
-                  <Phone className="w-3.5 h-3.5 text-secondary" /> (+351) 936 150 690
+                  <Phone className="w-3.5 h-3.5 text-secondary" /> (+351) 936 150 690 (Chamada para a rede fixa nacional)
                 </a>
                 <a href="mailto:info@draalexandravasconcelos.pt" className="flex items-center gap-2 hover:text-secondary transition-colors font-medium text-xs break-all">
                   <Mail className="w-3.5 h-3.5 text-secondary" /> info@draalexandravasconcelos.pt
