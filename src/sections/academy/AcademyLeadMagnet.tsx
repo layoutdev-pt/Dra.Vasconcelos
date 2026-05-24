@@ -23,14 +23,18 @@ export const AcademyLeadMagnet: React.FC = () => {
     setStatus('loading');
 
     try {
-      // 1. Save to Supabase
+      // 1. Save to Supabase DB
       const { error: dbError } = await supabase
         .from('leads')
         .insert([{ email, source: 'ebook_academy' }]);
 
       if (dbError && dbError.code !== '23505') throw dbError;
+      
+      // 2. ADIÇÃO DA API CLOSUM: Subscrição e Email assíncronos
+      supabase.functions.invoke('send-lead-magnet', { body: { email } }).catch(console.error);
+      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
 
-      // 2. Direct Download for immediate gratification
+      // 3. Direct Download for immediate gratification
       const link = document.createElement('a');
       link.href = '/docs/ebook-probioticos.pdf';
       link.download = 'ebook-probioticos.pdf';
@@ -75,12 +79,10 @@ export const AcademyLeadMagnet: React.FC = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                {/* Efeito de brilho na capa */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none rounded-lg" />
               </motion.div>
             </motion.div>
 
-            {/* Right — Content + form */}
             <div className="flex-1 p-8 md:p-12 lg:p-16">
               <motion.h3
                 variants={fadeUp}
@@ -137,7 +139,7 @@ export const AcademyLeadMagnet: React.FC = () => {
                   <button
                     type="submit"
                     disabled={status === 'loading'}
-                    className="bg-accent hover:bg-accent/90 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-accent/20 whitespace-nowrap disabled:opacity-50"
+                    className="bg-accent hover:bg-accent/90 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-accent/20 whitespace-nowrap disabled:opacity-50 cursor-pointer"
                   >
                     {status === 'loading' ? 'A processar...' : 'Receber Ebook Grátis'}
                   </button>

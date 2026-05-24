@@ -1,5 +1,5 @@
-// src/sections/home/LeadMagnet.tsx
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../../config/supabase';
 
 export const LeadMagnet: React.FC = () => {
@@ -23,18 +23,16 @@ export const LeadMagnet: React.FC = () => {
       if (dbError && dbError.code !== '23505') throw dbError; // 23505 = unique_violation
 
       // 2. Acionar Edge Functions (Resend Email & Closum Newsletter)
-      // Executamos ambas em paralelo sem bloquear a UI com await Promise.all
-      // Se a Edge Function do Closum não estiver ativa neste ambiente, o erro será tratado no bloco catch, mas o download avançará.
       supabase.functions.invoke('send-lead-magnet', { body: { email } }).catch(console.error);
+      
+      // -> ADIÇÃO DA API CLOSUM: Regista o lead na newsletter
       supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
 
       // 3. Forçar o Download Imediato do PDF
-      // A barra inicial '/' assegura que o servidor resolve a partir da raiz (pasta public)
       const link = document.createElement('a');
       link.href = '/docs/Ebook-Probioticos.pdf'; 
       link.download = 'Ebook-Probioticos.pdf';
       
-      // O DOM exige a apendagem do elemento antes do clique na maioria dos browsers
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -107,7 +105,7 @@ export const LeadMagnet: React.FC = () => {
         )}
         
         <p className="text-gray-400/60 dark:text-gray-500 text-xs mt-10 font-medium">
-          Respeitamos a Sua Privacidade. Cancele a Qualquer Momento.
+          Ao submeter este formulário, concorda com a nossa <Link to="/privacidade" className="hover:text-secondary transition-colors underline">Política de Privacidade</Link> e em receber comunicações nossas.
         </p>
         
       </div>

@@ -12,13 +12,26 @@ export const Footer: React.FC = () => {
   const handleFooterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!footerEmail) return;
+    
     setFooterStatus('loading');
+    
     try {
+      // 1. Guardar o lead na base de dados (Ignorar erro de duplicação)
       const { error } = await supabase.from('leads').insert([{ email: footerEmail, source: 'footer' }]);
       if (error && error.code !== '23505') throw error;
+      
+      // 2. ADIÇÃO DA API CLOSUM: Invocação rigorosa da Edge Function configurada no backend
+      const { data, error: funcError } = await supabase.functions.invoke('send-newsletter', {
+        body: { email: footerEmail }
+      });
+
+      if (funcError) throw funcError;
+      if (data && data.success === false) throw new Error(data.error);
+
       setFooterStatus('success');
       setFooterEmail('');
-    } catch {
+    } catch (err) {
+      console.error('Footer Newsletter Error:', err);
       setFooterStatus('error');
     }
   };
@@ -29,7 +42,6 @@ export const Footer: React.FC = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
           
-          {/* Coluna 1: Branding */}
           <div className="lg:col-span-4 space-y-6">
             <div className="flex items-center">
               <Link to="/">
@@ -41,7 +53,6 @@ export const Footer: React.FC = () => {
             </p>
           </div>
 
-          {/* Coluna 2: Clínica & Conhecimento */}
           <div className="lg:col-span-3">
             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Clínica & Recursos</h4>
             <ul className="space-y-4 text-sm text-gray-400">
@@ -64,7 +75,6 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Coluna 3: Termos Legais */}
           <div className="lg:col-span-3">
             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Termos Legais</h4>
             <ul className="space-y-3 text-xs text-gray-400">
@@ -92,7 +102,6 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Coluna 4: Newsletter */}
           <div className="lg:col-span-2">
             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Newsletter</h4>
             <p className="text-xs text-gray-400 mb-4 leading-relaxed">
@@ -114,7 +123,7 @@ export const Footer: React.FC = () => {
                 <button 
                   type="submit" 
                   disabled={footerStatus === 'loading'}
-                  className="bg-secondary hover:bg-secondary/90 text-white font-bold px-4 py-2 rounded-lg text-xs transition-colors disabled:opacity-50"
+                  className="bg-secondary hover:bg-secondary/90 text-white font-bold px-4 py-2 rounded-lg text-xs transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   {footerStatus === 'loading' ? 'A processar...' : 'Subscrever'}
                 </button>
@@ -127,7 +136,6 @@ export const Footer: React.FC = () => {
 
         </div>
 
-        {/* Barra Inferior */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-gray-500 text-[10px] text-center md:text-left uppercase tracking-wider">
             © {currentYear} Clínica Dra. Alexandra Vasconcelos. Todos os direitos reservados.
@@ -138,7 +146,7 @@ export const Footer: React.FC = () => {
                 localStorage.removeItem('cookie-consent');
                 window.location.reload();
               }}
-              className="hover:text-secondary transition-colors"
+              className="hover:text-secondary transition-colors cursor-pointer"
             >
               Configuração de Cookies
             </button>

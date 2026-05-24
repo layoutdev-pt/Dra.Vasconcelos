@@ -1,3 +1,4 @@
+// src/sections/home/PalestraSection.tsx
 import React, { useState } from 'react';
 import { PlayCircle, CheckCircle2 } from 'lucide-react';
 import { PalestraModal } from '../../components/common/PalestraModal';

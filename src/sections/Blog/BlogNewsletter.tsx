@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Send, CheckCircle2 } from 'lucide-react';
-import { createClient } from '@supabase/supabase-js';
-
-// Inicialização direta para contornar problemas de resolução do módulo no ambiente
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { supabase } from '../../config/supabase'; // Importação centralizada e correta
 
 export const BlogNewsletter: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -20,17 +15,22 @@ export const BlogNewsletter: React.FC = () => {
     setErrorMessage('');
 
     try {
-      // Invocação rigorosa da Edge Function configurada no backend
+      // 1. Restaurada a inserção na Base de Dados local
+      const { error: dbError } = await supabase
+        .from('leads')
+        .insert([{ email, source: 'blog' }]);
+
+      if (dbError && dbError.code !== '23505') throw dbError;
+
+      // 2. Invocação rigorosa da Edge Function para o Closum
       const { data, error } = await supabase.functions.invoke('send-newsletter', {
         body: { email }
       });
 
-      // Validação de erros de rede ou falhas na execução do Deno
       if (error) {
         throw new Error(`Falha na Edge Function: ${error.message}`);
       }
 
-      // Validação de erros lógicos retornados pelo Closum através da Edge Function
       if (data && data.success === false) {
          throw new Error(data.error || 'Erro no processamento da subscrição pelo Closum.');
       }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { Link } from 'react-router-dom';
 import { X, MonitorPlay, User, Phone, Mail, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../../config/supabase';
 
@@ -15,7 +16,6 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Lock body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -37,13 +37,17 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
     setErrorMessage('');
 
     try {
+      // 1. Gravação Local
       const { error: dbError } = await supabase
         .from('leads')
         .insert([{ name, phone, email, source: 'palestra' }]);
 
       if (dbError && dbError.code !== '23505') throw dbError;
 
-      // Direct Download for immediate gratification
+      // 2. Sincronização com o Closum
+      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
+
+      // 3. Download do PDF
       const link = document.createElement('a');
       link.href = '/docs/Palestra Online Gratuita.pdf';
       link.download = 'Palestra Online Gratuita.pdf';
@@ -71,16 +75,13 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
       
-      {/* Modal */}
       <div className="bg-white rounded-[2rem] w-full max-w-lg relative z-10 overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-gray-100">
         
-        {/* Header - Light Theme */}
         <div className="pt-8 px-8 pb-4 text-center relative shrink-0">
           <button 
             onClick={onClose}
@@ -99,7 +100,6 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
           </p>
         </div>
 
-        {/* Content - Scrollable */}
         <div className="p-8 pt-4 overflow-y-auto">
           {status === 'success' ? (
             <div className="text-center py-6">
@@ -210,7 +210,7 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
               </div>
               
               <p className="text-center text-xs text-gray-400 mt-6 font-medium px-4 leading-relaxed">
-                Ao submeter este formulário, concorda com a nossa política de privacidade e em receber comunicações nossas.
+                Ao submeter este formulário, concorda com a nossa <Link to="/privacidade" className="hover:text-secondary transition-colors underline">Política de Privacidade</Link> e em receber comunicações nossas.
               </p>
             </form>
           )}
