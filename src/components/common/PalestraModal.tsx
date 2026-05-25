@@ -45,7 +45,9 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
       if (dbError && dbError.code !== '23505') throw dbError;
 
       // 2. Sincronização com o Closum
-      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
+      supabase.functions.invoke('send-newsletter', { 
+        body: { email, name, phone } 
+      }).catch(console.error);
 
       // 3. Download do PDF
       const link = document.createElement('a');

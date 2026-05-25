@@ -74,7 +74,7 @@ export const LeadMagnet: React.FC = () => {
         {status === 'success' ? (
           <div className="bg-green-500/20 border border-green-500/30 text-green-400 p-6 rounded-xl max-w-lg mx-auto backdrop-blur-sm">
             <p className="font-bold text-lg mb-1 text-white">Guia descarregado com sucesso!</p>
-            <p className="text-sm opacity-90">Verifique os seus downloads. Enviámos também uma cópia para o seu email.</p>
+            <p className="text-sm opacity-90">Verifique os seus downloads.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto relative">

@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 
-// Tipagem explícita 'Request' adicionada ao parâmetro 'req'
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -9,7 +8,7 @@ serve(async (req: Request) => {
 
   try {
     const body = await req.json();
-    const { email } = body;
+    const { email, name, phone } = body;
 
     if (!email) {
       throw new Error("O parâmetro 'email' é obrigatório no payload do pedido.");
@@ -21,28 +20,42 @@ serve(async (req: Request) => {
       throw new Error("Variável CLOSUM_API_KEY não definida no ambiente Supabase.");
     }
 
-    const closumResponse = await fetch('https://api.closum.com/v2/contacts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${CLOSUM_API_KEY}`
-      },
-      body: JSON.stringify({ email: email })
-    });
+    const requestUrl = `https://api.closum.com/v2/lead/add/?api-key=${CLOSUM_API_KEY}`;
+    
+    // Payload dinâmico
+    const closumPayload: Record<string, any> = {
+      email: email,
+      consent_email: true,
+      consent_sms: phone ? true : false // Assume consentimento SMS se o telemóvel for fornecido ativamente no formulário
+    };
 
-    if (!closumResponse.ok) {
-      const errorData = await closumResponse.text();
-      // Silencia a falha fatal. Imprime o erro no log interno do Supabase, mas não atira a exceção para o frontend.
-      console.warn(`Rejeição do Closum (Possível Duplicado): ${errorData}`);
+    if (name) {
+      closumPayload.name = name;
     }
 
-    // O frontend receberá sempre um estado de sucesso, forçando a UI a apresentar a mensagem positiva.
-    return new Response(JSON.stringify({ success: true, message: "Subscrição processada." }), {
+    if (phone) {
+      closumPayload.mobile_number = phone;
+    }
+
+    const closumResponse = await fetch(requestUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(closumPayload)
+    });
+
+    const rawResponseText = await closumResponse.text();
+
+    if (!closumResponse.ok) {
+      console.warn(`Aviso do Closum: ${rawResponseText}`);
+    }
+
+    return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     });
 
-  // Tipagem 'any' adicionada para contornar o tipo 'unknown'
   } catch (error: any) {
     return new Response(JSON.stringify({ success: false, error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
