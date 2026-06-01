@@ -29,14 +29,14 @@ export const CookieBanner: React.FC = () => {
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
           className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[95%] max-w-[800px]"
         >
-          <div className="bg-white/95 backdrop-blur-xl border border-gray-100 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] rounded-[2rem] p-6 md:p-8">
+          <div className="bg-surface/95 backdrop-blur-xl border border-surface-border shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] rounded-[2rem] p-6 md:p-8">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center shrink-0">
                 <Cookie className="text-secondary w-8 h-8" />
               </div>
               
               <div className="flex-1 text-center md:text-left">
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <p className="text-sm text-site-text-muted leading-relaxed">
                   Utilizamos apenas cookies técnicos essenciais para garantir o funcionamento da sua conta, 
                   do carrinho de compras e estatísticas anónimas, sem rastreio para publicidade. 
                   Ao continuar a navegar, concorda com a nossa <Link to="/cookies" className="text-secondary font-bold hover:underline">Política de Cookies</Link>.
@@ -52,7 +52,7 @@ export const CookieBanner: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setIsVisible(false)}
-                  className="p-3 text-gray-400 hover:text-gray-600 transition-colors md:hidden"
+                  className="p-3 text-site-text-muted hover:text-site-text transition-colors md:hidden"
                   aria-label="Fechar"
                 >
                   <X className="w-5 h-5" />

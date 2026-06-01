@@ -1,6 +1,17 @@
 {
   "rewrites": [
     {
+      "source": "/cursos/(.*)",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(facebookexternalhit|whatsapp|linkedinbot|twitterbot|googlebot).*"
+        }
+      ],
+      "destination": "/api/og-bot?slug=$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

@@ -38,12 +38,12 @@ export const AcademyHero: React.FC = () => {
               <span>Publicações da Dra. Alexandra Vasconcelos</span>
             </motion.div>
 
-            <motion.h1
+           <motion.h1
               variants={fadeUp}
               initial="hidden"
               animate="visible"
               custom={1}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-primary leading-tight tracking-tight mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-site-text leading-tight tracking-tight mb-6"
             >
               Conhecimento que <br className="hidden md:block" />
               <span className="text-secondary">Transforma Vidas</span>, em <br className="hidden lg:block" />

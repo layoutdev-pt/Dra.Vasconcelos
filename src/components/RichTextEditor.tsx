@@ -99,7 +99,7 @@ const ToolbarBtn: React.FC<{
     className={`p-1.5 rounded-lg transition-all duration-150 ${
       isActive
         ? 'bg-secondary/15 text-secondary shadow-sm'
-        : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+        : 'text-site-text-muted hover:bg-surface-muted hover:text-site-text'
     } ${disabled ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'}`}
   >
     {children}
@@ -107,7 +107,7 @@ const ToolbarBtn: React.FC<{
 );
 
 const ToolbarDivider = () => (
-  <div className="w-px h-6 bg-gray-200 mx-1 shrink-0" />
+  <div className="w-px h-6 bg-surface-border mx-1 shrink-0" />
 );
 
 /* ─── COLOR PICKER BUTTON ───────────────────────────────────────────────── */
@@ -119,7 +119,7 @@ const ColorPickerBtn: React.FC<{
   icon: React.ReactNode;
 }> = ({ currentColor, onColorChange, title, icon }) => (
   <label className="relative cursor-pointer" title={title}>
-    <div className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-all duration-150 flex items-center gap-0.5">
+    <div className="p-1.5 rounded-lg text-site-text-muted hover:bg-surface-muted hover:text-site-text transition-all duration-150 flex items-center gap-0.5">
       {icon}
       <div className="w-3 h-1 rounded-full mt-0.5" style={{ backgroundColor: currentColor || '#000' }} />
     </div>
@@ -173,7 +173,7 @@ const Toolbar: React.FC<{ editor: ReturnType<typeof useEditor> }> = ({ editor })
   const sz = 15;
 
   return (
-    <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 border-b border-gray-200 bg-gray-50/80 rounded-t-xl sticky top-0 z-10">
+    <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 border-b border-surface-border bg-surface-muted/80 rounded-t-xl sticky top-0 z-10">
       {/* Undo / Redo */}
       <ToolbarBtn onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} title="Desfazer">
         <Undo2 size={sz} />
@@ -211,7 +211,7 @@ const Toolbar: React.FC<{ editor: ReturnType<typeof useEditor> }> = ({ editor })
           }
         }}
         title="Tamanho da letra"
-        className="h-8 px-1.5 bg-transparent border border-gray-200 rounded-lg text-xs text-gray-600 focus:outline-none focus:ring-1 focus:ring-secondary/40 cursor-pointer hover:bg-gray-100 transition-colors appearance-none text-center w-16"
+        className="h-8 px-1.5 bg-transparent border border-surface-border rounded-lg text-xs text-site-text focus:outline-none focus:ring-1 focus:ring-secondary/40 cursor-pointer hover:bg-surface-muted transition-colors appearance-none text-center w-16"
       >
         <option value="">Tam.</option>
         {FONT_SIZES.map(s => (
@@ -354,7 +354,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-sm max-w-none focus:outline-none px-5 py-4 text-primary',
+        class: 'prose prose-sm max-w-none focus:outline-none px-5 py-4 text-site-text',
         style: `min-height: ${minHeight}`,
       },
     },
@@ -370,7 +370,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   }, [editor, value]);
 
   return (
-    <div className={`border border-gray-200 rounded-xl overflow-hidden bg-white ${className}`}>
+    <div className={`border border-surface-border rounded-xl overflow-hidden bg-surface ${className}`}>
       <Toolbar editor={editor} />
       <EditorContent editor={editor} />
     </div>

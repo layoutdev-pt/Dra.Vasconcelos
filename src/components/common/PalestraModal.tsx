@@ -82,14 +82,14 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
         onClick={onClose}
       />
       
-      <div className="bg-white rounded-[2rem] w-full max-w-lg relative z-10 overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-gray-100">
+      <div className="bg-surface rounded-[2rem] w-full max-w-lg relative z-10 overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border">
         
-        <div className="pt-8 px-8 pb-4 text-center relative shrink-0">
+        <div className="p-6 border-b border-surface-border flex-shrink-0">
           <button 
             onClick={onClose}
-            className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 hover:bg-gray-100 p-2.5 rounded-full"
+            className="absolute top-5 right-5 text-site-text-muted hover:text-site-text transition-colors bg-surface-muted hover:bg-surface-border p-2.5 rounded-full"
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
           
           <div className="w-16 h-16 mx-auto bg-secondary/10 rounded-2xl flex items-center justify-center mb-5">
@@ -98,7 +98,7 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
           
           <h3 className="text-2xl font-extrabold text-site-text mb-2">Acesso à Palestra</h3>
           <p className="text-site-text-muted text-sm px-4">
-            Preencha os seus dados para receber o link de acesso direto à sala de Zoom.
+            Preencha os seus dados para assistir à nossa Masterclass Gratuita.
           </p>
         </div>
 
@@ -110,76 +110,79 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
               </div>
               <h4 className="text-2xl font-bold text-site-text mb-3">Convite Gerado!</h4>
               <p className="text-site-text-muted mb-8 text-lg">
-                O PDF com as instruções e o link do Zoom deve começar a descarregar em instantes.
+                Preencha os seus dados abaixo e oiça a masterclass de imediato.
               </p>
-              <button
-                onClick={onClose}
-                className="w-full px-6 py-4 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors"
-              >
-                Fechar janela
-              </button>
+              <div className="flex gap-2 mb-8">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="w-full px-6 py-4 bg-surface-muted text-site-text font-bold rounded-xl hover:bg-surface-border transition-colors"
+                >
+                  Voltar
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label htmlFor="name" className="block text-sm font-bold text-gray-700 mb-1.5 ml-1">
-                  Nome Completo
+              <div className="relative group">
+                <label htmlFor="name" className="block text-sm font-bold text-site-text mb-1.5 ml-1">
+                  Nome Completo *
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
+                    <User className="h-5 w-5 text-site-text-muted" />
                   </div>
                   <input
-                    id="name"
                     type="text"
+                    id="name"
+                    required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     disabled={status === 'loading'}
-                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-secondary focus:ring-4 focus:ring-secondary/10 transition-all outline-none bg-gray-50/50 hover:bg-gray-50 text-gray-800 font-medium"
+                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-surface-border focus:border-secondary focus:ring-4 focus:ring-secondary/10 transition-all outline-none bg-surface-muted/50 hover:bg-surface-muted text-site-text font-medium"
                     placeholder="O seu nome"
-                    required
                   />
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="phone" className="block text-sm font-bold text-gray-700 mb-1.5 ml-1">
-                  Nº de Telemóvel
+              <div className="relative group">
+                <label htmlFor="phone" className="block text-sm font-bold text-site-text mb-1.5 ml-1">
+                  Telemóvel *
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Phone className="h-5 w-5 text-gray-400" />
+                    <Phone className="h-5 w-5 text-site-text-muted" />
                   </div>
                   <input
-                    id="phone"
                     type="tel"
+                    id="phone"
+                    required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     disabled={status === 'loading'}
-                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-secondary focus:ring-4 focus:ring-secondary/10 transition-all outline-none bg-gray-50/50 hover:bg-gray-50 text-gray-800 font-medium"
-                    placeholder="+351 912 345 678"
-                    required
+                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-surface-border focus:border-secondary focus:ring-4 focus:ring-secondary/10 transition-all outline-none bg-surface-muted/50 hover:bg-surface-muted text-site-text font-medium"
+                    placeholder="O seu telemóvel"
                   />
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-1.5 ml-1">
-                  E-mail
+              <div className="relative group">
+                <label htmlFor="email" className="block text-sm font-bold text-site-text mb-1.5 ml-1">
+                  E-mail *
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
+                    <Mail className="h-5 w-5 text-site-text-muted" />
                   </div>
                   <input
-                    id="email"
                     type="email"
+                    id="email"
+                    required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={status === 'loading'}
-                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-secondary focus:ring-4 focus:ring-secondary/10 transition-all outline-none bg-gray-50/50 hover:bg-gray-50 text-gray-800 font-medium"
-                    placeholder="o.seu@email.com"
-                    required
+                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-surface-border focus:border-secondary focus:ring-4 focus:ring-secondary/10 transition-all outline-none bg-surface-muted/50 hover:bg-surface-muted text-site-text font-medium"
+                    placeholder="O seu melhor e-mail"
                   />
                 </div>
               </div>
@@ -211,8 +214,8 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
                 </button>
               </div>
               
-              <p className="text-center text-xs text-gray-400 mt-6 font-medium px-4 leading-relaxed">
-                Ao submeter este formulário, concorda com a nossa <Link to="/privacidade" className="hover:text-secondary transition-colors underline">Política de Privacidade</Link> e em receber comunicações nossas.
+              <p className="text-center text-xs text-site-text-muted mt-6 font-medium px-4 leading-relaxed">
+                Ao prosseguir, aceita a nossa <a href="/privacidade" target="_blank" className="text-secondary hover:underline">Política de Privacidade</a> e concorda em receber comunicações.
               </p>
             </form>
           )}
