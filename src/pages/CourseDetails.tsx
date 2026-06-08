@@ -7,6 +7,7 @@ import { CourseComments } from '../sections/academy/CourseComments';
 import { motion } from 'framer-motion';
 import { FavoriteButton } from '../components/FavoriteButton';
 import DOMPurify from 'dompurify';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 const parseContent = (contentStr: string): { html: string, modules: any[], testimonials: any[] } => {
   if (!contentStr) return { html: '', modules: [], testimonials: [] };
@@ -197,7 +198,7 @@ export const CourseDetails: React.FC = () => {
               transition={{ duration: 0.6 }} 
               className="w-full rounded-[2rem] overflow-hidden shadow-2xl mb-16 relative group bg-surface border border-surface-border"
             >
-              <img 
+              <OptimizedImage 
                 src={course.image_url} 
                 alt={course.title} 
                 className="w-full h-auto block transition-transform duration-700 group-hover:scale-105" 
@@ -395,7 +396,7 @@ export const CourseDetails: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-4 border-t border-surface-border pt-6">
                     {testim.image_url ? (
-                      <img src={testim.image_url} alt={testim.author} className="w-12 h-12 rounded-full object-cover" />
+                      <OptimizedImage src={testim.image_url} alt={testim.author} className="w-12 h-12 rounded-full object-cover" />
                     ) : (
                       <div className="w-12 h-12 rounded-full bg-surface-muted flex items-center justify-center font-bold text-site-text-muted text-lg">
                         {testim.author.charAt(0)}
@@ -445,7 +446,7 @@ export const CourseDetails: React.FC = () => {
               {course.secondary_image_url && (
                 <div className="w-full lg:w-5/12 lg:sticky lg:top-32 relative">
                   <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative rounded-3xl overflow-hidden shadow-xl shadow-secondary/10 aspect-square max-w-md mx-auto lg:mx-0 border-8 border-surface bg-surface">
-                    <img src={course.secondary_image_url} alt="Detalhes do curso" className="w-full h-full object-contain" />
+                    <OptimizedImage src={course.secondary_image_url} alt="Detalhes do curso" className="w-full h-full object-contain" />
                   </motion.div>
                 </div>
               )}

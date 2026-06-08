@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowDown, GraduationCap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import coursesHero from '../../assets/images/courses_hero.png'; // I will rename the generated image to this or use the absolute path for now
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -85,7 +86,7 @@ export const CoursesHero: React.FC = () => {
               className="relative z-10 drop-shadow-[0_40px_60px_rgba(0,0,0,0.18)]"
               style={{ perspective: '1000px' }}
             >
-              <img
+              <OptimizedImage
                 src={coursesHero}
                 alt="Cursos Dra. Alexandra Vasconcelos"
                 className="w-full max-w-[500px] md:max-w-[750px] lg:max-w-[950px] h-auto object-contain select-none transition-all duration-300"

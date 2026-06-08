@@ -4,6 +4,12 @@ import { GraduationCap, Plus, Pencil, Trash2, Eye, EyeOff, X, Save, AlertCircle,
 import { supabase } from '../../config/supabase';
 import type { Course } from '../../types/course';
 import RichTextEditor from '../../components/RichTextEditor';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { optimizeImageForUpload } from '../../utils/imageOptimizer';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 /* ─── ESTILOS REUTILIZÁVEIS ────────────────────────────────────────────── */
 
@@ -84,7 +90,56 @@ const parseContent = (contentStr: string): CourseContentData => {
   return { html: contentStr, modules: [], testimonials: [] };
 };
 
-const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSaved: () => void }> = ({ course, onClose, onSaved }) => {
+const SortableCourseRow: React.FC<{ course: Course; onToggle: (c: Course) => void; onEdit: (c: Course) => void; onDelete: (id: string) => void; deletingId: string | null }> = ({ course, onToggle, onEdit, onDelete, deletingId }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: course.id });
+  const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 1 };
+
+  return (
+    <tr ref={setNodeRef} style={style} className={`transition-colors ${isDragging ? 'bg-white shadow-lg relative' : 'hover:bg-gray-50/50'}`}>
+      <td className="px-4 py-4 w-10">
+        <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 rounded">
+          <GripVertical className="w-5 h-5" />
+        </div>
+      </td>
+      <td className="px-6 py-4">
+        <div className="w-16 h-10 rounded-lg overflow-hidden bg-gray-100 shadow-sm shrink-0">
+          {course.image_url ? <OptimizedImage src={course.image_url} alt={course.title} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center"><GraduationCap className="w-4 h-4 text-primary/40" /></div>}
+        </div>
+      </td>
+      <td className="px-6 py-4 max-w-[240px]">
+        <p className="font-semibold text-primary truncate">{course.title}</p>
+        {course.subtitle && <p className="text-xs text-gray-400 truncate mt-0.5">{course.subtitle}</p>}
+        {course.is_featured && <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold uppercase tracking-wider">Destaque</span>}
+      </td>
+      <td className="px-4 py-4">
+        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${course.type === 'programa' ? 'bg-purple-50 text-purple-600' : course.type === 'presencial' ? 'bg-amber-50 text-amber-600' : 'bg-primary/10 text-primary'}`}>
+          {course.type === 'programa' ? 'Programa' : course.type === 'presencial' ? 'Presencial' : 'Curso'}
+        </span>
+      </td>
+      <td className="px-4 py-4 font-semibold text-primary">{course.price != null ? `${course.price.toFixed(2).replace('.', ',')}€` : '—'}</td>
+      <td className="px-4 py-4">
+        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${course.is_published ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+          {course.is_published ? 'Publicado' : 'Oculto'}
+        </span>
+      </td>
+      <td className="px-6 py-4 text-right">
+        <div className="flex items-center justify-end gap-2">
+          <button onClick={() => onToggle(course)} className="p-2 text-gray-400 hover:text-primary transition-colors">
+            {course.is_published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          </button>
+          <button onClick={() => onEdit(course)} className="p-2 text-gray-400 hover:text-secondary transition-colors">
+            <Pencil className="w-4 h-4" />
+          </button>
+          <button onClick={() => onDelete(course.id)} disabled={deletingId === course.id} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+            {deletingId === course.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+};
+
+const CourseModal: React.FC<{ course: Course | null; maxPosition: number; onClose: () => void; onSaved: () => void }> = ({ course, maxPosition, onClose, onSaved }) => {
   const [draft, setDraft] = useState<CourseDraft>(() => {
     if (course) {
       return { ...course, parsedContent: parseContent(course.content) };
@@ -112,9 +167,10 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
     try {
       let finalImageUrl = draft.image_url;
       if (coverFile) {
-        const fileExt = coverFile.name.split('.').pop();
+        const optimizedFile = await optimizeImageForUpload(coverFile);
+        const fileExt = optimizedFile.name.split('.').pop();
         const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-        const { data, error: uploadError } = await supabase.storage.from('media').upload(`courses/${fileName}`, coverFile);
+        const { data, error: uploadError } = await supabase.storage.from('media').upload(`courses/${fileName}`, optimizedFile, { cacheControl: '31536000', upsert: false });
         if (uploadError) throw uploadError;
         const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
         finalImageUrl = publicUrl;
@@ -122,15 +178,17 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
 
       let finalSecondaryUrl = draft.secondary_image_url;
       if (secondaryFile) {
-        const fileExt = secondaryFile.name.split('.').pop();
+        const optimizedSecFile = await optimizeImageForUpload(secondaryFile);
+        const fileExt = optimizedSecFile.name.split('.').pop();
         const fileName = `sec_${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-        const { data, error: uploadError } = await supabase.storage.from('media').upload(`courses/${fileName}`, secondaryFile);
+        const { data, error: uploadError } = await supabase.storage.from('media').upload(`courses/${fileName}`, optimizedSecFile, { cacheControl: '31536000', upsert: false });
         if (uploadError) throw uploadError;
         const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
         finalSecondaryUrl = publicUrl;
       }
 
       const finalContentStr = JSON.stringify(draft.parsedContent);
+      const isNew = !course;
 
       const payload = { 
         title: draft.title,
@@ -148,10 +206,9 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
         is_featured: draft.is_featured,
         is_published: draft.is_published,
         published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null,
-        enrollment_closes_at: draft.enrollment_closes_at ? new Date(draft.enrollment_closes_at).toISOString() : null
+        enrollment_closes_at: draft.enrollment_closes_at ? new Date(draft.enrollment_closes_at).toISOString() : null,
+        ...(isNew ? { position: maxPosition + 1 } : {})
       };
-
-      const isNew = !course;
 
       const { error: dbErr } = course
         ? await supabase.from('courses').update(payload).eq('id', course.id)
@@ -247,7 +304,7 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
                   />
                   {(draft.image_url || coverFile) && (
                     <div className="mt-3 w-full h-32 rounded-lg overflow-hidden border border-gray-100 shadow-sm relative group">
-                      <img src={coverFile ? URL.createObjectURL(coverFile) : draft.image_url} alt="preview" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = 'none')} />
+                      <OptimizedImage src={coverFile ? URL.createObjectURL(coverFile) : draft.image_url} alt="preview" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = 'none')} />
                     </div>
                   )}
                 </div>
@@ -264,7 +321,7 @@ const CourseModal: React.FC<{ course: Course | null; onClose: () => void; onSave
                   />
                   {(draft.secondary_image_url || secondaryFile) && (
                     <div className="mt-3 w-32 h-32 rounded-lg overflow-hidden border border-gray-100 shadow-sm relative group mx-auto md:mx-0">
-                      <img src={secondaryFile ? URL.createObjectURL(secondaryFile) : draft.secondary_image_url!} alt="preview sec" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = 'none')} />
+                      <OptimizedImage src={secondaryFile ? URL.createObjectURL(secondaryFile) : draft.secondary_image_url!} alt="preview sec" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = 'none')} />
                     </div>
                   )}
                 </div>
@@ -455,12 +512,38 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
 
   const fetch = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.from('courses').select('*').order('created_at', { ascending: false });
+    const { data } = await supabase.from('courses').select('*').order('position', { ascending: true }).order('created_at', { ascending: false });
     setCourses((data as Course[]) ?? []);
     setLoading(false);
   }, []);
 
   useEffect(() => { fetch(); }, [fetch]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = courses.findIndex((item) => item.id === active.id);
+      const newIndex = courses.findIndex((item) => item.id === over.id);
+      const newCourses = arrayMove(courses, oldIndex, newIndex);
+      
+      setCourses(newCourses);
+
+      const payload = newCourses.map((c, index) => ({ id: c.id, position: index }));
+      try {
+        const { error } = await supabase.rpc('update_courses_order', { payload });
+        if (error) throw error;
+      } catch (err: any) {
+        console.error('Error updating order:', err);
+        showToast('Erro ao atualizar a ordem dos cursos.');
+        fetch();
+      }
+    }
+  };
 
   const handleToggle = async (c: Course) => {
     const { error } = await supabase.from('courses').update({ is_published: !c.is_published }).eq('id', c.id);
@@ -511,6 +594,7 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
             <table className="w-full text-sm text-left">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50/50">
+                  <th className="px-4 py-4 w-10"></th>
                   <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Imagem</th>
                   <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Título</th>
                   <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase">Tipo</th>
@@ -520,44 +604,13 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {courses.map(course => (
-                  <tr key={course.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="w-16 h-10 rounded-lg overflow-hidden bg-gray-100 shadow-sm shrink-0">
-                        {course.image_url ? <img src={course.image_url} alt={course.title} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center"><GraduationCap className="w-4 h-4 text-primary/40" /></div>}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 max-w-[240px]">
-                      <p className="font-semibold text-primary truncate">{course.title}</p>
-                      {course.subtitle && <p className="text-xs text-gray-400 truncate mt-0.5">{course.subtitle}</p>}
-                      {course.is_featured && <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold uppercase tracking-wider">Destaque</span>}
-                    </td>
-                    <td className="px-4 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${course.type === 'programa' ? 'bg-purple-50 text-purple-600' : course.type === 'presencial' ? 'bg-amber-50 text-amber-600' : 'bg-primary/10 text-primary'}`}>
-                        {course.type === 'programa' ? 'Programa' : course.type === 'presencial' ? 'Presencial' : 'Curso'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4 font-semibold text-primary">{course.price != null ? `${course.price.toFixed(2).replace('.', ',')}€` : '—'}</td>
-                    <td className="px-4 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${course.is_published ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
-                        {course.is_published ? 'Publicado' : 'Oculto'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => handleToggle(course)} className="p-2 text-gray-400 hover:text-primary transition-colors">
-                          {course.is_published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                        <button onClick={() => { setEditing(course); setModalOpen(true); }} className="p-2 text-gray-400 hover:text-secondary transition-colors">
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button onClick={() => handleDelete(course.id)} disabled={deletingId === course.id} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                          {deletingId === course.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={courses.map(c => c.id)} strategy={verticalListSortingStrategy}>
+                    {courses.map(course => (
+                      <SortableCourseRow key={course.id} course={course} onToggle={handleToggle} onEdit={(c) => { setEditing(c); setModalOpen(true); }} onDelete={handleDelete} deletingId={deletingId} />
+                    ))}
+                  </SortableContext>
+                </DndContext>
               </tbody>
             </table>
           </div>
@@ -566,7 +619,7 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
 
       <AnimatePresence>
         {modalOpen && (
-          <CourseModal course={editing} onClose={() => setModalOpen(false)} onSaved={() => { fetch(); showToast('Página guardada com sucesso!'); }} />
+          <CourseModal course={editing} maxPosition={courses.length > 0 ? Math.max(...courses.map(c => c.position ?? 0)) : 0} onClose={() => setModalOpen(false)} onSaved={() => { fetch(); showToast('Página guardada com sucesso!'); }} />
         )}
       </AnimatePresence>
     </>

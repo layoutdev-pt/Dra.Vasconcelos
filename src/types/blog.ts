@@ -8,6 +8,7 @@ export interface BlogPost {
   image_url: string | null;
   is_published: boolean;
   published_at: string | null;
+  position?: number;
   created_at: string;
 }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, ArrowRight, Video, FileText, Mic } from 'lucide-react';
 import type { MediaEntry } from '../types/media';
+import { OptimizedImage } from './OptimizedImage';
 
 export const MidiaCard: React.FC<{ item: MediaEntry }> = ({ item }) => {
   const getIcon = () => {
@@ -27,7 +28,7 @@ export const MidiaCard: React.FC<{ item: MediaEntry }> = ({ item }) => {
     >
       {/* Imagem de Capa */}
       <div className="relative h-64 overflow-hidden shrink-0">
-        <img 
+        <OptimizedImage 
           src={item.image_url || ''} 
           alt={item.title} 
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 

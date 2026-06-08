@@ -1,6 +1,7 @@
 import React from 'react';
 import draImg2 from '../../assets/images/dra_hero.png';
 import { Quote, Globe2 } from 'lucide-react';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export const AboutBio: React.FC = () => {
   return (
@@ -25,7 +26,7 @@ export const AboutBio: React.FC = () => {
         {/* Large Image with Floating Quote
         <div className="relative h-[500px] lg:h-[700px] w-full rounded-3xl overflow-hidden shadow-2xl group mb-20">
             <div className="absolute inset-0 bg-primary/10 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-500" />
-            <img src={draImg2} alt="Dra. Alexandra Clínica" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 object-top" />
+            <OptimizedImage src={draImg2} alt="Dra. Alexandra Clínica" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 object-top" />
             {/* Floating Info */}
             {/*<div className="absolute bottom-8 left-8 right-8 md:left-12 md:right-12 md:bottom-12 bg-white/95 backdrop-blur-md p-6 md:p-8 rounded-2xl z-20 shadow-float max-w-3xl">
               <p className="text-primary font-semibold leading-relaxed text-lg md:text-xl">

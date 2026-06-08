@@ -10,12 +10,13 @@ import simpleLogo from '../assets/logo/simple.svg';
 import { BlogAdmin } from '../sections/admin/BlogAdmin';
 import { MediaAdmin } from '../sections/admin/MediaAdmin';
 import { LeadsAdmin } from '../sections/admin/LeadsAdmin';
-import { TestimonialsAdmin } from '../sections/admin/TestimonialsAdmin';
+// import { TestimonialsAdmin } from '../sections/admin/TestimonialsAdmin';
 import { UsersAdmin } from '../sections/admin/UsersAdmin';
 import { BooksAdmin } from '../sections/admin/BooksAdmin';
 import { CoursesAdmin } from '../sections/admin/CoursesAdmin';
+import { OptimizedImage } from '../components/OptimizedImage';
 
-type Tab = 'books' | 'courses' | 'blog' | 'media' | 'leads' | 'testimonials' | 'users';
+type Tab = 'books' | 'courses' | 'blog' | 'media' | 'leads' | 'users';
 
 export const Admin: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -39,7 +40,7 @@ export const Admin: React.FC = () => {
     { id: 'blog', label: 'Artigos (Blog)', icon: <LayoutDashboard className="w-4 h-4" /> },
     { id: 'media', label: 'Media', icon: <Eye className="w-4 h-4" /> },
     { id: 'leads', label: 'Leads (E-mails)', icon: <Loader2 className="w-4 h-4 hidden" /> }, // icon hidden but mapped
-    { id: 'testimonials', label: 'Testemunhos', icon: <CheckCircle2 className="w-4 h-4" /> },
+    // { id: 'testimonials', label: 'Testemunhos', icon: <CheckCircle2 className="w-4 h-4" /> },
     { id: 'users', label: 'Acessos', icon: <Shield className="w-4 h-4" /> },
   ];
 
@@ -49,7 +50,7 @@ export const Admin: React.FC = () => {
       <header className="bg-surface border-b border-surface-border sticky top-0 z-40 shadow-sm transition-colors duration-500">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <img src={simpleLogo} alt="Admin" className="h-9 w-auto transition-all" />
+            <OptimizedImage src={simpleLogo} alt="Admin" className="h-9 w-auto transition-all" />
             <div>
               <h1 className="text-sm font-bold text-site-text leading-tight">Dashboard Admin</h1>
               <p className="text-xs text-site-text-muted">{user?.email}</p>
@@ -103,7 +104,7 @@ export const Admin: React.FC = () => {
             {activeTab === 'blog' && <BlogAdmin />}
             {activeTab === 'media' && <MediaAdmin />}
             {activeTab === 'leads' && <LeadsAdmin />}
-            {activeTab === 'testimonials' && <TestimonialsAdmin />}
+            {/* {activeTab === 'testimonials' && <TestimonialsAdmin />} */}
             {activeTab === 'users' && <UsersAdmin />}
           </motion.div>
         </AnimatePresence>

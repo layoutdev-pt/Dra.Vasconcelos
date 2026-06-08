@@ -16,5 +16,6 @@ export interface Course {
   is_published: boolean;
   published_at: string | null;
   enrollment_closes_at: string | null;
+  position?: number;
   created_at: string;
 }

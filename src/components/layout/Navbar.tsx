@@ -6,6 +6,7 @@ import simpleLogo from '../../assets/logo/simple.svg';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { NotificationBell } from '../NotificationBell'; // Caminho corrigido para subir um nível
+import { OptimizedImage } from '../OptimizedImage';
 
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
@@ -65,14 +66,14 @@ export const Navbar: React.FC = () => {
             {/* ── Logo ───────────────────────── */}
             <div className="flex-shrink-0 flex items-center relative h-full">
               <Link to="/" className="relative flex items-center justify-center">
-                <img
+                <OptimizedImage
                   src={fullLogo}
                   alt="Dra. Alexandra Vasconcelos"
                   className={`w-auto transition-all duration-300 absolute left-0 origin-left ${
                     isScrolled ? 'h-8 md:h-10 opacity-0 scale-90 pointer-events-none' : 'h-14 md:h-16 lg:h-18 opacity-100 scale-100 relative'
                   } ${theme === 'dark' ? 'invert brightness-0 object-contain' : ''} `} 
                 />
-                <img
+                <OptimizedImage
                   src={simpleLogo}
                   alt="Dra. Alexandra Vasconcelos Ícone"
                   className={`w-auto transition-all duration-300 absolute left-0 origin-left ${
@@ -128,7 +129,7 @@ export const Navbar: React.FC = () => {
                         }`}
                       >
                         {avatarUrl ? (
-                          <img src={avatarUrl} alt="Perfil" className={`${isScrolled ? 'w-full h-full' : 'w-6 h-6'} rounded-full object-cover shadow-sm`} />
+                          <OptimizedImage src={avatarUrl} alt="Perfil" className={`${isScrolled ? 'w-full h-full' : 'w-6 h-6'} rounded-full object-cover shadow-sm`} />
                         ) : (
                           <div className={`${isScrolled ? 'w-full h-full text-base' : 'w-6 h-6 text-xs'} rounded-full bg-secondary flex items-center justify-center text-white font-bold uppercase`}>
                             {user.email?.[0] ?? 'U'}
@@ -186,7 +187,7 @@ export const Navbar: React.FC = () => {
                 className="md:hidden flex items-center justify-center w-9 h-9 rounded-full bg-surface-muted border border-surface-border text-site-text hover:text-secondary transition-colors ml-1"
               >
                 {user && avatarUrl ? (
-                  <img src={avatarUrl} alt="Perfil" className="w-full h-full rounded-full object-cover" />
+                  <OptimizedImage src={avatarUrl} alt="Perfil" className="w-full h-full rounded-full object-cover" />
                 ) : (
                   <User className="w-5 h-5" />
                 )}

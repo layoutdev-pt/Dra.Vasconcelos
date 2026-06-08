@@ -1,5 +1,6 @@
 import React from 'react';
 import { FavoriteButton } from './FavoriteButton';
+import { OptimizedImage } from './OptimizedImage';
 
 // Tipagem flexível para alinhar com a BD
 export interface CourseCardProps {
@@ -36,7 +37,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       
       {/* Imagem e Nível */}
       <div className="relative bg-surface-muted overflow-hidden">
-        <img 
+        <OptimizedImage 
           src={image} 
           alt={title} 
           className="w-full h-auto block transition-transform duration-500 group-hover:scale-105" 

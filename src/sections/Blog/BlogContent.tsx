@@ -4,6 +4,7 @@ import { supabase } from '../../config/supabase';
 import type { BlogPost } from '../../types/blog';
 import { Calendar, ChevronLeft, ChevronRight, Tag, Loader2 } from 'lucide-react';
 import { BlogComments } from './BlogComments';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export const BlogContent: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -15,8 +16,8 @@ export const BlogContent: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       const [postRes, allRes] = await Promise.all([
-        supabase.from('posts').select('*').eq('slug', slug).single(),
-        supabase.from('posts').select('*').eq('is_published', true).order('published_at', { ascending: false })
+        supabase.from('blog_posts').select('*').eq('slug', slug).single(),
+        supabase.from('blog_posts').select('*').eq('is_published', true).order('position', { ascending: true }).order('published_at', { ascending: false })
       ]);
       setPost(postRes.data);
       setAllPosts(allRes.data || []);
@@ -51,7 +52,7 @@ export const BlogContent: React.FC = () => {
 
         {post.image_url && (
           <div className="w-full h-[300px] md:h-[500px] rounded-[3rem] overflow-hidden mb-16 shadow-2xl">
-            <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
+            <OptimizedImage src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
           </div>
         )}
 

@@ -14,12 +14,15 @@ export const BlogGrid: React.FC = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const { data, error } = await supabase
-        .from('posts')
+      let query = supabase
+        .from('blog_posts')
         .select('*')
         .eq('is_published', true)
+        .order('position', { ascending: true })
         .order('published_at', { ascending: false })
         .order('created_at', { ascending: false });
+      
+      const { data, error } = await query;
       
       if (!error) setPosts(data || []);
       setLoading(false);

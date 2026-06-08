@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ShoppingCart, Download, BookOpen, Sparkles } from 'lucide-react';
 import { FavoriteButton } from './FavoriteButton';
 import type { Book } from '../types/book';
+import { OptimizedImage } from './OptimizedImage';
 
 interface BookCard3DProps {
   book: Book;
@@ -127,7 +128,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, index }) => {
                   transformStyle: 'preserve-3d',
                 }}
               >
-                <img
+                <OptimizedImage
                   src={book.cover_url}
                   alt={book.title}
                   onError={() => setImgError(true)}

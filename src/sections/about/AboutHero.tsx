@@ -1,6 +1,7 @@
 import React from 'react';
 import draHero from '../../assets/images/dra3.jpg';
 import { ArrowDown } from 'lucide-react';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export const AboutHero: React.FC = () => {
   return (
@@ -34,7 +35,7 @@ export const AboutHero: React.FC = () => {
           </div>
 
           <div className="relative w-full h-[600px] lg:h-[800px] flex items-end justify-center">
-            <img 
+            <OptimizedImage 
               src={draHero} 
               alt="Dra. Alexandra Vasconcelos" 
               className="w-full h-full object-cover object-top rounded-[2rem] lg:rounded-[3rem] shadow-2xl border-4 border-surface-border" 

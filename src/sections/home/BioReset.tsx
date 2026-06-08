@@ -2,6 +2,7 @@ import React from 'react';
 import { CheckCircle2, Loader2 } from 'lucide-react'; // Corrigido: Importação de ícones
 import { useCourses } from '../../hooks/useCourses'; // Corrigido: Importação do Hook
 import { Link } from 'react-router-dom'; // Corrigido: Importação do Link
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export const BioReset: React.FC = () => {
   const { courses, loading } = useCourses();
@@ -59,7 +60,7 @@ export const BioReset: React.FC = () => {
           
           <div className="lg:w-1/2 relative w-full mt-8 lg:mt-0">
             <div className="relative rounded-2xl overflow-hidden shadow-sm border border-surface-border">
-              <img 
+              <OptimizedImage 
                 src={latestCourse.image_url} 
                 alt={latestCourse.title} 
                 className="w-full h-auto block" 

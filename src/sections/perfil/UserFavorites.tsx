@@ -68,7 +68,7 @@ export const UserFavorites: React.FC = () => {
       const blogIds = favorites.filter(f => f.item_type === 'blog').map(f => f.item_id);
       if (blogIds.length > 0) {
         try {
-          const { data, error } = await supabase.from('posts').select('*').in('id', blogIds);
+          const { data, error } = await supabase.from('blog_posts').select('*').in('id', blogIds);
           if (error) throw error;
           if (data) details.push(...data.map(item => ({ ...item, type: 'blog' })));
         } catch (err) {

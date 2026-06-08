@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowDown, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 import bookHero from '../../assets/images/book_hero.png';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -86,7 +87,7 @@ export const AcademyHero: React.FC = () => {
               className="relative z-10 drop-shadow-[0_40px_60px_rgba(0,0,0,0.18)]"
               style={{ perspective: '1000px' }}
             >
-              <img
+              <OptimizedImage
                 src={bookHero}
                 alt="Livros da Dra. Alexandra Vasconcelos"
                 className="w-full max-w-[500px] md:max-w-[750px] lg:max-w-[950px] h-auto object-contain select-none transition-all duration-300"

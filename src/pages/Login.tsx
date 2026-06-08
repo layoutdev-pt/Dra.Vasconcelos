@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import { supabase } from '../config/supabase';
 import { Navbar } from '../components/layout/Navbar';
 import fullLogo from '../assets/logo/full1.svg';
+import { optimizeImageForUpload } from '../utils/imageOptimizer';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 type Mode = 'login' | 'register' | 'forgot';
 
@@ -121,9 +123,10 @@ export const Login: React.FC = () => {
       let uploadedAvatarUrl = '';
       if (avatarFile) {
         try {
-          const ext = avatarFile.name.split('.').pop();
+          const optimizedFile = await optimizeImageForUpload(avatarFile);
+          const ext = optimizedFile.name.split('.').pop();
           const path = `${Math.random().toString(36).slice(2)}_${Date.now()}.${ext}`;
-          const { error: upErr } = await supabase.storage.from('avatars').upload(path, avatarFile);
+          const { error: upErr } = await supabase.storage.from('avatars').upload(path, optimizedFile, { cacheControl: '31536000', upsert: false });
           if (!upErr) {
             const { data } = supabase.storage.from('avatars').getPublicUrl(path);
             uploadedAvatarUrl = data.publicUrl;
@@ -251,7 +254,7 @@ export const Login: React.FC = () => {
           className="w-full max-w-md"
         >
           <div className="flex justify-center mb-12">
-            <Link to="/"><img src={fullLogo} alt="Dra. Alexandra Vasconcelos" className="h-24 w-auto transition-all" /></Link>
+            <Link to="/"><OptimizedImage src={fullLogo} alt="Dra. Alexandra Vasconcelos" className="h-24 w-auto transition-all" /></Link>
           </div>
 
           <div className="bg-surface rounded-3xl shadow-glass border border-surface-border overflow-hidden transition-colors duration-500">
@@ -452,7 +455,7 @@ export const Login: React.FC = () => {
                         
                         <div className="relative border-2 border-dashed border-surface-border rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer">
                           {avatarPreview ? (
-                            <img src={avatarPreview} alt="Preview" className="w-16 h-16 rounded-full object-cover" />
+                            <OptimizedImage src={avatarPreview} alt="Preview" className="w-16 h-16 rounded-full object-cover" />
                           ) : (
                             <Upload className="w-6 h-6 text-secondary" />
                           )}

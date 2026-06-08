@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Mail, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { supabase } from '../../config/supabase';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -73,7 +74,7 @@ export const AcademyLeadMagnet: React.FC = () => {
                 className="relative"
               >
                 <div className="w-[200px] h-[280px] rounded-lg shadow-2xl overflow-hidden border border-surface-border transform rotate-y-[-5deg] rotate-x-[2deg]">
-                  <img 
+                  <OptimizedImage 
                     src="/images/ebook-probioticos.png" 
                     alt="Capa Ebook Probióticos" 
                     className="w-full h-full object-cover"

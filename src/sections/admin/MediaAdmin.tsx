@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import { supabase } from '../../config/supabase';
 import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { MediaEntry } from '../../types/media';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 /* ─── FUNÇÃO DE NOTIFICAÇÃO GLOBAL ───────────────────────────────────────── */
 
@@ -32,7 +39,41 @@ const labelCls = 'block text-xs font-semibold text-gray-500 uppercase tracking-w
 
 /* ─── MODAL DE MEDIA (MEDIA MODAL) ───────────────────────────────────────── */
 
-const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; onClose: () => void; onSaved: () => void }> = ({ mediaUrl, onClose, onSaved }) => {
+const SortableMediaRow: React.FC<{ m: MediaEntry; onEdit: (m: MediaEntry) => void; onDelete: (id: string) => void }> = ({ m, onEdit, onDelete }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: m.id });
+  const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 1 };
+
+  return (
+    <tr ref={setNodeRef} style={style} className={`transition-colors ${isDragging ? 'bg-white shadow-lg relative' : 'hover:bg-gray-50/50'}`}>
+      <td className="px-4 py-4 w-10">
+        <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 rounded">
+          <GripVertical className="w-5 h-5" />
+        </div>
+      </td>
+      <td className="px-6 py-4 font-semibold text-primary">{m.title}</td>
+      <td className="px-6 py-4">
+        <span className="px-2.5 py-1 bg-gray-100 text-gray-400 text-[10px] font-bold uppercase rounded-full tracking-wider">
+          {m.type}
+        </span>
+      </td>
+      <td className="px-6 py-4 text-gray-500">
+        {m.published_at ? new Date(m.published_at).toLocaleDateString('pt-PT') : '-'}
+      </td>
+      <td className="px-6 py-4">
+        <div className="flex justify-end gap-2">
+          <button onClick={() => onEdit(m)} className="p-2 text-gray-400 hover:text-secondary bg-white shadow-sm border border-gray-100 rounded-lg transition-colors">
+            <Pencil className="w-4 h-4" />
+          </button>
+          <button onClick={() => onDelete(m.id)} className="p-2 text-gray-400 hover:text-red-500 bg-white shadow-sm border border-gray-100 rounded-lg transition-colors">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+};
+
+const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; maxPosition: number; onClose: () => void; onSaved: () => void }> = ({ mediaUrl, maxPosition, onClose, onSaved }) => {
   const [draft, setDraft] = useState<Partial<MediaEntry>>(mediaUrl ? { ...mediaUrl } : { title: '', type: 'video', external_url: '', image_url: '', published_at: new Date().toISOString().split('T')[0] });
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
@@ -51,9 +92,10 @@ const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; onClose: () => void; o
     try {
       let finalImageUrl = draft.image_url;
       if (coverFile) {
-        const fileExt = coverFile.name.split('.').pop();
+        const optimizedFile = await optimizeImageForUpload(coverFile);
+        const fileExt = optimizedFile.name.split('.').pop();
         const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-        const { data, error: uploadError } = await supabase.storage.from('media').upload(`media_covers/${fileName}`, coverFile);
+        const { data, error: uploadError } = await supabase.storage.from('media').upload(`media_covers/${fileName}`, optimizedFile, { cacheControl: '31536000', upsert: false });
         
         if (uploadError) throw uploadError;
         
@@ -66,7 +108,8 @@ const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; onClose: () => void; o
         type: draft.type as MediaEntry['type'],
         external_url: draft.external_url,
         image_url: finalImageUrl || null,
-        published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null
+        published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null,
+        ...(!mediaUrl ? { position: maxPosition + 1 } : {})
       };
 
       const isNew = !mediaUrl;
@@ -131,7 +174,7 @@ const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; onClose: () => void; o
             {/* CORREÇÃO DA LINHA 136 ABAIXO: Usamos ?? undefined para evitar o erro de 'null' */}
             {(coverFile || draft.image_url) && (
               <div className="mt-3 w-32 h-20 rounded-xl overflow-hidden border border-gray-100 shadow-sm relative">
-                <img 
+                <OptimizedImage 
                   src={coverFile ? URL.createObjectURL(coverFile) : (draft.image_url ?? undefined)} 
                   alt="preview" 
                   className="w-full h-full object-cover" 
@@ -165,6 +208,7 @@ export const MediaAdmin: React.FC = () => {
     const { data } = await supabase
       .from('media')
       .select('*')
+      .order('position', { ascending: true })
       .order('published_at', { ascending: false })
       .order('created_at', { ascending: false });
     setMediaList(data || []);
@@ -172,6 +216,32 @@ export const MediaAdmin: React.FC = () => {
   };
 
   useEffect(() => { fetchMedia(); }, []);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = mediaList.findIndex((item) => item.id === active.id);
+      const newIndex = mediaList.findIndex((item) => item.id === over.id);
+      const newMedia = arrayMove(mediaList, oldIndex, newIndex);
+      
+      setMediaList(newMedia);
+
+      const payload = newMedia.map((m, index) => ({ id: m.id, position: index }));
+      try {
+        const { error } = await supabase.rpc('update_media_order', { payload });
+        if (error) throw error;
+      } catch (err: any) {
+        console.error('Error updating order:', err);
+        alert('Erro ao atualizar a ordem das menções.');
+        fetchMedia();
+      }
+    }
+  };
 
   const deleteMedia = async (id: string) => {
     if(!window.confirm('Tem a certeza que deseja apagar esta referência dos Média?')) return;
@@ -196,6 +266,7 @@ export const MediaAdmin: React.FC = () => {
             <table className="w-full text-left text-sm">
               <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold tracking-wider">
                 <tr>
+                  <th className="px-4 py-4 w-10"></th>
                   <th className="px-6 py-4">Título</th>
                   <th className="px-6 py-4">Tipo</th>
                   <th className="px-6 py-4">Data</th>
@@ -203,31 +274,15 @@ export const MediaAdmin: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {mediaList.map(m => (
-                  <tr key={m.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4 font-semibold text-primary">{m.title}</td>
-                    <td className="px-6 py-4">
-                      <span className="px-2.5 py-1 bg-gray-100 text-gray-400 text-[10px] font-bold uppercase rounded-full tracking-wider">
-                        {m.type}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-gray-500">
-                      {m.published_at ? new Date(m.published_at).toLocaleDateString('pt-PT') : '-'}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex justify-end gap-2">
-                        <button onClick={() => { setEditingMedia(m); setIsModalOpen(true); }} className="p-2 text-gray-400 hover:text-secondary bg-white shadow-sm border border-gray-100 rounded-lg transition-colors">
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button onClick={() => deleteMedia(m.id)} className="p-2 text-gray-400 hover:text-red-500 bg-white shadow-sm border border-gray-100 rounded-lg transition-colors">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={mediaList.map(m => m.id)} strategy={verticalListSortingStrategy}>
+                    {mediaList.map(m => (
+                      <SortableMediaRow key={m.id} m={m} onEdit={(m) => { setEditingMedia(m); setIsModalOpen(true); }} onDelete={deleteMedia} />
+                    ))}
+                  </SortableContext>
+                </DndContext>
                 {mediaList.length === 0 && (
-                  <tr><td colSpan={4} className="px-6 py-12 text-center text-gray-500 italic">Nenhum registo nos média encontrado.</td></tr>
+                  <tr><td colSpan={5} className="px-6 py-12 text-center text-gray-500 italic">Nenhum registo nos média encontrado.</td></tr>
                 )}
               </tbody>
             </table>
@@ -239,6 +294,7 @@ export const MediaAdmin: React.FC = () => {
         {isModalOpen && (
           <MediaModal 
             mediaUrl={editingMedia} 
+            maxPosition={mediaList.length > 0 ? Math.max(...mediaList.map(m => m.position ?? 0)) : 0}
             onClose={() => setIsModalOpen(false)} 
             onSaved={fetchMedia} 
           />

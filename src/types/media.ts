@@ -5,5 +5,6 @@ export interface MediaEntry {
   external_url: string;
   image_url: string | null;
   published_at: string | null;
+  position?: number;
   created_at: string;
 }

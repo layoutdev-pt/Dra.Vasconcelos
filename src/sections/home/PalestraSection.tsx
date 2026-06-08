@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { PlayCircle, CheckCircle2 } from 'lucide-react';
 import { PalestraModal } from '../../components/common/PalestraModal';
 import palestraImg from '../../assets/images/Palestra Online Gratuita.jpeg';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export const PalestraSection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,7 +56,7 @@ export const PalestraSection: React.FC = () => {
               onClick={() => setIsModalOpen(true)}
               className="relative rounded-2xl overflow-hidden shadow-sm border border-surface-border group cursor-pointer block w-full text-left"
             >
-              <img 
+              <OptimizedImage 
                 src={palestraImg} 
                 alt="Palestra Preview" 
                 className="w-full h-auto block transition-transform duration-700 group-hover:scale-105" 

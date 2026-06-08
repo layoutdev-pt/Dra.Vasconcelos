@@ -7,6 +7,8 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import type { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { optimizeImageForUpload } from '../../utils/imageOptimizer';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 /* ─── ESTILOS REUTILIZÁVEIS ────────────────────────────────────────────── */
 
@@ -72,7 +74,7 @@ const SortableBookRow: React.FC<{ book: Book; onToggle: (b: Book) => void; onEdi
       </div>
       <div>
         <div className="w-10 h-14 rounded-lg overflow-hidden bg-gray-100 shadow-sm shrink-0">
-          {book.cover_url ? <img src={book.cover_url} alt={book.title} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gradient-to-br from-secondary/30 to-secondary/10 flex items-center justify-center"><BookOpen className="w-4 h-4 text-secondary/50" /></div>}
+          {book.cover_url ? <OptimizedImage src={book.cover_url} alt={book.title} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gradient-to-br from-secondary/30 to-secondary/10 flex items-center justify-center"><BookOpen className="w-4 h-4 text-secondary/50" /></div>}
         </div>
       </div>
       <div className="max-w-[240px]">
@@ -124,9 +126,10 @@ const BookModal: React.FC<{ book: Book | null; maxPosition: number; onClose: () 
     try {
       let finalCoverUrl = draft.cover_url;
       if (coverFile) {
-        const fileExt = coverFile.name.split('.').pop();
+        const optimizedFile = await optimizeImageForUpload(coverFile);
+        const fileExt = optimizedFile.name.split('.').pop();
         const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-        const { data, error: uploadError } = await supabase.storage.from('media').upload(`books/${fileName}`, coverFile);
+        const { data, error: uploadError } = await supabase.storage.from('media').upload(`books/${fileName}`, optimizedFile, { cacheControl: '31536000', upsert: false });
         if (uploadError) throw uploadError;
         const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
         finalCoverUrl = publicUrl;
@@ -204,7 +207,7 @@ const BookModal: React.FC<{ book: Book | null; maxPosition: number; onClose: () 
             />
             {(coverFile || draft.cover_url) && (
               <div className="mt-3 w-20 h-28 rounded-lg overflow-hidden border border-gray-100 shadow-sm relative group">
-                <img 
+                <OptimizedImage 
                   src={coverFile ? URL.createObjectURL(coverFile) : draft.cover_url} 
                   alt="preview" 
                   className="w-full h-full object-cover" 

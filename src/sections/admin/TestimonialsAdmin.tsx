@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import { supabase } from '../../config/supabase';
 import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Testimonial } from '../../types/testimonial';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const inputCls = 'w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all';
 const labelCls = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
@@ -21,9 +23,10 @@ const TestimonialModal: React.FC<{ testimonial: Testimonial | null; onClose: () 
     
     let finalImageUrl = draft.avatar_url;
     if (coverFile) {
-      const fileExt = coverFile.name.split('.').pop();
+      const optimizedFile = await optimizeImageForUpload(coverFile);
+      const fileExt = optimizedFile.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-      const { data, error: uploadError } = await supabase.storage.from('media').upload(`testimonials/${fileName}`, coverFile);
+      const { data, error: uploadError } = await supabase.storage.from('media').upload(`testimonials/${fileName}`, optimizedFile, { cacheControl: '31536000', upsert: false });
       if (uploadError) { setError(`Erro upload da foto: ${uploadError.message}`); setSaving(false); return; }
       const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
       finalImageUrl = publicUrl;
@@ -64,7 +67,7 @@ const TestimonialModal: React.FC<{ testimonial: Testimonial | null; onClose: () 
             
             {(coverFile || draft.avatar_url) && (
               <div className="mt-3 w-16 h-16 rounded-full overflow-hidden border border-gray-100 object-cover">
-                <img src={coverFile ? URL.createObjectURL(coverFile) : draft.avatar_url!} alt="avatar" className="w-full h-full object-cover" />
+                <OptimizedImage src={coverFile ? URL.createObjectURL(coverFile) : draft.avatar_url!} alt="avatar" className="w-full h-full object-cover" />
               </div>
             )}
           </div>
@@ -128,7 +131,7 @@ export const TestimonialsAdmin: React.FC = () => {
                 <tr key={t.id} className="hover:bg-gray-50/50">
                   <td className="px-6 py-4 font-semibold text-primary flex items-center gap-3">
                     {t.avatar_url ? (
-                      <img src={t.avatar_url} alt="" className="w-8 h-8 rounded-full border border-gray-200 object-cover" />
+                      <OptimizedImage src={t.avatar_url} alt="" className="w-8 h-8 rounded-full border border-gray-200 object-cover" />
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-gray-100" />
                     )}

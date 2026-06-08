@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { FavoriteButton } from './FavoriteButton';
 import type { BlogPost } from '../types/blog';
+import { OptimizedImage } from './OptimizedImage';
 
 export const BlogCard: React.FC<{ post: BlogPost }> = ({ post }) => {
   // Utility to extract plain text from HTML content
@@ -23,7 +24,7 @@ export const BlogCard: React.FC<{ post: BlogPost }> = ({ post }) => {
       {/* Imagem de Capa */}
       {post.image_url && (
         <div className="relative h-64 overflow-hidden shrink-0">
-          <img 
+          <OptimizedImage 
             src={post.image_url} 
             alt={post.title} 
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 

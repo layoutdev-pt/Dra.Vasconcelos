@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../config/supabase';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export const LeadMagnet: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -56,7 +57,7 @@ export const LeadMagnet: React.FC = () => {
       <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
         
         <div className="w-48 md:w-56 mx-auto mb-8 flex items-center justify-center">
-          <img 
+          <OptimizedImage 
             src="/images/ebook-probioticos.png" 
             alt="Capa Ebook Probióticos" 
             className="w-full h-auto rounded-lg shadow-2xl"

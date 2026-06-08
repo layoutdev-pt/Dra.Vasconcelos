@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import whiteLogo from '../../assets/logo/full_white.svg';
 import { supabase } from '../../config/supabase';
 import { ExternalLink, ShieldCheck, Mail, Phone } from 'lucide-react';
+import { OptimizedImage } from '../OptimizedImage';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -45,7 +46,7 @@ export const Footer: React.FC = () => {
           <div className="lg:col-span-4 space-y-6">
             <div className="flex items-center">
               <Link to="/">
-                <img src={whiteLogo} alt="Dra. Alexandra Vasconcelos" className="h-20 md:h-28 w-auto transition-all duration-500" />
+                <OptimizedImage src={whiteLogo} alt="Dra. Alexandra Vasconcelos" className="h-20 md:h-28 w-auto transition-all duration-500" />
               </Link>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">

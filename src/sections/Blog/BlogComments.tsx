@@ -3,6 +3,7 @@ import { supabase } from '../../config/supabase';
 import { useAuth } from '../../context/AuthContext';
 import { MessageSquare, Flag, Trash2, Send, CornerDownRight, AlertTriangle, UserCircle2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 interface CommentWithProfile {
   id: string;
@@ -145,7 +146,7 @@ export const BlogComments: React.FC<BlogCommentsProps> = ({ postId }) => {
     const iconDim = size === 'md' ? 'w-5 h-5' : 'w-4 h-4';
     
     if (profile?.avatar_url) {
-      return <img src={profile.avatar_url} alt="" className={`${dim} rounded-full object-cover border-2 border-secondary/20`} />;
+      return <OptimizedImage src={profile.avatar_url} alt="" className={`${dim} rounded-full object-cover border-2 border-secondary/20`} />;
     }
     return (
       <div className={`${dim} rounded-full bg-secondary/10 flex items-center justify-center text-secondary`}>
@@ -184,7 +185,7 @@ export const BlogComments: React.FC<BlogCommentsProps> = ({ postId }) => {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
               {user.user_metadata?.avatar_url ? (
-                <img src={user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover border-2 border-secondary/20" />
+                <OptimizedImage src={user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover border-2 border-secondary/20" />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary"><UserCircle2 className="w-5 h-5" /></div>
               )}

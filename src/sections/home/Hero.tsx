@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '../../components/Button';
 import { CheckCircle2, Heart, Leaf } from 'lucide-react';
 import draHero from '../../assets/images/dra_hero.png';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const HERO_PHRASES = ["jovem e saudável", "com mais vitalidade", "em equilíbrio pleno"];
 
@@ -81,7 +82,7 @@ export const Hero: React.FC = () => {
           <div className="relative w-full h-[550px] lg:h-[700px] flex items-center justify-center mt-12 lg:mt-0">
             <div className="relative w-full max-w-md lg:max-w-[500px] h-full flex items-end">
               <div className="relative z-10 w-full h-full rounded-2xl overflow-hidden" style={{ maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)' }}>
-                <img src={draHero} alt="Dra. Alexandra" className="w-full h-full object-cover object-top transform scale-105" />
+                <OptimizedImage src={draHero} alt="Dra. Alexandra" className="w-full h-full object-cover object-top transform scale-105" />
               </div>
 
               {/* Health Score Panel */}

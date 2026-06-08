@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../config/supabase';
 import { User as UserIcon, Phone, Mail, Upload, X, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const inputBase =
   'w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-primary focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all';
@@ -46,9 +48,10 @@ export const ProfileForm: React.FC = () => {
     // Se o utilizador escolheu uma nova foto
     if (avatarFile) {
       try {
-        const ext = avatarFile.name.split('.').pop();
+        const optimizedFile = await optimizeImageForUpload(avatarFile);
+        const ext = optimizedFile.name.split('.').pop();
         const path = `${user?.id}_${Date.now()}.${ext}`;
-        const { error: upErr } = await supabase.storage.from('avatars').upload(path, avatarFile);
+        const { error: upErr } = await supabase.storage.from('avatars').upload(path, optimizedFile, { cacheControl: '31536000', upsert: false });
         if (!upErr) {
           const { data } = supabase.storage.from('avatars').getPublicUrl(path);
           uploadedAvatarUrl = data.publicUrl;
@@ -103,7 +106,7 @@ export const ProfileForm: React.FC = () => {
         <div className="relative w-24 h-24 shrink-0 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center group overflow-hidden">
           {avatarPreview ? (
             <>
-              <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
+              <OptimizedImage src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
               <button
                 type="button"
                 onClick={(e) => { e.preventDefault(); setAvatarFile(null); setAvatarPreview(null); }}

@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import { supabase } from '../../config/supabase';
 import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle, Send, CheckCircle2 } from 'lucide-react';
 import RichTextEditor from '../../components/RichTextEditor';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { BlogPost } from '../../types/blog';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
 
 /* ─── FUNÇÃO DE NOTIFICAÇÃO GLOBAL ───────────────────────────────────────── */
 
@@ -47,7 +53,40 @@ const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: 
 
 /* ─── MODAL DO ARTIGO (BLOG MODAL) ───────────────────────────────────────── */
 
-const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved: () => void }> = ({ post, onClose, onSaved }) => {
+const SortablePostRow: React.FC<{ p: BlogPost; onEdit: (p: BlogPost) => void; onDelete: (id: string) => void }> = ({ p, onEdit, onDelete }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: p.id });
+  const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 1 };
+
+  return (
+    <tr ref={setNodeRef} style={style} className={`transition-colors ${isDragging ? 'bg-white shadow-lg relative' : 'hover:bg-gray-50/50'}`}>
+      <td className="px-4 py-4 w-10">
+        <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 rounded">
+          <GripVertical className="w-5 h-5" />
+        </div>
+      </td>
+      <td className="px-6 py-4 font-semibold text-primary">{p.title}</td>
+      <td className="px-6 py-4"><span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">{p.category}</span></td>
+      <td className="px-6 py-4">
+        {p.is_published 
+          ? <span className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-xs font-bold">Publicado</span> 
+          : <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-xs font-bold">Rascunho</span>}
+      </td>
+      <td className="px-4 py-4">
+        {(p as any).newsletter_sent 
+          ? <span className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit"><Send className="w-3 h-3" />Enviada</span>
+          : <span className="text-gray-400 text-xs">—</span>}
+      </td>
+      <td className="px-6 py-4">
+        <div className="flex justify-end gap-2">
+          <button onClick={() => onEdit(p)} className="p-2 text-gray-400 hover:text-secondary bg-white shadow-sm border border-gray-100 rounded-lg transition-colors"><Pencil className="w-4 h-4" /></button>
+          <button onClick={() => onDelete(p.id)} className="p-2 text-gray-400 hover:text-red-500 bg-white shadow-sm border border-gray-100 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+        </div>
+      </td>
+    </tr>
+  );
+};
+
+const BlogModal: React.FC<{ post: BlogPost | null; maxPosition: number; onClose: () => void; onSaved: () => void }> = ({ post, maxPosition, onClose, onSaved }) => {
   const [draft, setDraft] = useState<Partial<BlogPost>>(post ? { ...post } : { title: '', slug: '', summary: '', content: '', category: 'Artigo', is_published: true, image_url: '', published_at: new Date().toISOString() });
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
@@ -71,9 +110,10 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
     
     let finalImageUrl = draft.image_url;
     if (coverFile) {
-      const fileExt = coverFile.name.split('.').pop();
+      const optimizedFile = await optimizeImageForUpload(coverFile);
+      const fileExt = optimizedFile.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-      const { data, error: uploadError } = await supabase.storage.from('media').upload(`blog/${fileName}`, coverFile);
+      const { data, error: uploadError } = await supabase.storage.from('media').upload(`blog/${fileName}`, optimizedFile, { cacheControl: '31536000', upsert: false });
       if (uploadError) { setError(`Erro upload: ${uploadError.message}`); setSaving(false); return; }
       const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
       finalImageUrl = publicUrl;
@@ -88,16 +128,17 @@ const BlogModal: React.FC<{ post: BlogPost | null; onClose: () => void; onSaved:
       image_url: finalImageUrl || null,
       is_published: draft.is_published ?? true,
       published_at: draft.is_published ? (draft.published_at || new Date().toISOString()) : null,
+      ...(!post ? { position: maxPosition + 1 } : {})
     };
 
     let savedPostId = post?.id;
     const isNew = !post;
 
     if (post) {
-      const { error: dbErr } = await supabase.from('posts').update(payload).eq('id', post.id);
+      const { error: dbErr } = await supabase.from('blog_posts').update(payload).eq('id', post.id);
       if (dbErr) { setError(dbErr.message); setSaving(false); return; }
     } else {
-      const { data: inserted, error: dbErr } = await supabase.from('posts').insert(payload).select('id').single();
+      const { data: inserted, error: dbErr } = await supabase.from('blog_posts').insert(payload).select('id').single();
       if (dbErr) { setError(dbErr.message); setSaving(false); return; }
       savedPostId = inserted?.id;
     }
@@ -217,16 +258,43 @@ export const BlogAdmin: React.FC = () => {
 
   const fetchPosts = async () => {
     setLoading(true);
-    const { data } = await supabase.from('posts').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('blog_posts').select('*').order('position', { ascending: true }).order('created_at', { ascending: false });
+    if (error) console.error('Fetch posts error:', error);
     setPosts(data || []);
     setLoading(false);
   };
 
   useEffect(() => { fetchPosts(); }, []);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = posts.findIndex((item) => item.id === active.id);
+      const newIndex = posts.findIndex((item) => item.id === over.id);
+      const newPosts = arrayMove(posts, oldIndex, newIndex);
+      
+      setPosts(newPosts);
+
+      const payload = newPosts.map((p, index) => ({ id: p.id, position: index }));
+      try {
+        const { error } = await supabase.rpc('update_posts_order', { payload });
+        if (error) throw error;
+      } catch (err: any) {
+        console.error('Error updating order:', err);
+        alert('Erro ao atualizar a ordem dos artigos.');
+        fetchPosts();
+      }
+    }
+  };
+
   const deletePost = async (id: string) => {
     if(!window.confirm('Quer mesmo apagar este artigo do blog?')) return;
-    await supabase.from('posts').delete().eq('id', id);
+    await supabase.from('blog_posts').delete().eq('id', id);
     fetchPosts();
   };
 
@@ -247,6 +315,7 @@ export const BlogAdmin: React.FC = () => {
             <table className="w-full text-left">
               <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold tracking-wider">
                 <tr>
+                  <th className="px-4 py-4 w-10"></th>
                   <th className="px-6 py-4">Artigo</th>
                   <th className="px-6 py-4">Categoria</th>
                   <th className="px-6 py-4">Estado</th>
@@ -255,28 +324,13 @@ export const BlogAdmin: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {posts.map(p => (
-                  <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4 font-semibold text-primary">{p.title}</td>
-                    <td className="px-6 py-4"><span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">{p.category}</span></td>
-                    <td className="px-6 py-4">
-                      {p.is_published 
-                        ? <span className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-xs font-bold">Publicado</span> 
-                        : <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-xs font-bold">Rascunho</span>}
-                    </td>
-                    <td className="px-4 py-4">
-                      {(p as any).newsletter_sent 
-                        ? <span className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit"><Send className="w-3 h-3" />Enviada</span>
-                        : <span className="text-gray-400 text-xs">—</span>}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex justify-end gap-2">
-                        <button onClick={() => { setEditingPost(p); setIsModalOpen(true); }} className="p-2 text-gray-400 hover:text-secondary bg-white shadow-sm border border-gray-100 rounded-lg transition-colors"><Pencil className="w-4 h-4" /></button>
-                        <button onClick={() => deletePost(p.id)} className="p-2 text-gray-400 hover:text-red-500 bg-white shadow-sm border border-gray-100 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={posts.map(p => p.id)} strategy={verticalListSortingStrategy}>
+                    {posts.map(p => (
+                      <SortablePostRow key={p.id} p={p} onEdit={(p) => { setEditingPost(p); setIsModalOpen(true); }} onDelete={deletePost} />
+                    ))}
+                  </SortableContext>
+                </DndContext>
               </tbody>
             </table>
           </div>
@@ -284,7 +338,7 @@ export const BlogAdmin: React.FC = () => {
       )}
       
       <AnimatePresence>
-        {isModalOpen && <BlogModal post={editingPost} onClose={() => setIsModalOpen(false)} onSaved={fetchPosts} />}
+        {isModalOpen && <BlogModal post={editingPost} maxPosition={posts.length > 0 ? Math.max(...posts.map(p => p.position ?? 0)) : 0} onClose={() => setIsModalOpen(false)} onSaved={fetchPosts} />}
       </AnimatePresence>
     </div>
   );
