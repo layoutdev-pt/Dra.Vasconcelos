@@ -6,3 +6,16 @@
     }
   ]
 }
+
+"redirects": [
+  {
+    "source": "/pt/:path*",
+    "destination": "/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/pt",
+    "destination": "/",
+    "permanent": true
+  }
+]
