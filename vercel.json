@@ -4,18 +4,17 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/pt/:path*",
+      "destination": "/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/pt",
+      "destination": "/",
+      "permanent": true
+    }
   ]
 }
-
-"redirects": [
-  {
-    "source": "/pt/:path*",
-    "destination": "/:path*",
-    "permanent": true
-  },
-  {
-    "source": "/pt",
-    "destination": "/",
-    "permanent": true
-  }
-]
