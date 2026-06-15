@@ -69,16 +69,18 @@ export const Navbar: React.FC = () => {
                 <OptimizedImage
                   src={fullLogo}
                   alt="Dra. Alexandra Vasconcelos"
+                  objectFit="object-contain"
                   className={`w-auto transition-all duration-300 absolute left-0 origin-left ${
                     isScrolled ? 'h-8 md:h-10 opacity-0 scale-90 pointer-events-none' : 'h-14 md:h-16 lg:h-18 opacity-100 scale-100 relative'
-                  } ${theme === 'dark' ? 'invert brightness-0 object-contain' : ''} `} 
+                  } ${theme === 'dark' ? 'invert brightness-0' : ''} `} 
                 />
                 <OptimizedImage
                   src={simpleLogo}
                   alt="Dra. Alexandra Vasconcelos Ícone"
+                  objectFit="object-contain"
                   className={`w-auto transition-all duration-300 absolute left-0 origin-left ${
                     isScrolled ? 'h-10 md:h-12 opacity-100 scale-100 relative' : 'h-14 md:h-16 opacity-0 scale-110 pointer-events-none'
-                  } ${theme === 'dark' ? 'invert brightness-0 object-contain' : ''}`}
+                  } ${theme === 'dark' ? 'invert brightness-0' : ''}`}
                 />
               </Link>
             </div>

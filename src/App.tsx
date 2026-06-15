@@ -64,7 +64,7 @@ const AppShell: React.FC = () => {
     <div className="flex flex-col min-h-screen w-full bg-site-bg text-site-text font-display antialiased overflow-x-hidden transition-colors duration-500">
       {!isStandalone && <Navbar />}
       
-      <main className="grow w-full">
+      <main className="grow w-full" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
             <Route path="/" element={<Home />} />

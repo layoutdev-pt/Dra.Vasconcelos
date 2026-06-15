@@ -45,7 +45,7 @@ export const Hero: React.FC = () => {
 
   return (
     /* bg-hero-bg muda automaticamente via CSS */
-    <section className="relative pt-24 pb-20 lg:pt-32 lg:pb-32 overflow-hidden bg-hero-bg transition-colors duration-500">
+    <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden bg-hero-bg transition-colors duration-500">
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           
