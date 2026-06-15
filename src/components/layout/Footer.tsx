@@ -46,7 +46,7 @@ export const Footer: React.FC = () => {
           <div className="lg:col-span-4 space-y-6">
             <div className="flex items-center">
               <Link to="/">
-                <OptimizedImage src={whiteLogo} alt="Dra. Alexandra Vasconcelos" objectFit="object-contain" className="h-20 md:h-28 w-auto transition-all duration-500" />
+                <OptimizedImage src={whiteLogo} alt="Dra. Alexandra Vasconcelos" objectFit="object-contain" wrapperClassName="h-20 md:h-28 w-auto transition-all duration-500" className="object-left" />
               </Link>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">

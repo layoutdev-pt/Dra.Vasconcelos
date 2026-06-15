@@ -59,16 +59,16 @@ export const Navbar: React.FC = () => {
           : 'max-w-full rounded-none'
       }`}>
         {/* Camada isolada de fundo e blur para corrigir bug do Safari no iOS */}
-        <div className={`absolute inset-0 pointer-events-none transition-all duration-500 ${
+        <div className={`absolute inset-0 z-0 pointer-events-none transition-all duration-500 ${
           isScrolled
             ? 'bg-nav-bg backdrop-blur-xl rounded-2xl md:rounded-[2rem] border border-surface-border/60'
             : 'bg-nav-bg backdrop-blur-md border-b border-surface-border/20'
         }`} />
 
-        <div className={`relative z-10 mx-auto transition-all duration-500 ${
+        <div className={`relative z-10 w-full mx-auto transition-all duration-500 transform-gpu ${
           isScrolled ? 'px-4 md:px-8' : 'px-6 lg:px-8 2xl:px-12 max-w-[1400px] 2xl:max-w-[1600px]'
         }`}>
-          <div className={`flex items-center transition-all duration-500 ${isScrolled ? 'h-16' : 'h-20 md:h-24'}`}>
+          <div className={`flex items-center justify-between w-full transition-all duration-500 ${isScrolled ? 'h-16' : 'h-20 md:h-24'}`}>
 
             {/* ── Logo ───────────────────────── */}
             <div className="flex-shrink-0 flex items-center relative h-full min-w-[120px]">
