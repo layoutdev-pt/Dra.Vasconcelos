@@ -53,19 +53,19 @@ export const Navbar: React.FC = () => {
     <div className={`fixed z-50 w-full transition-all duration-500 ease-in-out flex justify-center ${
       isScrolled ? 'top-2 md:top-6 px-2 md:px-6' : 'top-0 left-0 px-0'
     }`}>
-      <nav className={`w-full transition-all duration-500 ease-in-out relative ${
+      <nav className={`w-full transition-all duration-500 ease-in-out relative transform-gpu ${
         isScrolled
           ? 'max-w-[1100px] bg-nav-bg backdrop-blur-xl rounded-2xl md:rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-surface-border/60'
           : 'max-w-full bg-nav-bg backdrop-blur-md border-b border-surface-border/20 rounded-none'
       }`}>
-        <div className={`mx-auto transition-all duration-500 ${
+        <div className={`relative z-10 mx-auto transition-all duration-500 ${
           isScrolled ? 'px-4 md:px-8' : 'px-6 lg:px-8 2xl:px-12 max-w-[1400px] 2xl:max-w-[1600px]'
         }`}>
           <div className={`flex items-center transition-all duration-500 ${isScrolled ? 'h-16' : 'h-20 md:h-24'}`}>
 
             {/* ── Logo ───────────────────────── */}
-            <div className="flex-shrink-0 flex items-center relative h-full">
-              <Link to="/" className="relative flex items-center justify-center">
+            <div className="flex-shrink-0 flex items-center relative h-full min-w-[120px]">
+              <Link to="/" className="relative flex items-center justify-center h-full w-full">
                 <OptimizedImage
                   src={fullLogo}
                   alt="Dra. Alexandra Vasconcelos"
@@ -101,12 +101,12 @@ export const Navbar: React.FC = () => {
             </div>
 
             {/* ── Right Side ───────────────────────── */}
-            <div className="flex items-center gap-2 ml-auto md:ml-0">
+            <div className="flex items-center gap-2 ml-auto md:ml-0 flex-shrink-0">
 
               {/* Botão Dark Mode Desktop */}
               <button
                 onClick={toggleTheme}
-                className={`hidden md:flex items-center justify-center rounded-full transition-all w-10 h-10 text-site-text-muted hover:text-secondary hover:bg-surface-muted ${
+                className={`appearance-none hidden md:flex items-center justify-center rounded-full transition-all w-10 h-10 text-site-text-muted hover:text-secondary hover:bg-surface-muted ${
                   !isScrolled && 'border border-surface-border'
                 }`}
                 title="Alternar Tema"
@@ -124,7 +124,7 @@ export const Navbar: React.FC = () => {
                     <div className="relative">
                       <button
                         onClick={e => { e.stopPropagation(); setUserMenuOpen(v => !v); }}
-                        className={`flex items-center justify-center rounded-full transition-all ${
+                        className={`appearance-none flex items-center justify-center rounded-full transition-all ${
                           isScrolled 
                             ? 'w-10 h-10 border border-secondary/20 hover:border-secondary/50 bg-surface shadow-sm focus:outline-none' 
                             : 'gap-2.5 px-4 py-2 border border-secondary/30 bg-secondary/5 hover:bg-secondary/10 text-site-text font-semibold text-sm'
@@ -149,7 +149,7 @@ export const Navbar: React.FC = () => {
                             <LayoutDashboard className="w-4 h-4" /> Dashboard Admin
                           </Link>
                         )}
-                        <button onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10 transition-colors rounded-b-xl w-full text-left border-t border-surface-border">
+                        <button onClick={handleSignOut} className="appearance-none flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10 transition-colors rounded-b-xl w-full text-left border-t border-surface-border">
                           <LogOut className="w-4 h-4" /> Terminar Sessão
                         </button>
                       </AnimatedDropdown>
@@ -171,16 +171,16 @@ export const Navbar: React.FC = () => {
               {/* Botão Dark Mode Mobile */}
               <button
                 onClick={toggleTheme}
-                className="md:hidden p-2 rounded-lg text-site-text hover:text-secondary transition-colors ml-1"
+                className="appearance-none md:hidden p-2 rounded-lg text-site-text hover:text-secondary transition-colors ml-1"
               >
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
 
               {/* SINO DE NOTIFICAÇÕES MOBILE */}
               {user && (
-                <div className="md:hidden flex items-center ml-1">
-                  <NotificationBell />
-                </div>
+               <div className="md:hidden flex items-center ml-1">
+                 <NotificationBell />
+               </div>
               )}
 
               {/* Ícone de utilizador mobile */}
@@ -198,7 +198,7 @@ export const Navbar: React.FC = () => {
               {/* Hamburger Mobile */}
               <button
                 onClick={toggleMobileMenu}
-                className="md:hidden p-2 rounded-lg text-site-text hover:text-secondary transition-colors ml-1"
+                className="appearance-none md:hidden p-2 rounded-lg text-site-text hover:text-secondary transition-colors ml-1"
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -207,7 +207,7 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Painel do Menu Mobile */}
-        <div className={`md:hidden absolute left-0 w-full bg-site-bg backdrop-blur-2xl border border-surface-border shadow-2xl transition-all duration-300 ease-in-out origin-top ${
+        <div className={`md:hidden absolute left-0 w-full bg-site-bg backdrop-blur-2xl border border-surface-border shadow-2xl transition-all duration-300 ease-in-out origin-top transform-gpu ${
           isMobileMenuOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'
         } ${isScrolled ? 'top-[calc(100%+0.5rem)] rounded-2xl' : 'top-full'}`}>
           <div className="px-6 pt-3 pb-6 space-y-1 flex flex-col">
