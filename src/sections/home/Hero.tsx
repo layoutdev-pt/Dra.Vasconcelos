@@ -4,7 +4,7 @@ import { CheckCircle2, Heart, Leaf } from 'lucide-react';
 import draHero from '../../assets/images/dra_hero.png';
 import { OptimizedImage } from '../../components/OptimizedImage';
 
-const HERO_PHRASES = ["jovem e saudável", "com mais vitalidade", "em equilíbrio pleno"];
+const HERO_PHRASES = ["Jovem e Saudável", "com Mais Vitalidade", "em Equilíbrio Pleno"];
 
 const useCountUp = (end: number, duration: number = 2000) => {
   const [count, setCount] = useState(1);

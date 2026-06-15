@@ -53,59 +53,56 @@ export const Navbar: React.FC = () => {
     <div className={`fixed z-50 w-full transition-all duration-500 ease-in-out flex justify-center ${
       isScrolled ? 'top-2 md:top-6 px-2 md:px-6' : 'top-0 left-0 px-0'
     }`}>
-      <nav className={`w-full transition-all duration-500 ease-in-out relative ${
+      {/* O uso de transform-gpu (translateZ(0)) forca o Safari a colocar a navbar numa layer separada de hardware, impedindo que o backdrop-blur colapse os filhos */}
+      <nav className={`w-full transition-all duration-500 ease-in-out relative transform-gpu ${
         isScrolled
-          ? 'max-w-[1100px] rounded-2xl md:rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]'
-          : 'max-w-full rounded-none'
+          ? 'max-w-[1100px] bg-nav-bg backdrop-blur-xl rounded-2xl md:rounded-[2rem] border border-surface-border/60 shadow-lg'
+          : 'max-w-full bg-nav-bg backdrop-blur-md border-b border-surface-border/20 rounded-none'
       }`}>
-        {/* Camada isolada de fundo e blur para corrigir bug do Safari no iOS */}
-        <div className={`absolute inset-0 z-0 pointer-events-none transition-all duration-500 ${
-          isScrolled
-            ? 'bg-nav-bg backdrop-blur-xl rounded-2xl md:rounded-[2rem] border border-surface-border/60'
-            : 'bg-nav-bg backdrop-blur-md border-b border-surface-border/20'
-        }`} />
-
-        <div className={`relative z-10 w-full mx-auto transition-all duration-500 transform-gpu ${
-          isScrolled ? 'px-4 md:px-8' : 'px-6 lg:px-8 2xl:px-12 max-w-[1400px] 2xl:max-w-[1600px]'
+        
+        <div className={`mx-auto flex items-center justify-between w-full transition-all duration-500 ${
+          isScrolled ? 'px-4 md:px-8 h-16' : 'px-6 lg:px-8 2xl:px-12 max-w-[1400px] 2xl:max-w-[1600px] h-20 md:h-24'
         }`}>
-          <div className={`flex items-center justify-between w-full transition-all duration-500 ${isScrolled ? 'h-16' : 'h-20 md:h-24'}`}>
 
-            {/* ── Logo ───────────────────────── */}
-            <div className="flex-shrink-0 flex items-center relative h-full min-w-[120px]">
-              <Link to="/" className="relative flex items-center justify-center h-full w-full">
-                <OptimizedImage
-                  src={fullLogo}
-                  alt="Dra. Alexandra Vasconcelos"
-                  objectFit="object-contain"
-                  className={`w-auto transition-all duration-300 absolute left-0 origin-left ${
-                    isScrolled ? 'h-8 md:h-10 opacity-0 scale-90 pointer-events-none' : 'h-14 md:h-16 lg:h-18 opacity-100 scale-100 relative'
-                  } ${theme === 'dark' ? 'invert brightness-0' : ''} `} 
-                />
-                <OptimizedImage
-                  src={simpleLogo}
-                  alt="Dra. Alexandra Vasconcelos Ícone"
-                  objectFit="object-contain"
-                  className={`w-auto transition-all duration-300 absolute left-0 origin-left ${
-                    isScrolled ? 'h-10 md:h-12 opacity-100 scale-100 relative' : 'h-14 md:h-16 opacity-0 scale-110 pointer-events-none'
-                  } ${theme === 'dark' ? 'invert brightness-0' : ''}`}
-                />
-              </Link>
-            </div>
+          {/* ── Logo ───────────────────────── */}
+          {/* O tamanho estrito do contentor impede que o Safari colapse o flex item para largura zero */}
+          <div className={`flex-shrink-0 flex items-center relative transition-all duration-500 ${
+            isScrolled ? 'w-[40px] md:w-[48px] h-[32px] md:h-[40px]' : 'w-[140px] md:w-[180px] h-[56px] md:h-[72px]'
+          }`}>
+            <Link to="/" className="block w-full h-full relative">
+              <OptimizedImage
+                src={fullLogo}
+                alt="Dra. Alexandra Vasconcelos"
+                objectFit="object-contain"
+                className={`w-full h-full transition-all duration-300 absolute inset-0 origin-left ${
+                  isScrolled ? 'opacity-0 scale-90 pointer-events-none' : 'opacity-100 scale-100'
+                } ${theme === 'dark' ? 'invert brightness-0' : ''}`} 
+              />
+              <OptimizedImage
+                src={simpleLogo}
+                alt="Dra. Alexandra Vasconcelos Ícone"
+                objectFit="object-contain"
+                className={`w-full h-full transition-all duration-300 absolute inset-0 origin-left ${
+                  isScrolled ? 'opacity-100 scale-100' : 'opacity-0 scale-110 pointer-events-none'
+                } ${theme === 'dark' ? 'invert brightness-0' : ''}`}
+              />
+            </Link>
+          </div>
 
-            {/* ── Desktop Nav Links ─────── */}
-            <div className="hidden md:flex flex-1 justify-center">
-              <div className="flex items-center gap-1">
-                {NAV_LINKS.map(link => (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    className="text-site-text-muted hover:text-secondary px-4 py-2 text-sm font-medium transition-colors rounded-lg hover:bg-surface-muted"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
+          {/* ── Desktop Nav Links ─────── */}
+          <div className="hidden md:flex flex-1 justify-center items-center">
+            <div className="flex items-center gap-1">
+              {NAV_LINKS.map(link => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="text-site-text-muted hover:text-secondary px-4 py-2 text-sm font-medium transition-colors rounded-lg hover:bg-surface-muted"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
+          </div>
 
             {/* ── Right Side ───────────────────────── */}
             <div className="flex items-center gap-2 ml-auto md:ml-0 flex-shrink-0">
