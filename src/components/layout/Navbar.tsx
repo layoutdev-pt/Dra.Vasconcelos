@@ -208,7 +208,7 @@ export const Navbar: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+
 
         {/* Painel do Menu Mobile */}
         <div className={`md:hidden absolute left-0 w-full shadow-2xl transition-all duration-300 ease-in-out origin-top transform-gpu ${
