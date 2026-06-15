@@ -53,11 +53,18 @@ export const Navbar: React.FC = () => {
     <div className={`fixed z-50 w-full transition-all duration-500 ease-in-out flex justify-center ${
       isScrolled ? 'top-2 md:top-6 px-2 md:px-6' : 'top-0 left-0 px-0'
     }`}>
-      <nav className={`w-full transition-all duration-500 ease-in-out relative transform-gpu ${
+      <nav className={`w-full transition-all duration-500 ease-in-out relative ${
         isScrolled
-          ? 'max-w-[1100px] bg-nav-bg backdrop-blur-xl rounded-2xl md:rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-surface-border/60'
-          : 'max-w-full bg-nav-bg backdrop-blur-md border-b border-surface-border/20 rounded-none'
+          ? 'max-w-[1100px] rounded-2xl md:rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]'
+          : 'max-w-full rounded-none'
       }`}>
+        {/* Camada isolada de fundo e blur para corrigir bug do Safari no iOS */}
+        <div className={`absolute inset-0 pointer-events-none transition-all duration-500 ${
+          isScrolled
+            ? 'bg-nav-bg backdrop-blur-xl rounded-2xl md:rounded-[2rem] border border-surface-border/60'
+            : 'bg-nav-bg backdrop-blur-md border-b border-surface-border/20'
+        }`} />
+
         <div className={`relative z-10 mx-auto transition-all duration-500 ${
           isScrolled ? 'px-4 md:px-8' : 'px-6 lg:px-8 2xl:px-12 max-w-[1400px] 2xl:max-w-[1600px]'
         }`}>
@@ -207,10 +214,11 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Painel do Menu Mobile */}
-        <div className={`md:hidden absolute left-0 w-full bg-site-bg backdrop-blur-2xl border border-surface-border shadow-2xl transition-all duration-300 ease-in-out origin-top transform-gpu ${
+        <div className={`md:hidden absolute left-0 w-full shadow-2xl transition-all duration-300 ease-in-out origin-top transform-gpu ${
           isMobileMenuOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'
-        } ${isScrolled ? 'top-[calc(100%+0.5rem)] rounded-2xl' : 'top-full'}`}>
-          <div className="px-6 pt-3 pb-6 space-y-1 flex flex-col">
+        } ${isScrolled ? 'top-[calc(100%+0.5rem)]' : 'top-full'}`}>
+          <div className={`absolute inset-0 bg-site-bg backdrop-blur-2xl border border-surface-border pointer-events-none transition-all duration-300 ${isScrolled ? 'rounded-2xl' : ''}`} />
+          <div className="relative z-10 px-6 pt-3 pb-6 space-y-1 flex flex-col">
             {NAV_LINKS.map(link => (
               <Link
                 key={link.to}
