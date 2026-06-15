@@ -70,19 +70,17 @@ export const Navbar: React.FC = () => {
             isScrolled ? 'w-[40px] md:w-[48px] h-[32px] md:h-[40px]' : 'w-[140px] md:w-[180px] h-[56px] md:h-[72px]'
           }`}>
             <Link to="/" className="block w-full h-full relative">
-              <OptimizedImage
+              <img
                 src={fullLogo}
                 alt="Dra. Alexandra Vasconcelos"
-                objectFit="object-contain"
-                className={`w-full h-full transition-all duration-300 absolute inset-0 origin-left ${
+                className={`w-full h-full object-contain transition-all duration-300 absolute inset-0 origin-left ${
                   isScrolled ? 'opacity-0 scale-90 pointer-events-none' : 'opacity-100 scale-100'
                 } ${theme === 'dark' ? 'invert brightness-0' : ''}`} 
               />
-              <OptimizedImage
+              <img
                 src={simpleLogo}
                 alt="Dra. Alexandra Vasconcelos Ícone"
-                objectFit="object-contain"
-                className={`w-full h-full transition-all duration-300 absolute inset-0 origin-left ${
+                className={`w-full h-full object-contain transition-all duration-300 absolute inset-0 origin-left ${
                   isScrolled ? 'opacity-100 scale-100' : 'opacity-0 scale-110 pointer-events-none'
                 } ${theme === 'dark' ? 'invert brightness-0' : ''}`}
               />
