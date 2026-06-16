@@ -15,6 +15,11 @@
       "source": "/pt",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/pt/",
+      "destination": "/",
+      "permanent": true
     }
   ]
 }
