@@ -88,7 +88,7 @@ export const Hero: React.FC = () => {
 
             <div className="pt-6 flex flex-wrap items-center gap-4 md:gap-8 text-sm text-site-text-muted font-medium">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" /> Saúde Integrariva e Biológica 
+                <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" /> Saúde Integrativa e Biológica 
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" /> Abordagem Individual 
