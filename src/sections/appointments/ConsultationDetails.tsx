@@ -46,7 +46,7 @@ export const ConsultationDetails: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
               {[
                 { icon: Clock, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', title: 'Tempo de Qualidade', desc: 'Consultas com duração até 2 horas. Tempo dedicado para ouvir e interpretar a sua história completa com total dedicação.' },
-                { icon: BriefcaseMedical, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400', title: 'Medicina Funcional', desc: 'Avaliação avançada da saúde com foco na prevenção, equilíbrio e otimização do organismo.' },
+                { icon: BriefcaseMedical, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400', title: 'Saúde Integrativa e Biológica', desc: 'Avaliação avançada da saúde com foco na prevenção, equilíbrio e otimização do organismo.' },
                 { icon: ClipboardList, iconBg: 'bg-green-500/10', iconColor: 'text-green-400', title: 'Plano Personalizado', desc: 'Uma abordagem personalizada de nutrição, suplementação e estilo de vida baseada na sua individualidade biológica e genética.' },
               ].map((card, i) => (
                 <motion.div
@@ -232,7 +232,7 @@ export const ConsultationDetails: React.FC = () => {
                         <BriefcaseMedical className="w-8 h-8 text-blue-400 -rotate-3" />
                       </div>
                       <h3 className="text-2xl md:text-3xl font-bold text-site-text mb-3">
-                        Medicina Preventiva Personalizada
+                        Saúde Integrativa e Biológica Personalizada
                       </h3>
                       <p className="text-site-text-muted font-light max-w-2xl mx-auto">
                         Através de bioressonância e testes avançados, identificamos desequilíbrios antes que se manifestem em doença.
@@ -254,7 +254,7 @@ export const ConsultationDetails: React.FC = () => {
                         { label: 'Cargas Geopatogénicas e Eletromagnéticas', desc: 'Impacto ambiental na saúde.' },
                         { label: 'Medição de Stress', desc: 'Inclui stress simpático, eletromagnético, radioativo e por metais pesados.' },
                         { label: 'Deficiências Nutricionais', desc: 'Identificação de carências de vitaminas e minerais.' },
-                        { label: 'Testes Genéticos', desc: 'Análise de variações genéticas para medicina preventiva (doenças cardiovasculares, metabólicas, diabetes, neurodegenerativas e cancro).' },
+                        { label: 'Testes Genéticos', desc: 'Análise de variações genéticas para Saúde Integrativa e Biológica (doenças cardiovasculares, metabólicas, diabetes, neurodegenerativas e cancro).' },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-3 bg-surface-muted rounded-2xl p-4 border border-surface-border">
                           <div className="w-2 h-2 rounded-full bg-secondary mt-2 shrink-0" />

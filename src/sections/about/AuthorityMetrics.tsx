@@ -22,7 +22,7 @@ export const AuthorityMetrics: React.FC = () => {
             <div className="md:col-span-2 bg-[#F97316] text-white rounded-3xl p-8 lg:p-10 shadow-lg relative overflow-hidden group">
               <div className="absolute right-0 top-0 w-64 h-full bg-white/10 -skew-x-12 translate-x-32 group-hover:translate-x-10 transition-transform duration-700" />
               <Award className="w-8 h-8 mb-6 opacity-80" />
-              <h3 className="text-3xl font-extrabold mb-4">Especialização em Medicina Integrativa</h3>
+              <h3 className="text-3xl font-extrabold mb-4">Especialização em Saúde Integrativa e Biológica</h3>
               <p className="opacity-90 max-w-md text-lg leading-relaxed">
                 Mais de duas décadas de prática clínica na vanguarda da neurociência e abordagens integrativas avançadas focado nas causas profundas.
               </p>
@@ -68,7 +68,7 @@ export const AuthorityMetrics: React.FC = () => {
                 "Master em Nutrição Ortomolecular pelo IONAC - Barcelona, Espanha",
                 "Especialização em Nutrição Celular Ativa – Madrid INCA",
                 "Mestre em Homeopatia Unicista e Homotoxicologia",
-                "Prática clínica em Biorressonância e medicina bioreguladora",
+                "Prática clínica em Biorressonância e Saúde Integrativa e Biológica",
                 "Membro da ABNPIOM (Asociación Española Prof. en Nutrición y Med. Integrativa)",
                 "Membro da APMI (Associação Portuguesa de Medicina Integrativa)",
                 "Autora: \"Dairy Products: Impact on Prostate Cancer?\" (Frontiers Front. Nutr.)"

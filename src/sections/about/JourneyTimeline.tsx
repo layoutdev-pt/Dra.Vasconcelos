@@ -35,12 +35,12 @@ export const JourneyTimeline: React.FC = () => {
     {
       year: "2003",
       title: "Mudança de Paradigma",
-      description: "Neste ano, optei por abandonar a prática de farmácia de oficina para me dedicar ao estudo e à formação em medicina preventiva. Procurei incessantemente terapêuticas biológicas que respeitassem a genética individual de cada pessoa, e levando sempre em conta a vertente física, mental e espiritual."
+      description: "Neste ano, optei por abandonar a prática de farmácia de oficina para me dedicar ao estudo e à formação em Saúde Integrativa e Biológica. Procurei incessantemente terapêuticas biológicas que respeitassem a genética individual de cada pessoa, e levando sempre em conta a vertente física, mental e espiritual."
     },
     {
       year: "Hoje",
       title: "O Ponto Viragem e Propósito",
-      description: "O resultado que vejo diariamente nos pacientes é a minha grande motivação. Sinto-me extremamente grata pela vida por me ter dado a convicção de investir nestas áreas de medicina integrativa e biológica, permitindo-me desempenhar um papel determinante na modelação das doenças crónicas."
+      description: "O resultado que vejo diariamente nos pacientes é a minha grande motivação. Sinto-me extremamente grata pela vida por me ter dado a convicção de investir na área de Saúde Integrativa e Biológica, permitindo-me desempenhar um papel determinante na modelação das doenças crónicas."
     }
   ];
 

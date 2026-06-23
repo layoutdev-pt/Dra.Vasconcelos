@@ -30,7 +30,7 @@ function baseLayout(content: string): string {
                 Dra. Alexandra Vasconcelos
               </h1>
               <p style="margin:8px 0 0;color:${BRAND_COLOR};font-size:11px;text-transform:uppercase;letter-spacing:3px;font-weight:600;">
-                Medicina Integrativa & Longevidade
+                Saúde Integrativa e Biológica & Longevidade
               </p>
             </td>
           </tr>
