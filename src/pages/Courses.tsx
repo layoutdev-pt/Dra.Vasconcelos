@@ -32,7 +32,7 @@ export const Courses: React.FC = () => {
       </section>
 
       <PalestraSection />
-      <AcademyTrustBadge />
+      
     </div>
   );
 };
