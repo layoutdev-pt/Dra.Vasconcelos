@@ -72,7 +72,7 @@ export const Hero: React.FC = () => {
             <p className="text-lg text-site-text-muted max-w-lg leading-relaxed font-light mt-[-20px] md:mt-[-40px]">
               Todas as vezes que vai ao médico acredita que está a cuidar da sua
               saúde. Mas tratar sintomas não é o mesmo que tratar a causa. A
-              Saúde Integrativa e Biológica procura compreender a origem da doença e
+              Medicina Biológica Integrativa procura compreender a origem da doença e
               restaurar a saúde a partir da biologia celular.
             </p>
 
@@ -86,14 +86,15 @@ export const Hero: React.FC = () => {
               </Button>
             </div>
 
-            <div className="pt-6 flex items-center gap-8 text-sm text-site-text-muted font-medium">
+            <div className="pt-6 flex flex-wrap items-center gap-4 md:gap-8 text-sm text-site-text-muted font-medium">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-secondary" /> Saúde
-                Integrativa e Biológica
+                <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" /> Medicina Biológica
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-secondary" /> Abordagem
-                Individual
+                <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" /> Medicina Natural
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" /> Medicina Biológica Integrativa
               </div>
             </div>
           </div>
