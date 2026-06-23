@@ -5,7 +5,7 @@ import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2, Upload, User as Use
 import { useAuth } from '../context/authUtils';
 import { supabase } from '../config/supabase';
 import { Navbar } from '../components/layout/Navbar';
-import fullLogo from '../assets/logo/full1.svg';
+import fullLogo from '../assets/logo/Horizontal Secundário.png';
 import { optimizeImageForUpload } from '../utils/imageOptimizer';
 import { OptimizedImage } from '../components/OptimizedImage';
 
