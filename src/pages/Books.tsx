@@ -33,7 +33,7 @@ export const Books: React.FC = () => {
       </section>
 
       <AcademyLeadMagnet />
-      <AcademyTrustBadge />
+  
     </div>
   );
 };
