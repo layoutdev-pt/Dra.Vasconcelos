@@ -8,6 +8,9 @@ import { CourseCard } from '../../components/CourseCard';
 import { BookCard3D } from '../../components/BookCard3D';
 import { BlogCard } from '../../components/BlogCard';
 
+import type { Book } from '../../types/book';
+import type { BlogPost } from '../../types/blog';
+
 export const UserFavorites: React.FC = () => {
   const navigate = useNavigate();
   const { favorites, loading: favoritesLoading } = useFavorites();
@@ -123,27 +126,27 @@ export const UserFavorites: React.FC = () => {
           {item.type === 'course' && (
             <Link to={`/cursos/${item.slug || item.id}`} className="block h-full transition-transform hover:-translate-y-1">
               <CourseCard 
-                id={item.id}
-                title={item.title}
-                description={item.description}
-                level={item.level}
-                modules={item.modules}
-                price={item.price}
-                image={item.image_url}
-                isPopular={item.is_featured}
+                id={item.id as string}
+                title={item.title as string}
+                description={item.description as string}
+                level={item.level as 'Iniciante' | 'Intermediário' | 'Avançado'}
+                modules={item.modules as number}
+                price={item.price as number}
+                image={item.image_url as string}
+                isPopular={item.is_featured as boolean}
               />
             </Link>
           )}
           {item.type === 'book' && (
             <Link to="/livros" className="block h-full">
               <div className="bg-surface rounded-2xl p-6 border border-surface-border h-full flex flex-col items-center transition-transform hover:-translate-y-1">
-                  <BookCard3D book={item} index={0} />
+                  <BookCard3D book={item as unknown as Book} index={0} />
               </div>
             </Link>
           )}
           {item.type === 'blog' && (
             <div className="transition-transform hover:-translate-y-1 h-full">
-              <BlogCard post={item} />
+              <BlogCard post={item as unknown as BlogPost} />
             </div>
           )}
         </motion.div>

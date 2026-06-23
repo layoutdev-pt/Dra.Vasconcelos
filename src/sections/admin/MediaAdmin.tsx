@@ -153,7 +153,7 @@ const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; maxPosition: number; o
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelCls}>Categoria</label>
-              <select className={inputCls} value={draft.type} onChange={e => set('type', e.target.value)}>
+              <select className={inputCls} value={draft.type} onChange={e => set('type', e.target.value as 'video' | 'artigo' | 'podcast')}>
                 <option value="video">Vídeo (TV / YouTube)</option>
                 <option value="artigo">Artigo Escrito</option>
                 <option value="podcast">Podcast</option>

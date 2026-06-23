@@ -60,12 +60,12 @@ const FontSize = TextStyle.extend({
       ...this.parent?.(),
       setFontSize:
         (fontSize: string) =>
-        ({ chain }: { chain: () => { setMark: (m: string, a: Record<string, string | null>) => { run: () => void }; } }) => {
+        ({ chain }: { chain: () => { setMark: (m: string, a: Record<string, string | null>) => { run: () => boolean }; } }) => {
           return chain().setMark('textStyle', { fontSize }).run();
         },
       unsetFontSize:
         () =>
-        ({ chain }: { chain: () => { setMark: (m: string, a: Record<string, string | null>) => { removeEmptyTextStyle: () => { run: () => void }; }; } }) => {
+        ({ chain }: { chain: () => { setMark: (m: string, a: Record<string, string | null>) => { removeEmptyTextStyle: () => { run: () => boolean }; }; } }) => {
           return chain().setMark('textStyle', { fontSize: null }).removeEmptyTextStyle().run();
         },
     };

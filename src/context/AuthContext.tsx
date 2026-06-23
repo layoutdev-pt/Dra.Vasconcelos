@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../config/supabase';
-import { AuthContext, SignUpData } from './authUtils';
+import { AuthContext } from './authUtils';
+import type { SignUpData } from './authUtils';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);

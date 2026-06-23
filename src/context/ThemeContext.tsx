@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Theme, ThemeContext } from './themeUtils';
+import { ThemeContext } from './themeUtils';
+import type { Theme } from './themeUtils';
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Inicializa o tema com base no localStorage ou padrão 'light'

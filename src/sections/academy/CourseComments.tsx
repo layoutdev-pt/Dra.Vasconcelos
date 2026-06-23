@@ -14,19 +14,19 @@ import { Link } from "react-router-dom";
 
 // Mocks para resolver os problemas de compilação
 const supabase = {
-  from: () => ({
-    select: () => ({
-      eq: () => ({
-        order: () => Promise.resolve({ data: [] }),
-        single: () => Promise.resolve({ data: null })
+  from: (table: string) => ({
+    select: (columns?: string) => ({
+      eq: (field: string, val: unknown) => ({
+        order: (field: string, opts?: unknown) => Promise.resolve({ data: [] as unknown[] }),
+        single: () => Promise.resolve({ data: { banned: false } })
       })
     }),
-    insert: () => Promise.resolve({ error: null as unknown }),
+    insert: (data: unknown) => Promise.resolve({ error: null as { message: string, code?: string } | null }),
     delete: () => ({
-      eq: () => Promise.resolve({ error: null as unknown })
+      eq: (field: string, val: unknown) => Promise.resolve({ error: null as { message: string, code?: string } | null })
     })
   })
-} as unknown as Record<string, unknown>;
+};
 
 const useAuth = () => ({
   user: { id: "1", email: "teste@exemplo.com", user_metadata: { avatar_url: null } },

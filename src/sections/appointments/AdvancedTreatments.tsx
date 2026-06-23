@@ -39,7 +39,7 @@ const COMPLEMENTARY_EXAMS = [
   {
     icon: Dna,
     title: 'Exames Genéticos e Disbiose',
-    detail: 'Perfis genéticos para Saúde Integrativa e Biológica, análise da microbiota intestinal e marcadores bioquímicos de função orgânica.',
+    detail: 'Perfis genéticos para a Medicina Biológica Integrativa, análise da microbiota intestinal e marcadores bioquímicos de função orgânica.',
     tags: ['Genética', 'Microbiota', 'Prevenção'],
   },
 ];
@@ -97,7 +97,7 @@ export const AdvancedTreatments: React.FC = () => {
           </motion.span>
           <motion.h2 variants={fadeInUp} custom={1} className="text-3xl md:text-5xl font-bold text-site-text mb-6 leading-tight">
             Tecnologia de Ponta para<br />
-            <span className="text-secondary font-serif font-medium italic">Saúde Integrativa e Biológica</span>
+            <span className="text-secondary font-serif font-medium italic">Medicina Biológica Integrativa</span>
           </motion.h2>
           <motion.p variants={fadeInUp} custom={2} className="text-site-text-muted font-light text-lg md:text-xl leading-relaxed">
             Exploramos além dos sintomas através de diagnósticos detalhados, desenhando um plano terapêutico verdadeiramente personalizado.
