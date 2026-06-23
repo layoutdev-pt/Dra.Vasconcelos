@@ -30,7 +30,7 @@ function baseLayout(content: string): string {
                 Dra. Alexandra Vasconcelos
               </h1>
               <p style="margin:8px 0 0;color:${BRAND_COLOR};font-size:11px;text-transform:uppercase;letter-spacing:3px;font-weight:600;">
-                Biologia Integrativa & Longevidade
+                Medicina Integrativa & Longevidade
               </p>
             </td>
           </tr>
@@ -46,7 +46,7 @@ function baseLayout(content: string): string {
           <tr>
             <td style="background-color:#f8f9fa;padding:24px 40px;text-align:center;border-top:1px solid #e5e7eb;">
               <p style="margin:0 0 8px;color:#9ca3af;font-size:11px;">
-                © ${new Date().getFullYear()} Centro Dra. Alexandra Vasconcelos. Todos os direitos reservados.
+                © ${new Date().getFullYear()} Clínica Dra. Alexandra Vasconcelos. Todos os direitos reservados.
               </p>
               <p style="margin:0;color:#9ca3af;font-size:11px;">
                 <a href="${SITE_URL}/privacidade" style="color:${BRAND_COLOR};text-decoration:none;">Política de Privacidade</a>

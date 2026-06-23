@@ -39,7 +39,7 @@ const COMPLEMENTARY_EXAMS = [
   {
     icon: Dna,
     title: 'Exames Genéticos e Disbiose',
-    detail: 'Perfis genéticos para biologia preventiva, análise da microbiota intestinal e marcadores bioquímicos de função orgânica.',
+    detail: 'Perfis genéticos para medicina preventiva, análise da microbiota intestinal e marcadores bioquímicos de função orgânica.',
     tags: ['Genética', 'Microbiota', 'Prevenção'],
   },
 ];
@@ -97,7 +97,7 @@ export const AdvancedTreatments: React.FC = () => {
           </motion.span>
           <motion.h2 variants={fadeInUp} custom={1} className="text-3xl md:text-5xl font-bold text-site-text mb-6 leading-tight">
             Tecnologia de Ponta para<br />
-            <span className="text-secondary font-serif font-medium italic">Biologia de Precisão</span>
+            <span className="text-secondary font-serif font-medium italic">Medicina de Precisão</span>
           </motion.h2>
           <motion.p variants={fadeInUp} custom={2} className="text-site-text-muted font-light text-lg md:text-xl leading-relaxed">
             Exploramos além dos sintomas através de diagnósticos detalhados, desenhando um plano terapêutico verdadeiramente personalizado.
@@ -244,20 +244,20 @@ export const AdvancedTreatments: React.FC = () => {
                 exit="exit"
                 className="grid grid-cols-1 lg:grid-cols-5 p-8 md:p-14 gap-12 items-center h-full"
               >
-                <div className="lg:col-span-2 flex flex-col">
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center shrink-0">
-                    <Activity className="w-6 h-6 text-secondary" />
+                <div className="lg:col-span-2 flex flex-col h-full justify-center">
+                  <span className="inline-block px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-bold uppercase tracking-widest w-fit mb-4">
+                    Laboratório
+                  </span>
+                  <h3 className="text-3xl md:text-4xl font-bold text-site-text mb-6">
+                    Análises Complementares
+                  </h3>
+                  <p className="text-site-text-muted font-light text-lg leading-relaxed mb-6">
+                    Um painel clínico robusto desenhado de forma individual. Cada exame tem o objetivo claro de desvendar a raiz metabólica das patologias.
+                  </p>
+                  <div className="flex items-center gap-3 py-3 px-5 bg-blue-500/5 rounded-2xl border border-blue-500/10 w-fit">
+                    <FlaskConical className="w-5 h-5 text-blue-400 shrink-0" />
+                    <p className="text-sm text-site-text font-semibold">Análise Celular Alvo</p>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-site-text mb-3">
-                    Termografia
-                    </h3>
-                    <p className="text-site-text-muted font-light leading-relaxed">
-                    Um painel de avaliação robusto desenhado de forma individual. Cada exame tem o objetivo claro de desvendar a raiz metabólica das patologias.
-                    </p>
-                  </div>
-                </div>
                 </div>
 
                 <div className="lg:col-span-3 flex flex-col gap-4">

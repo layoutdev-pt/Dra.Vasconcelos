@@ -11,7 +11,7 @@ export const BlogHero: React.FC = () => {
           Blog da <span className="text-secondary">Dra. Alexandra Vasconcelos</span>
         </h1>
         <p className="text-site-text-muted mt-6 max-w-2xl mx-auto text-lg font-light">
-          Explore conteúdos exclusivos sobre biologia integrativa, longevidade e saúde funcional.
+          Explore conteúdos exclusivos sobre medicina integrativa, longevidade e saúde funcional.
         </p>
       </div>
     </section>

@@ -30,17 +30,17 @@ export const JourneyTimeline: React.FC = () => {
     {
       year: "1965",
       title: "As Raízes & Ciência Farmacêutica",
-      description: "Optei por me licenciar em Ciências Farmacêuticas em Lisboa, e trabalhei durante anos como farmacêutica em Estremoz e Lisboa. Cresci a ouvir falar de patologias (o meu pai era médico) e o contacto direto com as pessoas criou-me a convicção de que era necessário abordar a saúde segundo novas perspetivas: focar na sua prevenção e abrandar o envelhecimento."
+      description: "Optei por me licenciar em Ciências Farmacêuticas em Lisboa, e trabalhei durante anos como farmacêutica em Estremoz e Lisboa. Cresci a ouvir falar de doença (o meu pai era médico) e o contacto direto com as pessoas criou-me a convicção de que era necessário abordar a saúde segundo novas perspetivas: focar na sua prevenção e abrandar o envelhecimento."
     },
     {
       year: "2003",
       title: "Mudança de Paradigma",
-      description: "Neste ano, optei por abandonar a prática de farmácia de oficina para me dedicar ao estudo e à formação em biologia preventiva. Procurei incessantemente terapêuticas biológicas que respeitassem a genética individual de cada pessoa, e levando sempre em conta a vertente física, mental e espiritual."
+      description: "Neste ano, optei por abandonar a prática de farmácia de oficina para me dedicar ao estudo e à formação em medicina preventiva. Procurei incessantemente terapêuticas biológicas que respeitassem a genética individual de cada pessoa, e levando sempre em conta a vertente física, mental e espiritual."
     },
     {
       year: "Hoje",
       title: "O Ponto Viragem e Propósito",
-      description: "O resultado que vejo diariamente nos indivíduos é a minha grande motivação. Sinto-me extremamente grata pela vida por me ter dado a convicção de investir nestas áreas de abordagem integrativa e biológica, permitindo-me desempenhar um papel determinante na modelação das patologias crónicas."
+      description: "O resultado que vejo diariamente nos pacientes é a minha grande motivação. Sinto-me extremamente grata pela vida por me ter dado a convicção de investir nestas áreas de medicina integrativa e biológica, permitindo-me desempenhar um papel determinante na modelação das doenças crónicas."
     }
   ];
 

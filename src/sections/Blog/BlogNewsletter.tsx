@@ -57,7 +57,7 @@ export const BlogNewsletter: React.FC = () => {
               Receba conteúdos de saúde diretamente no seu e-mail.
             </h2>
             <p className="text-gray-400 text-lg font-light">
-              Assine para não perder os novos artigos sobre longevidade e biologia integrativa.
+              Assine para não perder os novos artigos sobre longevidade e medicina integrativa.
             </p>
           </div>
 

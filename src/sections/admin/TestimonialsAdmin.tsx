@@ -57,7 +57,7 @@ const TestimonialModal: React.FC<{ testimonial: Testimonial | null; onClose: () 
         <div className="px-8 py-6 space-y-5">
           {error && <div className="bg-red-50 text-red-600 p-3 rounded-xl flex items-center gap-2"><AlertCircle className="w-4 h-4"/>{error}</div>}
           
-          <div><label className={labelCls}>Nome do Aluno/Cliente *</label><input className={inputCls} placeholder="Maria D." value={draft.student_name} onChange={e => set('student_name', e.target.value)} /></div>
+          <div><label className={labelCls}>Nome do Aluno/Paciente *</label><input className={inputCls} placeholder="Maria D." value={draft.student_name} onChange={e => set('student_name', e.target.value)} /></div>
           
           <div><label className={labelCls}>Feedback *</label><textarea className={`${inputCls} resize-none`} rows={4} placeholder="Mudou a minha vida..." value={draft.feedback} onChange={e => set('feedback', e.target.value)} /></div>
           

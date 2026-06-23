@@ -3,7 +3,7 @@ import { Clock, BriefcaseMedical, ClipboardList, CheckCircle2 } from 'lucide-rea
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TABS = [
-  { id: 'consulta', label: 'O Acompanhamento' },
+  { id: 'consulta', label: 'A Consulta' },
   { id: 'para-quem', label: 'Público-Alvo' },
   { id: 'metodologia', label: 'Metodologia' },
   { id: 'prevencao', label: 'Prevenção' }
@@ -45,8 +45,8 @@ export const ConsultationDetails: React.FC = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
               {[
-                { icon: Clock, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', title: 'Tempo de Qualidade', desc: 'Sessões com duração até 2 horas. Tempo dedicado para ouvir e interpretar a sua história completa com total dedicação.' },
-                { icon: BriefcaseMedical, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400', title: 'Biologia Funcional', desc: 'Avaliação avançada da saúde com foco na prevenção, equilíbrio e otimização do organismo.' },
+                { icon: Clock, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', title: 'Tempo de Qualidade', desc: 'Consultas com duração até 2 horas. Tempo dedicado para ouvir e interpretar a sua história completa com total dedicação.' },
+                { icon: BriefcaseMedical, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400', title: 'Medicina Funcional', desc: 'Avaliação avançada da saúde com foco na prevenção, equilíbrio e otimização do organismo.' },
                 { icon: ClipboardList, iconBg: 'bg-green-500/10', iconColor: 'text-green-400', title: 'Plano Personalizado', desc: 'Uma abordagem personalizada de nutrição, suplementação e estilo de vida baseada na sua individualidade biológica e genética.' },
               ].map((card, i) => (
                 <motion.div
@@ -107,17 +107,17 @@ export const ConsultationDetails: React.FC = () => {
                     transition={{ duration: 0.3 }}
                   >
                     <h3 className="text-2xl md:text-3xl font-bold text-site-text mb-8 text-center">
-                      O que deve saber sobre o acompanhamento
+                      O que deve saber sobre a consulta
                     </h3>
                     <div className="max-w-3xl mx-auto space-y-6 text-site-text-muted font-light leading-relaxed text-lg">
                       <p>
-                        O acompanhamento tem uma duração aproximada de <strong>2 horas</strong>, durante as quais serão abordados todos os fatores de risco que possam contribuir para o seu envelhecimento acelerado e para o surgimento de patologias. O principal objetivo é identificar e corrigir as causas que levam a estes distúrbios.
+                        A consulta tem uma duração aproximada de <strong>2 horas</strong>, durante as quais serão abordados todos os fatores de risco que possam contribuir para o seu envelhecimento acelerado e para o surgimento de doenças. O principal objetivo é identificar e corrigir as causas que levam a estes distúrbios.
                       </p>
                       <p>
-                        Alterações da microbiota intestinal, toxicidade, desequilíbrios emocionais, presença de agentes patogénicos e outras causas estão frequentemente correlacionadas com patologias ou sintomas desagradáveis que afetam o nosso bem-estar.
+                        Alterações da microbiota intestinal, toxicidade, desequilíbrios emocionais, presença de agentes patogénicos e outras causas estão frequentemente correlacionadas com doenças ou sintomas desagradáveis que afetam o nosso bem-estar.
                       </p>
                       <p>
-                        Neste acompanhamento, são propostas medidas e estratégias para reverter patologias e promover um envelhecimento saudável. Estas podem incluir alterações no estilo de vida e na alimentação, adaptadas à situação biológica e às necessidades específicas de cada indivíduo, bem como a eliminação de fatores tóxicos.
+                        Na consulta, são propostas medidas e estratégias para reverter doenças e promover um envelhecimento saudável. Estas podem incluir alterações no estilo de vida e na alimentação, adaptadas à situação clínica e às necessidades específicas de cada pessoa, bem como a eliminação de fatores tóxicos.
                       </p>
                       <div className="bg-secondary/10 p-6 rounded-2xl border border-secondary/20 mt-8">
                         <p className="m-0 text-site-text">
@@ -138,30 +138,30 @@ export const ConsultationDetails: React.FC = () => {
                     transition={{ duration: 0.3 }}
                   >
                     <h3 className="text-2xl md:text-3xl font-bold text-site-text mb-8 text-center">
-                      Para quem se dirige o acompanhamento?
+                      Para quem se dirige a consulta?
                     </h3>
                     <div className="max-w-4xl mx-auto">
-                      <p className="text-site-text-muted font-light leading-relaxed mb-8 text-center text-lg">O acompanhamento é destinado a todos os que se interessam pela sua saúde, como:</p>
+                      <p className="text-site-text-muted font-light leading-relaxed mb-8 text-center text-lg">A consulta é destinada a todos os que se interessam pela sua saúde, como:</p>
                       
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                         <div className="bg-surface-muted p-6 rounded-3xl border border-surface-border flex flex-col items-center text-center">
-                           <CheckCircle2 className="w-8 h-8 text-green-500 mb-4" />
-                          <span className="text-site-text font-medium leading-relaxed">Indivíduos que estão saudáveis, mas que pretendem prevenir patologias prematuras e aumentar a longevidade.</span>
+                          <CheckCircle2 className="w-8 h-8 text-green-500 mb-4" />
+                          <span className="text-site-text font-medium leading-relaxed">Pessoas que estão saudáveis, mas que pretendem prevenir doenças prematuras e aumentar a longevidade.</span>
                         </div>
                         <div className="bg-surface-muted p-6 rounded-3xl border border-surface-border flex flex-col items-center text-center">
                           <CheckCircle2 className="w-8 h-8 text-green-500 mb-4" />
-                          <span className="text-site-text font-medium leading-relaxed">Indivíduos que já sentem alguns desequilíbrios e incómodos, sejam eles do foro físico ou emocional.</span>
+                          <span className="text-site-text font-medium leading-relaxed">Pessoas que já sentem alguns desequilíbrios e incómodos, sejam eles do foro físico ou emocional.</span>
                         </div>
                         <div className="bg-surface-muted p-6 rounded-3xl border border-surface-border flex flex-col items-center text-center">
-                           <CheckCircle2 className="w-8 h-8 text-green-500 mb-4" />
-                          <span className="text-site-text font-medium leading-relaxed">Indivíduos com patologias e que precisam de melhorar a sua qualidade de vida e atenuar a sua evolução.</span>
+                          <CheckCircle2 className="w-8 h-8 text-green-500 mb-4" />
+                          <span className="text-site-text font-medium leading-relaxed">Pessoas que já estão doentes e precisam de melhorar a sua qualidade de vida e travar a evolução médica da doença.</span>
                         </div>
                       </div>
 
                       <div className="text-center">
                         <p className="text-site-text font-bold mb-6 text-lg">Dirige-se transversalmente a pessoas com preocupações específicas de:</p>
                         <div className="flex flex-wrap justify-center gap-3">
-                          {['Envelhecimento saudável e longevidade', 'Menopausa e saúde hormonal feminina', 'Equilíbrio intestinal e inflamação crónica', 'Fadiga crónica, stress e burnout', 'Sono, energia e performance cognitiva', 'Desequilíbrios hormonais e imunidade', 'Peso, resistência à insulina e síndrome metabólica', 'Patologias autoimunes', 'Acompanhamento integrativo em oncologia'].map((tag) => (                            
+                          {['Envelhecimento saudável e longevidade', 'Menopausa e saúde hormonal feminina', 'Equilíbrio intestinal e inflamação crónica', 'Fadiga crónica, stress e burnout', 'Sono, energia e performance cognitiva', 'Desequilíbrios hormonais e imunidade', 'Peso, resistência à insulina e síndrome metabólica', 'Doenças autoimunes', 'Acompanhamento integrativo em oncologia'].map((tag) => (                            
                             <span key={tag} className="px-5 py-2.5 bg-surface border border-surface-border rounded-full text-sm text-site-text font-medium shadow-sm">{tag}</span>
                           ))}
                         </div>
@@ -232,10 +232,10 @@ export const ConsultationDetails: React.FC = () => {
                         <BriefcaseMedical className="w-8 h-8 text-blue-400 -rotate-3" />
                       </div>
                       <h3 className="text-2xl md:text-3xl font-bold text-site-text mb-3">
-                        Biologia Preventiva Personalizada
+                        Medicina Preventiva Personalizada
                       </h3>
                       <p className="text-site-text-muted font-light max-w-2xl mx-auto">
-                        Através de bioressonância e testes avançados, identificamos desequilíbrios antes que se manifestem em patologias.
+                        Através de bioressonância e testes avançados, identificamos desequilíbrios antes que se manifestem em doença.
                       </p>
                     </div>
 
@@ -254,7 +254,7 @@ export const ConsultationDetails: React.FC = () => {
                         { label: 'Cargas Geopatogénicas e Eletromagnéticas', desc: 'Impacto ambiental na saúde.' },
                         { label: 'Medição de Stress', desc: 'Inclui stress simpático, eletromagnético, radioativo e por metais pesados.' },
                         { label: 'Deficiências Nutricionais', desc: 'Identificação de carências de vitaminas e minerais.' },
-                        { label: 'Testes Genéticos', desc: 'Análise de variações genéticas para biologia preventiva (patologias cardiovasculares, metabólicas, diabetes, neurodegenerativas e cancro).' },
+                        { label: 'Testes Genéticos', desc: 'Análise de variações genéticas para medicina preventiva (doenças cardiovasculares, metabólicas, diabetes, neurodegenerativas e cancro).' },
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-3 bg-surface-muted rounded-2xl p-4 border border-surface-border">
                           <div className="w-2 h-2 rounded-full bg-secondary mt-2 shrink-0" />

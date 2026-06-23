@@ -57,7 +57,7 @@ export const CoursesHero: React.FC = () => {
               custom={2}
               className="text-lg md:text-xl text-site-text-muted font-light mb-10 leading-relaxed max-w-xl"
             >
-              Programas intensivos desenhados para quem procura profundidade científica e resultados práticos na biologia integrativa.
+              Programas intensivos desenhados para quem procura profundidade científica e resultados práticos na medicina integrativa.
             </motion.p>
 
             <motion.a

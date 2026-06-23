@@ -20,7 +20,7 @@ export const AboutHero: React.FC = () => {
               com <span className="text-secondary">Ciência, Precisão e Propósito</span>
             </h1>
             <p className="text-lg text-site-text-muted max-w-lg leading-relaxed font-light">
-              Uma jornada que une ciência, precisão e uma visão integrativa da saúde. A Dra. Alexandra alia rigor científico a uma abordagem humanizada, ajudando a compreender e atenuar as verdadeiras causas dos desequilíbrios do estilo de vida moderno, redefinindo o bem-estar no século XXI.
+              Uma jornada que une ciência, precisão e uma visão integrativa da saúde. A Dra. Alexandra alia rigor científico a uma abordagem humanizada, ajudando a compreender e tratar as verdadeiras causas dos desequilíbrios do estilo de vida moderno, redefinindo o bem-estar no século XXI.
             </p>
             
             <div className="pt-4">
