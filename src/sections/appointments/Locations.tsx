@@ -99,7 +99,7 @@ export const Locations: React.FC = () => {
                   loading="lazy"
                   allowFullScreen
                   referrerPolicy="no-referrer-when-downgrade"
-                  title={`Mapa da clínica em ${loc.city}`}
+                  title={`Mapa do centro em ${loc.city}`}
                 />
               </div>
 

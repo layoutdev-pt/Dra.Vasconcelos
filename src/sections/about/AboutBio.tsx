@@ -26,21 +26,20 @@ export const AboutBio: React.FC = () => {
         {/* Large Image with Floating Quote
         <div className="relative h-[500px] lg:h-[700px] w-full rounded-3xl overflow-hidden shadow-2xl group mb-20">
             <div className="absolute inset-0 bg-primary/10 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-500" />
-            <OptimizedImage src={draImg2} alt="Dra. Alexandra Clínica" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 object-top" />
+            <OptimizedImage src={draImg2} alt="Dra. Alexandra Centro" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 object-top" />
             {/* Floating Info */}
             {/*<div className="absolute bottom-8 left-8 right-8 md:left-12 md:right-12 md:bottom-12 bg-white/95 backdrop-blur-md p-6 md:p-8 rounded-2xl z-20 shadow-float max-w-3xl">
               <p className="text-primary font-semibold leading-relaxed text-lg md:text-xl">
                 "A minha preocupação é a saúde, a descoberta das causas dos desconfortos, dores e sofrimento que afetam as pessoas e, como tal, ajudá-las a encontrar e a percorrer os caminhos que as mantenham jovens e saudáveis."
               </p>
             </div>
-        </div>
- 
+        </div>*/}
 
         {/* Mission / Motivation Section */}
         <div className="bg-surface rounded-3xl p-10 lg:p-16 border border-surface-border shadow-sm flex flex-col items-center text-center max-w-4xl mx-auto">
           <Globe2 className="w-12 h-12 text-secondary mb-6" />
           <p className="text-xl text-site-text-muted font-light leading-relaxed mb-8">
-            Hoje sou fundadora e diretora da Clínica Dra. Alexandra Vasconcelos, onde desenvolvo uma abordagem integrativa e personalizada da saúde. Ao longo de mais de 20 anos, fui fundadora e diretora das Clínicas Viver, em Lisboa e Porto. Sou também oradora em congressos e cursos de especialização nas áreas da Nutrição Funcional, Saúde Intestinal, Doenças Autoimunes e Envelhecimento Saudável.
+            Hoje sou fundadora e diretora do Centro Dra. Alexandra Vasconcelos, onde desenvolvo uma abordagem integrativa e personalizada da saúde. Ao longo de mais de 20 anos, fui fundadora e diretora dos Centros Viver, em Lisboa e Porto. Sou também oradora em congressos e cursos de especialização nas áreas da Nutrição Funcional, Saúde Intestinal, Doenças Autoimunes e Envelhecimento Saudável.
           </p>
           <div className="bg-secondary/10 text-secondary px-8 py-4 rounded-2xl border border-secondary/20">
             <p className="font-bold text-lg text-site-text">

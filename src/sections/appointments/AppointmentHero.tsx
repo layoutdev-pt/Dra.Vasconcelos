@@ -41,7 +41,7 @@ export const AppointmentHero: React.FC = () => {
           custom={1}
           className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-site-text leading-tight tracking-tight mb-6"
         >
-          Agende a sua Consulta de <br className="hidden md:block" />
+          Agende a sua Sessão de <br className="hidden md:block" />
           Saúde Integrativa
         </motion.h1>
         
@@ -52,7 +52,7 @@ export const AppointmentHero: React.FC = () => {
           custom={2}
           className="text-lg md:text-xl text-site-text-muted max-w-2xl font-light mb-10 leading-relaxed"
         >
-          Uma abordagem personalizada que une a medicina convencional e funcional para tratar a causa raiz dos seus sintomas.
+          Uma abordagem personalizada que une a biologia convencional e funcional para atenuar a causa raiz dos seus sintomas.
         </motion.p>
 
         {/* CTA Button */}

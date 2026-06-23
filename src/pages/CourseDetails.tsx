@@ -265,7 +265,7 @@ export const CourseDetails: React.FC = () => {
       <section className="py-24 bg-site-bg border-y border-surface-border">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-extrabold text-site-text mb-4">Resultados Clínicos Observados</h2>
+            <h2 className="text-3xl font-extrabold text-site-text mb-4">Resultados Observados</h2>
             <p className="text-site-text-muted max-w-2xl mx-auto">Dados coletados de um grupo de controlo de 500 participantes após o ciclo completo de 14 dias do protocolo BioReset.</p>
           </div>
           

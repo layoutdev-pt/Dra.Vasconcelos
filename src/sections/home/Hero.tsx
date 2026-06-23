@@ -57,7 +57,7 @@ export const Hero: React.FC = () => {
           <div className="space-y-8 relative z-10 lg:pr-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-semibold uppercase tracking-wide border border-secondary/20">
               <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
-              Bem-vindo à Clínica
+              Bem-vindo ao Centro
             </div>
 
             <h1 className="text-4xl md:text-5xl xl:text-[4rem] font-extrabold text-site-text leading-[1.05] tracking-tight min-h-[140px] md:min-h-[160px] xl:min-h-[200px]">
@@ -70,9 +70,9 @@ export const Hero: React.FC = () => {
             </h1>
 
             <p className="text-lg text-site-text-muted max-w-lg leading-relaxed font-light mt-[-20px] md:mt-[-40px]">
-              Todas as vezes que vai ao médico acredita que está a cuidar da sua
-              saúde. Mas tratar sintomas não é o mesmo que tratar a causa. A
-              medicina integrativa procura compreender a origem da doença e
+              Todas as vezes que vai ao especialista acredita que está a cuidar da sua
+              saúde. Mas atenuar sintomas não é o mesmo que ir à causa. A
+              biologia integrativa procura compreender a origem da patologia e
               restaurar a saúde a partir da biologia celular.
             </p>
 
@@ -82,13 +82,13 @@ export const Hero: React.FC = () => {
                 variant="primary"
                 className="shadow-lg shadow-accent/30 w-full max-w-md py-3 md:py-4 px-12 rounded-full font-bold"
               >
-                AGENDE JÁ A SUA CONSULTA
+                AGENDE JÁ A SUA SESSÃO
               </Button>
             </div>
 
             <div className="pt-6 flex items-center gap-8 text-sm text-site-text-muted font-medium">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-secondary" /> Medicina
+                <CheckCircle2 className="w-5 h-5 text-secondary" /> Biologia
                 Integrativa
               </div>
               <div className="flex items-center gap-2">

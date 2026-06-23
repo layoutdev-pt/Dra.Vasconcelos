@@ -50,12 +50,12 @@ export const Footer: React.FC = () => {
               </Link>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
-              Empoderando pacientes através do conhecimento integrativo de ponta para um amanhã com mais vitalidade e saúde plena.
+              Empoderando indivíduos através do conhecimento integrativo de ponta para um amanhã com mais vitalidade e saúde plena.
             </p>
           </div>
 
           <div className="lg:col-span-3">
-            <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Clínica & Recursos</h4>
+            <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Centro & Recursos</h4>
             <ul className="space-y-4 text-sm text-gray-400">
               <li className="flex flex-col gap-2">
                 <span className="text-white/20 text-[10px] uppercase font-bold tracking-widest">Contactos Profissionais</span>
@@ -67,8 +67,8 @@ export const Footer: React.FC = () => {
                 </a>
               </li>
               <li className="pt-2 flex flex-col gap-3">
-                <Link to="/sobre" className="hover:text-secondary transition-colors">Sobre a Clínica</Link>
-                <Link to="/consultas" className="hover:text-secondary transition-colors">Consultas Integrativas</Link>
+                <Link to="/sobre" className="hover:text-secondary transition-colors">Sobre o Centro</Link>
+                <Link to="/consultas" className="hover:text-secondary transition-colors">Acompanhamento Integrativo</Link>
                 <Link to="/blog" className="hover:text-secondary transition-colors">Blog Integrativo</Link>
                 <Link to="/cursos" className="hover:text-secondary transition-colors">Cursos Online</Link>
                 <Link to="/livros" className="hover:text-secondary transition-colors">Livros e Ebooks</Link>
@@ -139,7 +139,7 @@ export const Footer: React.FC = () => {
 
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-gray-500 text-[10px] text-center md:text-left uppercase tracking-wider">
-            © {currentYear} Clínica Dra. Alexandra Vasconcelos. Todos os direitos reservados.
+            © {currentYear} Centro Dra. Alexandra Vasconcelos. Todos os direitos reservados.
           </div>
           <div className="flex items-center gap-6 text-[10px] uppercase tracking-widest font-bold text-gray-500">
             <button 

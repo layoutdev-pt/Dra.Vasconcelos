@@ -12,9 +12,9 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    text: "A saúde não é apenas a ausência de doença, mas o equilíbrio pleno entre o corpo, a mente e o espírito. O método da Dra. Alexandra transformou completamente a minha vitalidade diária.",
+    text: "A saúde não é apenas a ausência de patologias, mas o equilíbrio pleno entre o corpo, a mente e o espírito. O método da Dra. Alexandra transformou completamente a minha vitalidade diária.",
     name: "Ana Silva",
-    role: "Paciente - Programa BioReset 21",
+    role: "Aluno - Programa BioReset 21",
     avatar: "https://i.pravatar.cc/150?u=person1"
   },
   {
@@ -28,7 +28,7 @@ const testimonials: Testimonial[] = [
     id: 3,
     text: "Os cursos não ensinam apenas teoria, dão-nos ferramentas práticas formidáveis para a nossa saúde. É empoderamento total na longevidade e nutrição funcional.",
     name: "Marta Rocha",
-    role: "Paciente & Aluna",
+    role: "Cliente & Aluna",
     avatar: "https://i.pravatar.cc/150?u=person3"
   }
 ];
