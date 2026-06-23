@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import whiteLogo from '../../assets/logo/full_white.svg';
+import whiteLogo from '../../assets/logo/Horizontal-Secundário.png';
 import { supabase } from '../../config/supabase';
 import { Mail, Phone } from 'lucide-react';
 import { OptimizedImage } from '../OptimizedImage';
