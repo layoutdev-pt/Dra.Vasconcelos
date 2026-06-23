@@ -24,7 +24,7 @@ export const Courses: React.FC = () => {
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-site-text mb-4">Mergulhe Mais Fundo</h2>
             <p className="text-site-text-muted font-light text-lg max-w-2xl mx-auto">
-              Os nossos programas intensivos e cursos práticos desenhados para transformar a sua saúde, com a ajuda da Medicina Biológica Integrativa.
+              Os nossos programas intensivos e cursos práticos desenhados para transformar a sua saúde, com a ajuda da Biologia Integrativa.
             </p>
           </motion.div>
           <AcademyCourses />
