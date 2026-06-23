@@ -80,31 +80,29 @@ export const Navbar: React.FC = () => {
           }`}
         >
           {/* ── Logo ───────────────────────── */}
-          {/* O tamanho estrito do contentor impede que o Safari colapse o flex item para largura zero */}
-          <div
-            className={`flex-shrink-0 flex items-center relative transition-all duration-500 ${
-              isScrolled
-                ? "w-[40px] md:w-[48px] h-[32px] md:h-[40px]"
-                : "w-[140px] md:w-[180px] h-[56px] md:h-[72px]"
-            }`}
-          >
-            <Link to="/" className="block w-full h-full relative">
+          <div className="flex-shrink-0 flex items-center">
+            <Link 
+              to="/" 
+              className={`flex items-center relative transition-all duration-500 ${
+                isScrolled ? "h-8 md:h-12" : "h-12 md:h-16"
+              }`}
+            >
               <img
                 src={fullLogo}
-                alt="Dra. Alexandra Vasconcelos"
-                className={`w-full h-full object-contain transition-all duration-300 absolute inset-0 origin-left ${
+                alt="Logo Completo"
+                className={`w-auto h-full object-contain transition-all duration-300 origin-left ${
                   isScrolled
-                    ? "opacity-0 scale-90 pointer-events-none"
-                    : "opacity-100 scale-100"
+                    ? "opacity-0 scale-90 absolute left-0 pointer-events-none"
+                    : "opacity-100 scale-100 relative"
                 } ${theme === "dark" ? "invert brightness-0" : ""}`}
               />
               <img
                 src={simpleLogo}
-                alt="Dra. Alexandra Vasconcelos Ícone"
-                className={`w-full h-full object-contain transition-all duration-300 absolute inset-0 origin-left ${
+                alt="Logo Simples"
+                className={`w-auto h-full object-contain transition-all duration-300 origin-left ${
                   isScrolled
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-110 pointer-events-none"
+                    ? "opacity-100 scale-100 relative"
+                    : "opacity-0 scale-110 absolute left-0 pointer-events-none"
                 } ${theme === "dark" ? "invert brightness-0" : ""}`}
               />
             </Link>
