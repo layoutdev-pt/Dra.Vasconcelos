@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2, Upload, X, User as UserIcon, Phone, ArrowLeft } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2, Upload, User as UserIcon, Phone, ArrowLeft } from 'lucide-react';
+import { useAuth } from '../context/authUtils';
 import { supabase } from '../config/supabase';
 import { Navbar } from '../components/layout/Navbar';
 import fullLogo from '../assets/logo/full1.svg';
@@ -17,7 +17,6 @@ const inputBase =
 export const Login: React.FC = () => {
   const { signIn, signUp, verifyCode, sendPasswordReset, verifyRecoveryCode, updatePassword } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   
   const [mode, setMode] = useState<Mode>('login');
   
@@ -131,7 +130,7 @@ export const Login: React.FC = () => {
             const { data } = supabase.storage.from('avatars').getPublicUrl(path);
             uploadedAvatarUrl = data.publicUrl;
           }
-        } catch {}
+        } catch (e) { console.error(e); }
       }
 
       const { error } = await signUp({
@@ -216,7 +215,9 @@ export const Login: React.FC = () => {
     if (error) {
       // RESOLUÇÃO DO ERRO TS2339:
       // Fazemos o cast para 'any' para acessar a propriedade .message com segurança
-      const errorMessage = (error as any)?.message || (typeof error === 'string' ? error : '');
+      const errorMessage = (typeof error === 'object' && error !== null && 'message' in error) 
+        ? String((error as Record<string, unknown>).message) 
+        : (typeof error === 'string' ? error : '');
 
       if (errorMessage.includes('different from the old')) {
         setError('Ups! Essa já é a sua palavra-passe atual. Escolha uma nova.');

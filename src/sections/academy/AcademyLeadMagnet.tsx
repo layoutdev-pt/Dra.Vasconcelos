@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Mail, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Mail, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../../config/supabase';
 import { OptimizedImage } from '../../components/OptimizedImage';
 
@@ -45,7 +45,7 @@ export const AcademyLeadMagnet: React.FC = () => {
 
       setStatus('success');
       setEmail('');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error in lead magnet:', err);
       setStatus('error');
     }

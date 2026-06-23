@@ -72,7 +72,7 @@ const SortablePostRow: React.FC<{ p: BlogPost; onEdit: (p: BlogPost) => void; on
           : <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-xs font-bold">Rascunho</span>}
       </td>
       <td className="px-4 py-4">
-        {(p as any).newsletter_sent 
+        {(p as BlogPost & { newsletter_sent?: boolean }).newsletter_sent 
           ? <span className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit"><Send className="w-3 h-3" />Enviada</span>
           : <span className="text-gray-400 text-xs">—</span>}
       </td>
@@ -92,9 +92,9 @@ const BlogModal: React.FC<{ post: BlogPost | null; maxPosition: number; onClose:
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sendNewsletter, setSendNewsletter] = useState(false);
-  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [, setNewsletterStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
-  const set = <K extends keyof BlogPost>(key: K, value: any) => setDraft(d => ({ ...d, [key]: value }));
+  const set = <K extends keyof BlogPost>(key: K, value: BlogPost[K]) => setDraft(d => ({ ...d, [key]: value }));
 
   const generateSlug = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
@@ -162,6 +162,7 @@ const BlogModal: React.FC<{ post: BlogPost | null; maxPosition: number; onClose:
         if (fnError) setNewsletterStatus('error');
         else setNewsletterStatus('sent');
       } catch (err) {
+        console.error(err);
         setNewsletterStatus('error');
       }
     }
@@ -171,7 +172,7 @@ const BlogModal: React.FC<{ post: BlogPost | null; maxPosition: number; onClose:
     onClose();
   };
 
-  const alreadySent = post && (post as any).newsletter_sent === true;
+  const alreadySent = post && (post as BlogPost & { newsletter_sent?: boolean }).newsletter_sent === true;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
@@ -284,7 +285,7 @@ export const BlogAdmin: React.FC = () => {
       try {
         const { error } = await supabase.rpc('update_posts_order', { payload });
         if (error) throw error;
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error updating order:', err);
         alert('Erro ao atualizar a ordem dos artigos.');
         fetchPosts();

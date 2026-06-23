@@ -1,9 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Download, BookOpen, Sparkles, AlertCircle } from 'lucide-react';
+import { BookOpen, AlertCircle } from 'lucide-react';
 import { useBooks } from '../../hooks/useBooks';
-import type { Book } from '../../types/book';
 import { BookCard3D } from '../../components/BookCard3D';
 import { Pagination } from '../../components/Pagination';
 

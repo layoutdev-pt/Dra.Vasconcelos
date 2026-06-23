@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../config/supabase';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/authUtils';
 import { MessageSquare, ArrowRight, Calendar, ExternalLink, CornerDownRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

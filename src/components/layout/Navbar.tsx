@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, User, LayoutDashboard, LogOut, Settings, Sun, Moon, ExternalLink } from 'lucide-react';
+import { Menu, X, User, LayoutDashboard, LogOut, Settings, Sun, Moon } from 'lucide-react';
 import fullLogo from '../../assets/logo/full1.svg';
 import simpleLogo from '../../assets/logo/simple.svg';
-import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/authUtils';
+import { useTheme } from '../../context/themeUtils';
 import { NotificationBell } from '../NotificationBell'; // Caminho corrigido para subir um nível
 import { OptimizedImage } from '../OptimizedImage';
 

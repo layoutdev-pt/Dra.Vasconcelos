@@ -14,7 +14,7 @@ export const BlogGrid: React.FC = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      let query = supabase
+      const query = supabase
         .from('blog_posts')
         .select('*')
         .eq('is_published', true)

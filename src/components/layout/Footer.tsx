@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import whiteLogo from '../../assets/logo/full_white.svg';
 import { supabase } from '../../config/supabase';
-import { ExternalLink, ShieldCheck, Mail, Phone } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import { OptimizedImage } from '../OptimizedImage';
 
 export const Footer: React.FC = () => {

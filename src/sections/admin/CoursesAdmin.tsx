@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GraduationCap, Plus, Pencil, Trash2, Eye, EyeOff, X, Save, AlertCircle, Loader2, GripVertical, Image as ImageIcon } from 'lucide-react';
+import { GraduationCap, Plus, Pencil, Trash2, Eye, EyeOff, X, Save, AlertCircle, Loader2, GripVertical } from 'lucide-react';
 import { supabase } from '../../config/supabase';
 import type { Course } from '../../types/course';
 import RichTextEditor from '../../components/RichTextEditor';
@@ -85,6 +85,7 @@ const parseContent = (contentStr: string): CourseContentData => {
       if (parsed.html !== undefined) return parsed;
     }
   } catch (e) {
+    console.error(e);
     // Ignore, it's just html
   }
   return { html: contentStr, modules: [], testimonials: [] };
@@ -227,8 +228,8 @@ const CourseModal: React.FC<{ course: Course | null; maxPosition: number; onClos
 
       onSaved(); 
       onClose();
-    } catch (err: any) {
-      setError(err.message || 'Erro ao guardar curso.');
+    } catch (err: unknown) {
+      setError(typeof err === 'object' && err !== null && 'message' in err ? String((err as Record<string, unknown>).message) : 'Erro ao guardar curso.');
     } finally {
       setSaving(false);
     }
@@ -250,7 +251,7 @@ const CourseModal: React.FC<{ course: Course | null; maxPosition: number; onClos
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'geral' | 'modulos' | 'testemunhos')}
               className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors ${
                 activeTab === tab.id ? 'border-primary text-primary' : 'border-transparent text-gray-400 hover:text-gray-600'
               }`}
@@ -537,7 +538,7 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
       try {
         const { error } = await supabase.rpc('update_courses_order', { payload });
         if (error) throw error;
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error updating order:', err);
         showToast('Erro ao atualizar a ordem dos cursos.');
         fetch();

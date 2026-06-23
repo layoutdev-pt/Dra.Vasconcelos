@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../../config/supabase';
 import { Loader2, Shield, ShieldAlert, ShieldCheck, Search } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/authUtils';
 
 interface Profile {
   id: string;
@@ -17,17 +17,32 @@ export const UsersAdmin: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { user: currentUser } = useAuth(); // para não deixar remover o próprio admin facilmente
 
-  const fetchUsers = async () => {
-    setLoading(true);
-    // Tentamos ir buscar a lista geral de perfis
+  const handleSetLoading = useCallback((l: boolean) => setLoading(l), []);
+  const handleSetUsers = useCallback((d: Profile[]) => setUsers(d), []);
+
+  const fetchUsers = useCallback(async () => {
+    handleSetLoading(true);
     const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
     if (data) {
-      setUsers(data as Profile[]);
+      handleSetUsers(data as Profile[]);
     }
-    setLoading(false);
-  };
+    handleSetLoading(false);
+  }, [handleSetLoading, handleSetUsers]);
 
-  useEffect(() => { fetchUsers(); }, []);
+  useEffect(() => {
+    let isMounted = true;
+    const init = async () => {
+      if (!isMounted) return;
+      handleSetLoading(true);
+      const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+      if (isMounted) {
+        if (data) handleSetUsers(data as Profile[]);
+        handleSetLoading(false);
+      }
+    };
+    init();
+    return () => { isMounted = false; };
+  }, [handleSetLoading, handleSetUsers]);
 
   const toggleAdminStatus = async (id: string, currentStatus: boolean, email: string | null) => {
     if (id === currentUser?.id) {

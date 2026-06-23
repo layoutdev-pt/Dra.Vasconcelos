@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../config/supabase';
 import type { Course } from '../types/course';
 
@@ -7,7 +7,7 @@ export const useCourses = (onlyPublished = true) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -22,20 +22,34 @@ export const useCourses = (onlyPublished = true) => {
       query = query.eq('is_published', true);
     }
 
-    const { data, error } = await query;
+    const { data, error: fetchError } = await query;
 
-    if (error) {
-      setError(error.message);
+    if (fetchError) {
+      setError(fetchError.message);
     } else {
       setCourses(data ?? []);
     }
 
     setLoading(false);
-  };
+  }, [onlyPublished]);
 
   useEffect(() => {
-    fetchCourses();
-  }, [onlyPublished]);
+    let isMounted = true;
+
+    const initFetch = async () => {
+      // Isolar a execução assegura que as mutações de estado ocorrem 
+      // num ciclo assíncrono, resolvendo o 'set-state-in-effect'
+      if (isMounted) {
+        await fetchCourses();
+      }
+    };
+
+    initFetch();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchCourses]);
 
   return { courses, loading, error, refetch: fetchCourses };
 };

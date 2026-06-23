@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, Thermometer, FlaskConical, Dna, CheckCircle2 } from 'lucide-react';
+import { Activity, Thermometer, FlaskConical, Dna } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 
 /* ─── Data ─────────────────────────────────────────────────────────────── */

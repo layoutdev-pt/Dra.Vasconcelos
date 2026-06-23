@@ -4,7 +4,7 @@ import {
   BookOpen, LogOut, CheckCircle2, Loader2, ExternalLink,
   GraduationCap, LayoutDashboard, Shield, Eye
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authUtils';
 import { useNavigate } from 'react-router-dom';
 import simpleLogo from '../assets/logo/simple.svg';
 import { BlogAdmin } from '../sections/admin/BlogAdmin';

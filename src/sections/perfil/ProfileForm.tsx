@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { optimizeImageForUpload } from '../../utils/imageOptimizer';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/authUtils';
 import { supabase } from '../../config/supabase';
 import { User as UserIcon, Phone, Mail, Upload, X, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { OptimizedImage } from '../../components/OptimizedImage';
@@ -25,17 +25,27 @@ export const ProfileForm: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const handleSetFirstName = useCallback((val: string) => setFirstName(val), []);
+  const handleSetLastName = useCallback((val: string) => setLastName(val), []);
+  const handleSetPhone = useCallback((val: string) => setPhone(val), []);
+  const handleSetAvatarPreview = useCallback((val: string | null) => setAvatarPreview(val), []);
+
   // Carregar dados iniciais do utilizador
   useEffect(() => {
-    if (user?.user_metadata) {
-      setFirstName(user.user_metadata.first_name || '');
-      setLastName(user.user_metadata.last_name || '');
-      setPhone(user.user_metadata.phone || '');
+    let isMounted = true;
+    const init = async () => {
+      await Promise.resolve();
+      if (!isMounted || !user?.user_metadata) return;
+      handleSetFirstName(user.user_metadata.first_name || '');
+      handleSetLastName(user.user_metadata.last_name || '');
+      handleSetPhone(user.user_metadata.phone || '');
       if (user.user_metadata.avatar_url) {
-        setAvatarPreview(user.user_metadata.avatar_url);
+        handleSetAvatarPreview(user.user_metadata.avatar_url);
       }
-    }
-  }, [user]);
+    };
+    init();
+    return () => { isMounted = false; };
+  }, [user, handleSetFirstName, handleSetLastName, handleSetPhone, handleSetAvatarPreview]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

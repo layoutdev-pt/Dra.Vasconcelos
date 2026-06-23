@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+// src/pages/CourseDetails.tsx
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, ShoppingCart, ShieldCheck, Quote, Star, Moon, Battery, Activity } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ShieldCheck, Quote, Star, Battery } from 'lucide-react';
 import { supabase } from '../config/supabase';
 import type { Course } from '../types/course';
 import { CourseComments } from '../sections/academy/CourseComments';
@@ -9,14 +10,26 @@ import { FavoriteButton } from '../components/FavoriteButton';
 import DOMPurify from 'dompurify';
 import { OptimizedImage } from '../components/OptimizedImage';
 
-const parseContent = (contentStr: string): { html: string, modules: any[], testimonials: any[] } => {
+interface Module {
+  title: string;
+  description: string;
+}
+
+interface Testimonial {
+  quote: string;
+  image_url?: string;
+  author: string;
+  role: string;
+}
+
+const parseContent = (contentStr: string): { html: string, modules: Module[], testimonials: Testimonial[] } => {
   if (!contentStr) return { html: '', modules: [], testimonials: [] };
   try {
     const parsed = JSON.parse(contentStr);
     if (parsed.html !== undefined) {
       return { html: parsed.html, modules: parsed.modules || [], testimonials: parsed.testimonials || [] };
     }
-  } catch (e) {}
+  } catch (e: unknown) { console.error(e); }
   return { html: contentStr, modules: [], testimonials: [] };
 };
 
@@ -93,21 +106,38 @@ const Countdown = ({ courseId }: { courseId: string }) => {
   const [deadline, setDeadline] = useState(() => getOrResetDeadline(courseId));
   const [timeLeft, setTimeLeft] = useState(() => Math.max(0, deadline - Date.now()));
 
+  const handleSetDeadline = useCallback((newDeadline: number) => setDeadline(newDeadline), []);
+  const handleSetTimeLeft = useCallback((time: number) => setTimeLeft(time), []);
+
   useEffect(() => {
-    const interval = setInterval(() => {
+    let isMounted = true;
+
+    const init = async () => {
       const remaining = deadline - Date.now();
       if (remaining <= 0) {
         // Reset to a new week
         const newDeadline = Date.now() + ONE_WEEK_MS;
         localStorage.setItem(`countdown_deadline_${courseId}`, newDeadline.toString());
-        setDeadline(newDeadline);
-        setTimeLeft(ONE_WEEK_MS);
+        if (isMounted) {
+          handleSetDeadline(newDeadline);
+          handleSetTimeLeft(ONE_WEEK_MS);
+        }
       } else {
-        setTimeLeft(remaining);
+        if (isMounted) {
+          handleSetTimeLeft(remaining);
+        }
       }
+    };
+
+    const interval = setInterval(() => {
+      init();
     }, 1000);
-    return () => clearInterval(interval);
-  }, [deadline, courseId]);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [deadline, courseId, handleSetDeadline, handleSetTimeLeft]);
 
   const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
   const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
@@ -136,10 +166,17 @@ export const CourseDetails: React.FC = () => {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const handleSetCourse = useCallback((data: Course | null) => setCourse(data), []);
+  const handleSetLoading = useCallback((isLoading: boolean) => setLoading(isLoading), []);
+
   useEffect(() => {
-    async function fetchCourse() {
+    let isMounted = true;
+
+    const init = async () => {
       if (!id) return;
-      setLoading(true);
+      if (isMounted) {
+        handleSetLoading(true);
+      }
       
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
       let query = supabase.from('courses').select('*');
@@ -151,11 +188,19 @@ export const CourseDetails: React.FC = () => {
       }
       
       const { data } = await query.single();
-      if (data) setCourse(data);
-      setLoading(false);
-    }
-    fetchCourse();
-  }, [id]);
+      
+      if (isMounted) {
+        if (data) handleSetCourse(data);
+        handleSetLoading(false);
+      }
+    };
+
+    init();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id, handleSetCourse, handleSetLoading]);
 
   if (loading) {
     return (

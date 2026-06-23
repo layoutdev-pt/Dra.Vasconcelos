@@ -47,7 +47,7 @@ const FontSize = TextStyle.extend({
       fontSize: {
         default: null,
         parseHTML: (element: HTMLElement) => element.style.fontSize || null,
-        renderHTML: (attributes: Record<string, any>) => {
+        renderHTML: (attributes: Record<string, string>) => {
           if (!attributes.fontSize) return {};
           return { style: `font-size: ${attributes.fontSize}` };
         },
@@ -60,12 +60,12 @@ const FontSize = TextStyle.extend({
       ...this.parent?.(),
       setFontSize:
         (fontSize: string) =>
-        ({ chain }: any) => {
+        ({ chain }: { chain: () => { setMark: (m: string, a: Record<string, string | null>) => { run: () => void }; } }) => {
           return chain().setMark('textStyle', { fontSize }).run();
         },
       unsetFontSize:
         () =>
-        ({ chain }: any) => {
+        ({ chain }: { chain: () => { setMark: (m: string, a: Record<string, string | null>) => { removeEmptyTextStyle: () => { run: () => void }; }; } }) => {
           return chain().setMark('textStyle', { fontSize: null }).removeEmptyTextStyle().run();
         },
     };
@@ -135,9 +135,8 @@ const ColorPickerBtn: React.FC<{
 /* ─── TOOLBAR ───────────────────────────────────────────────────────────── */
 
 const Toolbar: React.FC<{ editor: ReturnType<typeof useEditor> }> = ({ editor }) => {
-  if (!editor) return null;
-
   const addLink = useCallback(() => {
+    if (!editor) return;
     const previousUrl = editor.getAttributes('link').href;
     const url = window.prompt('URL do link:', previousUrl);
     if (url === null) return;
@@ -149,26 +148,33 @@ const Toolbar: React.FC<{ editor: ReturnType<typeof useEditor> }> = ({ editor })
   }, [editor]);
 
   const addImage = useCallback(() => {
+    if (!editor) return;
     const url = window.prompt('URL da imagem:');
     if (url) editor.chain().focus().setImage({ src: url }).run();
   }, [editor]);
 
   const addYoutube = useCallback(() => {
+    if (!editor) return;
     const url = window.prompt('URL do vídeo YouTube:');
     if (url) editor.commands.setYoutubeVideo({ src: url, width: 640, height: 360 });
   }, [editor]);
 
   const insertTable = useCallback(() => {
+    if (!editor) return;
     editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
   }, [editor]);
 
   const setColor = useCallback((color: string) => {
+    if (!editor) return;
     editor.chain().focus().setColor(color).run();
   }, [editor]);
 
   const setHighlight = useCallback((color: string) => {
+    if (!editor) return;
     editor.chain().focus().toggleHighlight({ color }).run();
   }, [editor]);
+
+  if (!editor) return null;
 
   const sz = 15;
 
@@ -205,9 +211,9 @@ const Toolbar: React.FC<{ editor: ReturnType<typeof useEditor> }> = ({ editor })
         value={editor.getAttributes('textStyle').fontSize || ''}
         onChange={e => {
           if (e.target.value) {
-            (editor.commands as any).setFontSize(e.target.value);
+            (editor.commands as unknown as { setFontSize: (s: string) => void }).setFontSize(e.target.value);
           } else {
-            (editor.commands as any).unsetFontSize();
+            (editor.commands as unknown as { unsetFontSize: () => void }).unsetFontSize();
           }
         }}
         title="Tamanho da letra"
@@ -362,11 +368,16 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   // Sync external value changes (e.g., when switching between editing different posts)
   React.useEffect(() => {
-    if (editor && value !== editor.getHTML()) {
-      editor.commands.setContent(value || '');
-    }
-    // Only re-sync when value identity changes from outside, not from internal edits
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let isMounted = true;
+    const init = async () => {
+      if (editor && value !== editor.getHTML() && isMounted) {
+        editor.commands.setContent(value || '');
+      }
+    };
+    init();
+    return () => {
+      isMounted = false;
+    };
   }, [editor, value]);
 
   return (

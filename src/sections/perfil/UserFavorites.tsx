@@ -11,7 +11,7 @@ import { BlogCard } from '../../components/BlogCard';
 export const UserFavorites: React.FC = () => {
   const navigate = useNavigate();
   const { favorites, loading: favoritesLoading } = useFavorites();
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<Array<Record<string, unknown> & { type: string; id: string; slug?: string; title?: string }>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export const UserFavorites: React.FC = () => {
       }
 
       setLoading(true);
-      const details: any[] = [];
+      const details: Array<Record<string, unknown> & { type: string; id: string; slug?: string; title?: string }> = [];
 
       // 1. COURSES - Suporte para IDs (UUID) e Títulos (Legacy)
       const courseIds = favorites.filter(f => f.item_type === 'course').map(f => f.item_id);

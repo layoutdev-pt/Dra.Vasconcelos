@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../config/supabase';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/authUtils';
 import { MessageSquare, Flag, Trash2, Send, CornerDownRight, AlertTriangle, UserCircle2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { OptimizedImage } from '../../components/OptimizedImage';
@@ -34,8 +34,12 @@ export const BlogComments: React.FC<BlogCommentsProps> = ({ postId }) => {
   const [replyText, setReplyText] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchComments = async () => {
-    setLoading(true);
+  const handleSetComments = useCallback((data: CommentWithProfile[]) => setComments(data), []);
+  const handleSetLoading = useCallback((isLoading: boolean) => setLoading(isLoading), []);
+  const handleSetIsBanned = useCallback((banned: boolean) => setIsBanned(banned), []);
+
+  const fetchComments = useCallback(async () => {
+    handleSetLoading(true);
     const { data } = await supabase
       .from('comments')
       .select('*, profiles(email, avatar_url, banned)')
@@ -43,21 +47,41 @@ export const BlogComments: React.FC<BlogCommentsProps> = ({ postId }) => {
       .order('created_at', { ascending: true });
       
     if (data) {
-      setComments(data as CommentWithProfile[]);
+      handleSetComments(data as CommentWithProfile[]);
     }
-    setLoading(false);
-  };
-
-  const checkBanStatus = async () => {
-    if (!user) return;
-    const { data } = await supabase.from('profiles').select('banned').eq('id', user.id).single();
-    if (data) setIsBanned(data.banned);
-  };
+    handleSetLoading(false);
+  }, [postId, handleSetLoading, handleSetComments]);
 
   useEffect(() => {
-    checkBanStatus();
-    fetchComments();
-  }, [postId, user]);
+    let isMounted = true;
+    
+    const init = async () => {
+      if (!isMounted) return;
+      handleSetLoading(true);
+      
+      if (user) {
+        const { data: profileData } = await supabase.from('profiles').select('banned').eq('id', user.id).single();
+        if (isMounted && profileData) handleSetIsBanned(profileData.banned);
+      }
+      
+      const { data } = await supabase
+        .from('comments')
+        .select('*, profiles(email, avatar_url, banned)')
+        .eq('post_id', postId)
+        .order('created_at', { ascending: true });
+        
+      if (isMounted) {
+        if (data) handleSetComments(data as CommentWithProfile[]);
+        handleSetLoading(false);
+      }
+    };
+
+    init();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [postId, user, handleSetLoading, handleSetIsBanned, handleSetComments]);
 
   // Post a new top-level comment
   const handleSubmit = async () => {

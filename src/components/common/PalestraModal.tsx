@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Link } from 'react-router-dom';
 import { X, MonitorPlay, User, Phone, Mail, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../../config/supabase';
 
@@ -61,16 +60,21 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
       setName('');
       setPhone('');
       setEmail('');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Submit error:', error);
       setStatus('error');
-      if (error.code === '23505') {
-        setStatus('success');
-        setName('');
-        setPhone('');
-        setEmail('');
+      const isSupabaseError = (err: unknown): err is { code?: string; message?: string } => typeof err === 'object' && err !== null;
+      if (isSupabaseError(error)) {
+        if (error.code === '23505') {
+          setStatus('success');
+          setName('');
+          setPhone('');
+          setEmail('');
+        } else {
+          setErrorMessage(error.message || 'Ocorreu um erro na submissão. Tente novamente.');
+        }
       } else {
-        setErrorMessage(error.message || 'Ocorreu um erro na submissão. Tente novamente.');
+        setErrorMessage('Ocorreu um erro na submissão. Tente novamente.');
       }
     }
   };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CourseCard, type CourseCardProps } from '../../components/CourseCard';
+import { CourseCard } from '../../components/CourseCard';
 import { useCourses } from '../../hooks/useCourses';
 import { AlertCircle, BookOpen } from 'lucide-react';
 

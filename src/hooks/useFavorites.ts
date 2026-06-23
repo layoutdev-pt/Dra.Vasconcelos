@@ -1,6 +1,7 @@
+// src/hooks/useFavorites.ts
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../config/supabase';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authUtils';
 
 export type FavoriteType = 'course' | 'book' | 'blog';
 
@@ -32,7 +33,20 @@ export const useFavorites = () => {
   }, [user]);
 
   useEffect(() => {
-    fetchFavorites();
+    let isMounted = true;
+
+    const initFetch = async () => {
+      // Isolamento assíncrono para resolver o 'set-state-in-effect'
+      if (isMounted) {
+        await fetchFavorites();
+      }
+    };
+
+    initFetch();
+
+    return () => {
+      isMounted = false;
+    };
   }, [fetchFavorites]);
 
   const isFavorite = (itemId: string, type: FavoriteType) => {

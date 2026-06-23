@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import { supabase } from '../../config/supabase';
 import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle } from 'lucide-react';
@@ -15,7 +15,7 @@ const TestimonialModal: React.FC<{ testimonial: Testimonial | null; onClose: () 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const set = <K extends keyof Testimonial>(key: K, value: any) => setDraft(d => ({ ...d, [key]: value }));
+  const set = <K extends keyof Testimonial>(key: K, value: Testimonial[K]) => setDraft(d => ({ ...d, [key]: value }));
 
   const handleSave = async () => {
     if (!draft.student_name?.trim() || !draft.feedback?.trim()) { setError('Nome e feedback são obrigatórios.'); return; }
@@ -90,14 +90,30 @@ export const TestimonialsAdmin: React.FC = () => {
   const [editing, setEditing] = useState<Testimonial | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const fetchItems = async () => {
-    setLoading(true);
-    const { data } = await supabase.from('testimonials').select('*').order('created_at', { ascending: false });
-    setList(data || []);
-    setLoading(false);
-  };
+  const handleSetLoading = useCallback((l: boolean) => setLoading(l), []);
+  const handleSetList = useCallback((d: Testimonial[]) => setList(d), []);
 
-  useEffect(() => { fetchItems(); }, []);
+  const fetchItems = useCallback(async () => {
+    handleSetLoading(true);
+    const { data } = await supabase.from('testimonials').select('*').order('created_at', { ascending: false });
+    handleSetList(data || []);
+    handleSetLoading(false);
+  }, [handleSetLoading, handleSetList]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const init = async () => {
+      if (!isMounted) return;
+      handleSetLoading(true);
+      const { data } = await supabase.from('testimonials').select('*').order('created_at', { ascending: false });
+      if (isMounted) {
+        handleSetList(data || []);
+        handleSetLoading(false);
+      }
+    };
+    init();
+    return () => { isMounted = false; };
+  }, [handleSetLoading, handleSetList]);
 
   const deleteItem = async (id: string) => {
     if(!window.confirm('Apagar permanentemente este Testemunho?')) return;

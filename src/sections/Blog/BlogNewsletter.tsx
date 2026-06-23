@@ -37,7 +37,7 @@ export const BlogNewsletter: React.FC = () => {
 
       setStatus('success');
       setEmail('');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Erro no processamento da subscrição:", err);
       setStatus('error');
       setErrorMessage('Erro na comunicação com o servidor. Tente novamente.');

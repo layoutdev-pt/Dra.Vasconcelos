@@ -23,7 +23,7 @@ serve(async (req: Request) => {
     const requestUrl = `https://api.closum.com/v2/lead/add/?api-key=${CLOSUM_API_KEY}`;
     
     // Payload dinâmico
-    const closumPayload: Record<string, any> = {
+    const closumPayload: Record<string, unknown> = {
       email: email,
       consent_email: true,
       consent_sms: phone ? true : false // Assume consentimento SMS se o telemóvel for fornecido ativamente no formulário
@@ -56,8 +56,8 @@ serve(async (req: Request) => {
       status: 200,
     });
 
-  } catch (error: any) {
-    return new Response(JSON.stringify({ success: false, error: error.message }), {
+  } catch (error: unknown) {
+    return new Response(JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
     });

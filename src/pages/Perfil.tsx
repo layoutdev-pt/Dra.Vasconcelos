@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, LogOut, Heart, MessageSquare, ArrowRight } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { User, LogOut, Heart, MessageSquare } from 'lucide-react';
+import { useAuth } from '../context/authUtils';
 import { useNavigate } from 'react-router-dom';
 import { ProfileForm } from '../sections/perfil/ProfileForm';
 import { UserComments } from '../sections/perfil/UserComments';
@@ -18,8 +18,10 @@ export const Perfil: React.FC = () => {
     navigate('/entrar');
   };
 
+  type TabType = 'dados' | 'favoritos' | 'comentarios';
+
   // Menu Lateral
-  const menuItems = [
+  const menuItems: { id: TabType; label: string; icon: React.ElementType }[] = [
     { id: 'dados', label: 'Dados Pessoais', icon: User },
     { id: 'favoritos', label: 'Favoritos', icon: Heart },
     { id: 'comentarios', label: 'Meus Comentários', icon: MessageSquare },
@@ -40,7 +42,7 @@ export const Perfil: React.FC = () => {
               {menuItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id as any)}
+                  onClick={() => setActiveTab(item.id)}
                   className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                     activeTab === item.id
                       ? 'bg-secondary/10 text-secondary'

@@ -166,8 +166,8 @@ const BookModal: React.FC<{ book: Book | null; maxPosition: number; onClose: () 
 
       onSaved(); 
       onClose();
-    } catch (err: any) {
-      setError(err.message || 'Erro ao guardar o livro.');
+    } catch (err: unknown) {
+      setError(typeof err === 'object' && err !== null && 'message' in err ? String((err as Record<string, unknown>).message) : 'Erro ao guardar o livro.');
     } finally {
       setSaving(false);
     }
@@ -304,7 +304,7 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
       try {
         const { error } = await supabase.rpc('update_books_order', { payload });
         if (error) throw error;
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error updating order:', err);
         showToast('Erro ao atualizar a ordem dos livros.');
         fetch();

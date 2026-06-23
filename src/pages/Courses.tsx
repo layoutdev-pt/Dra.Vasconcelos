@@ -1,6 +1,5 @@
 import React from 'react';
 import { CoursesHero } from '../sections/academy/CoursesHero';
-import { AcademyMetrics } from '../sections/academy/AcademyMetrics';
 import { PalestraSection } from '../sections/home/PalestraSection';
 import { AcademyTrustBadge } from '../sections/academy/AcademyTrustBadge';
 import { AcademyCourses } from '../sections/academy/AcademyCourses';

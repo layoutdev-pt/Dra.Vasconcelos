@@ -7,7 +7,6 @@ const BRAND_COLOR = '#7CB0B0'; // secondary
 const PRIMARY_COLOR = '#0f172a';
 const ACCENT_COLOR = '#F97316';
 const SITE_URL = 'https://draalexandravasconcelos.pt';
-const LOGO_URL = `${SITE_URL}/logo.png`; // Will fallback to text if not available
 
 function baseLayout(content: string): string {
   return `

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { supabase } from '../../config/supabase';
 import { Trash2, Loader2, Download, Filter } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
@@ -11,14 +11,30 @@ export const LeadsAdmin: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>('all');
 
-  const fetchLeads = async () => {
-    setLoading(true);
-    const { data } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
-    setLeads(data || []);
-    setLoading(false);
-  };
+  const handleSetLoading = useCallback((l: boolean) => setLoading(l), []);
+  const handleSetLeads = useCallback((d: Lead[]) => setLeads(d), []);
 
-  useEffect(() => { fetchLeads(); }, []);
+  const fetchLeads = useCallback(async () => {
+    handleSetLoading(true);
+    const { data } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
+    handleSetLeads(data || []);
+    handleSetLoading(false);
+  }, [handleSetLoading, handleSetLeads]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const init = async () => {
+      if (!isMounted) return;
+      handleSetLoading(true);
+      const { data } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
+      if (isMounted) {
+        handleSetLeads(data || []);
+        handleSetLoading(false);
+      }
+    };
+    init();
+    return () => { isMounted = false; };
+  }, [handleSetLoading, handleSetLeads]);
 
   const filteredLeads = useMemo(() => {
     if (sourceFilter === 'all') return leads;
@@ -32,7 +48,7 @@ export const LeadsAdmin: React.FC = () => {
   };
 
   const toggleSubscribed = async (lead: Lead) => {
-    const newVal = !(lead as any).subscribed;
+    const newVal = !(lead as Lead & { subscribed?: boolean }).subscribed;
     await supabase.from('leads').update({ subscribed: newVal }).eq('id', lead.id);
     fetchLeads();
   };
@@ -50,7 +66,7 @@ export const LeadsAdmin: React.FC = () => {
   }, [leads]);
 
   // Stats
-  const totalSubscribed = leads.filter(l => (l as any).subscribed !== false).length;
+  const totalSubscribed = leads.filter(l => (l as Lead & { subscribed?: boolean }).subscribed !== false).length;
   const totalEbook = leads.filter(l => l.source === 'ebook').length;
   const totalBlog = leads.filter(l => l.source === 'blog').length;
   const totalFooter = leads.filter(l => l.source === 'footer').length;
@@ -59,7 +75,7 @@ export const LeadsAdmin: React.FC = () => {
   const exportCSV = () => {
     const csv = ['Nome,Telemóvel,Email,Origem,Subscrito,Data'];
     leads.forEach(l => {
-      csv.push(`${l.name || ''},${l.phone || ''},${l.email},${l.source},${(l as any).subscribed !== false ? 'Sim' : 'Não'},${new Date(l.created_at).toLocaleDateString()}`);
+      csv.push(`${l.name || ''},${l.phone || ''},${l.email},${l.source},${(l as Lead & { subscribed?: boolean }).subscribed !== false ? 'Sim' : 'Não'},${new Date(l.created_at).toLocaleDateString()}`);
     });
     const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -181,12 +197,12 @@ export const LeadsAdmin: React.FC = () => {
                     <button
                       onClick={() => toggleSubscribed(l)}
                       className={`px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-colors ${
-                        (l as any).subscribed !== false
+                        (l as Lead & { subscribed?: boolean }).subscribed !== false
                           ? 'bg-green-50 text-green-600 hover:bg-green-100'
                           : 'bg-red-50 text-red-500 hover:bg-red-100'
                       }`}
                     >
-                      {(l as any).subscribed !== false ? 'Ativo' : 'Inativo'}
+                      {(l as Lead & { subscribed?: boolean }).subscribed !== false ? 'Ativo' : 'Inativo'}
                     </button>
                   </td>
                   <td className="px-6 py-4 text-gray-500 text-sm">{new Date(l.created_at).toLocaleString('pt-PT')}</td>

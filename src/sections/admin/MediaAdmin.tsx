@@ -79,7 +79,7 @@ const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; maxPosition: number; o
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const set = <K extends keyof MediaEntry>(key: K, value: any) => setDraft(d => ({ ...d, [key]: value }));
+  const set = <K extends keyof MediaEntry>(key: K, value: MediaEntry[K]) => setDraft(d => ({ ...d, [key]: value }));
 
   const handleSave = async () => {
     if (!draft.title?.trim() || !draft.external_url?.trim()) { 
@@ -130,8 +130,8 @@ const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; maxPosition: number; o
 
       onSaved(); 
       onClose();
-    } catch (err: any) {
-      setError(err.message || 'Erro ao guardar registo.');
+    } catch (err: unknown) {
+      setError(typeof err === 'object' && err !== null && 'message' in err ? String((err as Record<string, unknown>).message) : 'Erro ao guardar registo.');
     } finally {
       setSaving(false);
     }
@@ -235,7 +235,7 @@ export const MediaAdmin: React.FC = () => {
       try {
         const { error } = await supabase.rpc('update_media_order', { payload });
         if (error) throw error;
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error updating order:', err);
         alert('Erro ao atualizar a ordem das menções.');
         fetchMedia();

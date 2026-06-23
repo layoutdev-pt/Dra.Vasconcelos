@@ -40,14 +40,19 @@ export const LeadMagnet: React.FC = () => {
 
       setStatus('success');
       setEmail('');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Submit error:', error);
       setStatus('error');
-      if (error.code === '23505') {
-        setStatus('success');
-        setEmail('');
+      const isSupabaseError = (err: unknown): err is { code?: string; message?: string } => typeof err === 'object' && err !== null;
+      if (isSupabaseError(error)) {
+        if (error.code === '23505') {
+          setStatus('success');
+          setEmail('');
+        } else {
+          setErrorMessage(error.message || 'Ocorreu um erro na submissão. Tente novamente.');
+        }
       } else {
-        setErrorMessage(error.message || 'Ocorreu um erro na submissão. Tente novamente.');
+        setErrorMessage('Ocorreu um erro na submissão. Tente novamente.');
       }
     }
   };

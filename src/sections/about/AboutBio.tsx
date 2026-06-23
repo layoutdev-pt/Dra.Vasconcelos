@@ -1,7 +1,5 @@
 import React from 'react';
-import draImg2 from '../../assets/images/dra_hero.png';
 import { Quote, Globe2 } from 'lucide-react';
-import { OptimizedImage } from '../../components/OptimizedImage';
 
 export const AboutBio: React.FC = () => {
   return (

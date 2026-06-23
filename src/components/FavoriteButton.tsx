@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart } from 'lucide-react';
 import { useFavorites, type FavoriteType } from '../hooks/useFavorites';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authUtils';
 import { toast } from 'react-hot-toast';
 
 interface FavoriteButtonProps {

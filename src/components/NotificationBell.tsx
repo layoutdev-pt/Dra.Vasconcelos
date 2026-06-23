@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Bell, Check, Trash2, X, Info, Loader2 } from 'lucide-react';
 import { supabase } from '../config/supabase';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authUtils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Notification {
@@ -19,36 +19,40 @@ export const NotificationBell: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   
-  // Usamos uma Ref para evitar loops infinitos com o fetchNotifications
-  const fetchRef = useRef(false);
+  const handleSetNotifications = useCallback((data: Notification[] | ((prev: Notification[]) => Notification[])) => {
+    setNotifications(data);
+  }, []);
+
+  const handleSetLoading = useCallback((state: boolean) => setLoading(state), []);
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
-  const fetchNotifications = useCallback(async () => {
-    if (!user?.id) return;
-    
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(15);
-      
-      if (error) throw error;
-      setNotifications(data || []);
-    } catch (err) {
-      console.error('Erro ao carregar notificações:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [user?.id]);
-
   useEffect(() => {
+    let isMounted = true;
     if (!user?.id) return;
 
-    fetchNotifications();
+    const init = async () => {
+      if (isMounted) handleSetLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('notifications')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(15);
+        
+        if (error) throw error;
+        if (isMounted) {
+          handleSetNotifications(data || []);
+        }
+      } catch (err) {
+        console.error('Erro ao carregar notificações:', err);
+      } finally {
+        if (isMounted) handleSetLoading(false);
+      }
+    };
+
+    init();
 
     // GERAMOS UM NOME ÚNICO PARA O CANAL NESTA SESSÃO
     // O Math.random impede que o Supabase tente reutilizar um canal que ainda está a fechar
@@ -68,7 +72,9 @@ export const NotificationBell: React.FC = () => {
         },
         (payload) => {
           const newNotif = payload.new as Notification;
-          setNotifications(prev => [newNotif, ...prev]);
+          if (isMounted) {
+            handleSetNotifications(prev => [newNotif, ...prev]);
+          }
         }
       )
       .subscribe((status) => {
@@ -77,10 +83,11 @@ export const NotificationBell: React.FC = () => {
       });
 
     return () => {
+      isMounted = false;
       console.log('Limpando canal:', uniqueChannelName);
       supabase.removeChannel(channel);
     };
-  }, [user?.id]); // Dependência apenas no ID do utilizador
+  }, [user?.id, handleSetLoading, handleSetNotifications]);
 
   const markAsRead = async (id: string) => {
     const { error } = await supabase
