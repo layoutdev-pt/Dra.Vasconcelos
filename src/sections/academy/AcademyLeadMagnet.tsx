@@ -1,49 +1,55 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, CheckCircle2 } from 'lucide-react';
-import { supabase } from '../../config/supabase';
-import { OptimizedImage } from '../../components/OptimizedImage';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Mail, CheckCircle2 } from "lucide-react";
+import { supabase } from "../../config/supabase";
+import { OptimizedImage } from "../../components/OptimizedImage";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, delay: i * 0.12, ease: [0.25, 0.46, 0.45, 0.94] as const },
+    transition: {
+      duration: 0.5,
+      delay: i * 0.12,
+      ease: [0.25, 0.46, 0.45, 0.94] as const,
+    },
   }),
 };
 
 export const AcademyLeadMagnet: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
 
-    setStatus('loading');
+    setStatus("loading");
 
     try {
       // 1. Save to Supabase DB
       const { error: dbError } = await supabase
-        .from('leads')
-        .insert([{ email, source: 'ebook_academy' }]);
+        .from("leads")
+        .insert([{ email, source: "ebook_academy" }]);
 
-      if (dbError && dbError.code !== '23505') throw dbError;
-      
+      if (dbError && dbError.code !== "23505") throw dbError;
+
       // 2. Direct Download for immediate gratification
-      const link = document.createElement('a');
-      link.href = '/docs/ebook-probioticos.pdf';
-      link.download = 'ebook-probioticos.pdf';
+      const link = document.createElement("a");
+      link.href = "/docs/ebook-probioticos.pdf";
+      link.download = "ebook-probioticos.pdf";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      setStatus('success');
-      setEmail('');
+      setStatus("success");
+      setEmail("");
     } catch (err: unknown) {
-      console.error('Error in lead magnet:', err);
-      setStatus('error');
+      console.error("Error in lead magnet:", err);
+      setStatus("error");
     }
   };
 
@@ -53,11 +59,10 @@ export const AcademyLeadMagnet: React.FC = () => {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
+          viewport={{ once: true, margin: "-60px" }}
           className="bg-surface rounded-4xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-surface-border overflow-hidden"
         >
           <div className="flex flex-col md:flex-row items-center">
-
             <motion.div
               variants={fadeUp}
               custom={0}
@@ -65,14 +70,18 @@ export const AcademyLeadMagnet: React.FC = () => {
             >
               <motion.div
                 animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ perspective: '800px' }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                style={{ perspective: "800px" }}
                 className="relative"
               >
                 <div className="w-[200px] h-[280px] rounded-lg shadow-2xl overflow-hidden border border-surface-border transform rotate-y-[-5deg] rotate-x-[2deg]">
-                  <OptimizedImage 
-                    src="/images/ebook-probioticos.png" 
-                    alt="Capa Ebook Probióticos" 
+                  <OptimizedImage
+                    src="/images/ebook-probioticos.png"
+                    alt="Capa Ebook Probióticos"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -86,7 +95,8 @@ export const AcademyLeadMagnet: React.FC = () => {
                 custom={1}
                 className="text-2xl md:text-3xl font-bold text-site-text mb-3"
               >
-                Comece a ler hoje mesmo: <span className="text-secondary">Guia Digital Gratuito</span>
+                Comece a ler hoje mesmo:{" "}
+                <span className="text-secondary">Guia Digital Gratuito</span>
               </motion.h3>
 
               <motion.p
@@ -94,10 +104,11 @@ export const AcademyLeadMagnet: React.FC = () => {
                 custom={2}
                 className="text-site-text-muted font-light leading-relaxed mb-8 max-w-lg"
               >
-                Deixe o seu email abaixo para receber imediatamente a sua cópia digital com dicas práticas de saúde integrativa.
+                Deixe o seu email abaixo para receber imediatamente a sua cópia
+                digital com dicas práticas de saúde integrativa.
               </motion.p>
 
-              {status === 'success' ? (
+              {status === "success" ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -105,8 +116,12 @@ export const AcademyLeadMagnet: React.FC = () => {
                 >
                   <CheckCircle2 className="w-6 h-6 text-green-500 shrink-0" />
                   <div>
-                    <p className="font-bold text-green-600 text-sm">Ebook enviado com sucesso!</p>
-                    <p className="text-green-500 text-xs mt-0.5 opacity-80">Verifique a sua caixa de entrada e o seu download automático.</p>
+                    <p className="font-bold text-green-600 text-sm">
+                      Ebook transferido com sucesso!
+                    </p>
+                    <p className="text-green-500 text-xs mt-0.5 opacity-80">
+                      Verifique as transferências do seu dispositivo.
+                    </p>
                   </div>
                 </motion.div>
               ) : (
@@ -121,13 +136,13 @@ export const AcademyLeadMagnet: React.FC = () => {
                     <input
                       type="email"
                       value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      disabled={status === 'loading'}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={status === "loading"}
                       placeholder="O seu melhor email"
                       required
                       className="w-full pl-11 pr-4 py-3.5 bg-surface-muted border border-surface-border rounded-xl text-sm text-site-text placeholder-site-text-muted/60 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all disabled:opacity-50"
                     />
-                    {status === 'error' && (
+                    {status === "error" && (
                       <span className="absolute -bottom-6 left-4 text-xs text-red-400 font-medium">
                         Ocorreu um erro. Tente novamente.
                       </span>
@@ -135,15 +150,16 @@ export const AcademyLeadMagnet: React.FC = () => {
                   </div>
                   <button
                     type="submit"
-                    disabled={status === 'loading'}
+                    disabled={status === "loading"}
                     className="bg-accent hover:bg-accent/90 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-accent/20 whitespace-nowrap disabled:opacity-50 cursor-pointer"
                   >
-                    {status === 'loading' ? 'A processar...' : 'Receber Ebook Grátis'}
+                    {status === "loading"
+                      ? "A processar..."
+                      : "Receber Ebook Grátis"}
                   </button>
                 </motion.form>
               )}
             </div>
-
           </div>
         </motion.div>
       </div>
