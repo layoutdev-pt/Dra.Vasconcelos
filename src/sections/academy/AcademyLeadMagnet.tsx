@@ -31,11 +31,7 @@ export const AcademyLeadMagnet: React.FC = () => {
 
       if (dbError && dbError.code !== '23505') throw dbError;
       
-      // 2. ADIÇÃO DA API CLOSUM: Subscrição e Email assíncronos
-      supabase.functions.invoke('send-lead-magnet', { body: { email } }).catch(console.error);
-      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
-
-      // 3. Direct Download for immediate gratification
+      // 2. Direct Download for immediate gratification
       const link = document.createElement('a');
       link.href = '/docs/ebook-probioticos.pdf';
       link.download = 'ebook-probioticos.pdf';

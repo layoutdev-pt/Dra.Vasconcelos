@@ -1,7 +1,6 @@
 import React from 'react';
 import { CoursesHero } from '../sections/academy/CoursesHero';
-import { PalestraSection } from '../sections/home/PalestraSection';
-import { AcademyTrustBadge } from '../sections/academy/AcademyTrustBadge';
+import { BioReset } from '../sections/home/BioReset';
 import { AcademyCourses } from '../sections/academy/AcademyCourses';
 import { motion } from 'framer-motion';
 
@@ -31,7 +30,7 @@ export const Courses: React.FC = () => {
         </div>
       </section>
 
-      <PalestraSection />
+      <BioReset />
       
     </div>
   );

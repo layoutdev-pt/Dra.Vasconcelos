@@ -15,25 +15,12 @@ export const BlogNewsletter: React.FC = () => {
     setErrorMessage('');
 
     try {
-      // 1. Restaurada a inserção na Base de Dados local
+      // 1. Inserção na Base de Dados local
       const { error: dbError } = await supabase
         .from('leads')
         .insert([{ email, source: 'blog' }]);
 
       if (dbError && dbError.code !== '23505') throw dbError;
-
-      // 2. Invocação rigorosa da Edge Function para o Closum
-      const { data, error } = await supabase.functions.invoke('send-newsletter', {
-        body: { email }
-      });
-
-      if (error) {
-        throw new Error(`Falha na Edge Function: ${error.message}`);
-      }
-
-      if (data && data.success === false) {
-         throw new Error(data.error || 'Erro no processamento da subscrição pelo Closum.');
-      }
 
       setStatus('success');
       setEmail('');

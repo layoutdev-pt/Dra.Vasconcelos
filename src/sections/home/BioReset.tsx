@@ -18,10 +18,6 @@ export const BioReset: React.FC = () => {
   const latestCourse = courses[0];
   if (!latestCourse) return null;
 
-  const formattedDate = latestCourse.published_at 
-    ? new Date(latestCourse.published_at).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' })
-    : 'Em breve';
-
   return (
     <section className="py-24 bg-site-bg relative overflow-hidden z-0 transition-colors duration-500">
       <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12 relative z-10">
@@ -34,18 +30,21 @@ export const BioReset: React.FC = () => {
             </div>
             
             <h2 className="text-3xl lg:text-4xl font-extrabold text-site-text">
-              {latestCourse.title}
+              BioReset® 14 Dias – 7ª Edição Especial Outono
             </h2>
             
             <p className="text-lg text-site-text-muted leading-relaxed font-light">
-              {latestCourse.published_at && `Início: ${formattedDate}. `}
-              {latestCourse.description}
+              Início: 27 de Setembro de 2026. Prepara o teu corpo para a nova estação com um reset profundo e recupera a tua vitalidade! Sob a orientação da Dra. Alexandra Correia, este é o programa prático que vai transformar a tua saúde.
             </p>
             
             <ul className="space-y-4 pt-2">
-              {['Acompanhamento Especializado', 'Conteúdo Programático Exclusivo', 'Materiais de Apoio Digitais'].map((item, idx) => (
-                <li key={idx} className="flex items-center gap-3 text-site-text font-medium">
-                  <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-50 dark:fill-green-500/10" />
+              {[
+                <React.Fragment key="1"><span className="font-bold">Acompanhamento Especializado:</span> 4 Reuniões Online (Formação Prática via Zoom) e Grupo VIP no Telegram com acompanhamento diário.</React.Fragment>,
+                <React.Fragment key="2"><span className="font-bold">Conteúdo Programático Exclusivo:</span> Limpeza total (desparasitação e desintoxicação do fígado, vesícula e intestino), recuperação de energia e criação de novos hábitos alimentares.</React.Fragment>,
+                <React.Fragment key="3"><span className="font-bold">Materiais de Apoio Digitais:</span> Acesso às gravações das sessões por 3 meses e bónus de 50% de desconto no Teste de Intolerância Alimentar</React.Fragment>
+              ].map((item, idx) => (
+                <li key={idx} className="flex items-start gap-3 text-site-text font-medium leading-relaxed">
+                  <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-50 dark:fill-green-500/10 shrink-0 mt-0.5" />
                   <span>{item}</span>
                 </li>
               ))}

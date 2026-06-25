@@ -60,7 +60,7 @@ export const JourneyTimeline: React.FC = () => {
             Uma Jornada de Propósito
           </h2>
           <p className="text-secondary font-semibold text-sm tracking-widest uppercase">
-            Role para explorar os marcos da minha carreira
+            Desça para explorar os marcos da minha carreira
           </p>
         </div>
 

@@ -1,8 +1,6 @@
 import React from 'react';
 import { AcademyHero } from '../sections/academy/AcademyHero';
-import { AcademyMetrics } from '../sections/academy/AcademyMetrics';
 import { AcademyLeadMagnet } from '../sections/academy/AcademyLeadMagnet';
-import { AcademyTrustBadge } from '../sections/academy/AcademyTrustBadge';
 import { AcademyBooks } from '../sections/academy/AcademyBooks';
 import { motion } from 'framer-motion';
 

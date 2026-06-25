@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // src/sections/academy/CourseComments.tsx
 import React, { useState, useEffect, useCallback } from "react";
 import {
@@ -14,16 +15,16 @@ import { Link } from "react-router-dom";
 
 // Mocks para resolver os problemas de compilação
 const supabase = {
-  from: (table: string) => ({
-    select: (columns?: string) => ({
-      eq: (field: string, val: unknown) => ({
-        order: (field: string, opts?: unknown) => Promise.resolve({ data: [] as unknown[] }),
+  from: (_table: string) => ({
+    select: (_columns?: string) => ({
+      eq: (_field: string, _val: unknown) => ({
+        order: (_field: string, _opts?: unknown) => Promise.resolve({ data: [] as unknown[] }),
         single: () => Promise.resolve({ data: { banned: false } })
       })
     }),
-    insert: (data: unknown) => Promise.resolve({ error: null as { message: string, code?: string } | null }),
+    insert: (_data: unknown) => Promise.resolve({ error: null as { message: string, code?: string } | null }),
     delete: () => ({
-      eq: (field: string, val: unknown) => Promise.resolve({ error: null as { message: string, code?: string } | null })
+      eq: (_field: string, _val: unknown) => Promise.resolve({ error: null as { message: string, code?: string } | null })
     })
   })
 };

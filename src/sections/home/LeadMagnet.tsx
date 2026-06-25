@@ -23,12 +23,6 @@ export const LeadMagnet: React.FC = () => {
 
       if (dbError && dbError.code !== '23505') throw dbError; // 23505 = unique_violation
 
-      // 2. Acionar Edge Functions (Resend Email & Closum Newsletter)
-      supabase.functions.invoke('send-lead-magnet', { body: { email } }).catch(console.error);
-      
-      // -> ADIÇÃO DA API CLOSUM: Regista o lead na newsletter
-      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
-
       // 3. Forçar o Download Imediato do PDF
       const link = document.createElement('a');
       link.href = '/docs/Ebook-Probioticos.pdf'; 

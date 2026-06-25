@@ -72,7 +72,7 @@ export const Hero: React.FC = () => {
             <p className="text-lg text-site-text-muted max-w-lg leading-relaxed font-light mt-[-20px] md:mt-[-40px]">
               Todas as vezes que vai ao médico acredita que está a cuidar da sua
               saúde. Mas tratar sintomas não é o mesmo que tratar a causa. A
-              Saúde Biológica Integrativa procura compreender a origem da doença e
+              Saúde Integrativa e Biológica procura compreender a origem da doença e
               restaurar a saúde a partir da biologia celular.
             </p>
 

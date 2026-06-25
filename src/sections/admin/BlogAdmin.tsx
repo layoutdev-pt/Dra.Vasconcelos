@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import { supabase } from '../../config/supabase';
-import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle, Send, CheckCircle2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle } from 'lucide-react';
 import RichTextEditor from '../../components/RichTextEditor';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { BlogPost } from '../../types/blog';
@@ -72,9 +72,7 @@ const SortablePostRow: React.FC<{ p: BlogPost; onEdit: (p: BlogPost) => void; on
           : <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-xs font-bold">Rascunho</span>}
       </td>
       <td className="px-4 py-4">
-        {(p as BlogPost & { newsletter_sent?: boolean }).newsletter_sent 
-          ? <span className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit"><Send className="w-3 h-3" />Enviada</span>
-          : <span className="text-gray-400 text-xs">—</span>}
+        <span className="text-gray-400 text-xs">—</span>
       </td>
       <td className="px-6 py-4">
         <div className="flex justify-end gap-2">
@@ -91,8 +89,6 @@ const BlogModal: React.FC<{ post: BlogPost | null; maxPosition: number; onClose:
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sendNewsletter, setSendNewsletter] = useState(false);
-  const [, setNewsletterStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
   const set = <K extends keyof BlogPost>(key: K, value: BlogPost[K]) => setDraft(d => ({ ...d, [key]: value }));
 
@@ -131,16 +127,14 @@ const BlogModal: React.FC<{ post: BlogPost | null; maxPosition: number; onClose:
       ...(!post ? { position: maxPosition + 1 } : {})
     };
 
-    let savedPostId = post?.id;
     const isNew = !post;
 
     if (post) {
       const { error: dbErr } = await supabase.from('blog_posts').update(payload).eq('id', post.id);
       if (dbErr) { setError(dbErr.message); setSaving(false); return; }
     } else {
-      const { data: inserted, error: dbErr } = await supabase.from('blog_posts').insert(payload).select('id').single();
+      const { error: dbErr } = await supabase.from('blog_posts').insert(payload).select('id').single();
       if (dbErr) { setError(dbErr.message); setSaving(false); return; }
-      savedPostId = inserted?.id;
     }
 
     // NOTIFICAÇÃO GLOBAL: Se for um artigo novo e estiver publicado
@@ -152,27 +146,10 @@ const BlogModal: React.FC<{ post: BlogPost | null; maxPosition: number; onClose:
       );
     }
 
-    // Lógica da Newsletter (Edge Function)
-    if (sendNewsletter && savedPostId && payload.is_published) {
-      setNewsletterStatus('sending');
-      try {
-        const { error: fnError } = await supabase.functions.invoke('send-newsletter', {
-          body: { post_id: savedPostId },
-        });
-        if (fnError) setNewsletterStatus('error');
-        else setNewsletterStatus('sent');
-      } catch (err) {
-        console.error(err);
-        setNewsletterStatus('error');
-      }
-    }
-
     setSaving(false);
     onSaved(); 
     onClose();
   };
-
-  const alreadySent = post && (post as BlogPost & { newsletter_sent?: boolean }).newsletter_sent === true;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
@@ -215,26 +192,6 @@ const BlogModal: React.FC<{ post: BlogPost | null; maxPosition: number; onClose:
             )}
           </div>
 
-          {draft.is_published && (
-            <div className="pt-4 border-t border-gray-100">
-              {alreadySent ? (
-                <div className="flex items-center gap-3 text-sm text-green-600 bg-green-50 px-4 py-3 rounded-xl">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span className="font-semibold">Newsletter já enviada</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-4">
-                  <Toggle value={sendNewsletter} onChange={v => setSendNewsletter(v)} label="Enviar Newsletter" />
-                  {sendNewsletter && (
-                    <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg">
-                      <Send className="w-3 h-3" />
-                      <span className="font-semibold">Será enviado para os subscritores ao guardar</span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
         <div className="flex justify-end gap-3 px-8 py-5 border-t border-gray-100 shrink-0">

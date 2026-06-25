@@ -20,14 +20,6 @@ export const Footer: React.FC = () => {
       // 1. Guardar o lead na base de dados (Ignorar erro de duplicação)
       const { error } = await supabase.from('leads').insert([{ email: footerEmail, source: 'footer' }]);
       if (error && error.code !== '23505') throw error;
-      
-      // 2. ADIÇÃO DA API CLOSUM: Invocação rigorosa da Edge Function configurada no backend
-      const { data, error: funcError } = await supabase.functions.invoke('send-newsletter', {
-        body: { email: footerEmail }
-      });
-
-      if (funcError) throw funcError;
-      if (data && data.success === false) throw new Error(data.error);
 
       setFooterStatus('success');
       setFooterEmail('');
