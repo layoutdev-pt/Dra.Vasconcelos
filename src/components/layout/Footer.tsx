@@ -23,8 +23,8 @@ export const Footer: React.FC = () => {
       
       // 2. ADIÇÃO DA API CLOSUM: Invocação rigorosa da Edge Function configurada no backend
       const { data, error: funcError } = await supabase.functions.invoke('send-newsletter', {
-        body: { email: footerEmail }
-      });
+  body: { email: footerEmail, list_id: 41676 }
+});
 
       if (funcError) throw funcError;
       if (data && data.success === false) throw new Error(data.error);

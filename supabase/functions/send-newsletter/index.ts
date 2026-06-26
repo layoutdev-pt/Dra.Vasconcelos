@@ -8,7 +8,8 @@ serve(async (req: Request) => {
 
   try {
     const body = await req.json();
-    const { email, name, phone } = body;
+    // NOVO: Adicionado o list_id para ser recebido do front-end
+    const { email, name, phone, list_id } = body;
 
     if (!email) {
       throw new Error("O parâmetro 'email' é obrigatório no payload do pedido.");
@@ -22,7 +23,7 @@ serve(async (req: Request) => {
 
     const requestUrl = `https://api.closum.com/v2/lead/add/?api-key=${CLOSUM_API_KEY}`;
     
-    // Payload dinâmico
+    // Payload dinâmico base
     const closumPayload: Record<string, unknown> = {
       email: email,
       consent_email: true,
@@ -35,6 +36,11 @@ serve(async (req: Request) => {
 
     if (phone) {
       closumPayload.mobile_number = phone;
+    }
+
+    // NOVO: Se o site enviar um list_id, adicionamos ao payload do Closum
+    if (list_id) {
+      closumPayload.list_id = list_id;
     }
 
     const closumResponse = await fetch(requestUrl, {

@@ -38,7 +38,7 @@ export const AcademyLeadMagnet: React.FC = () => {
       if (dbError && dbError.code !== "23505") throw dbError;
 
       // 2. ADIÇÃO DA API CLOSUM: Subscrição assíncrona
-      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
+      supabase.functions.invoke('send-newsletter', { body: { email, list_id: 41676 } }).catch(console.error);
 
       // 3. Direct Download for immediate gratification
       const link = document.createElement("a");
