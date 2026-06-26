@@ -5,12 +5,14 @@ import { OptimizedImage } from '../../components/OptimizedImage';
 
 export const LeadMagnet: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false); // NOVO: Estado para a checkbox de consentimento
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    // NOVO: Só avança se o email estiver preenchido e a checkbox marcada
+    if (!email || !consent) return; 
 
     setStatus('loading');
     setErrorMessage('');
@@ -37,6 +39,7 @@ export const LeadMagnet: React.FC = () => {
 
       setStatus('success');
       setEmail('');
+      setConsent(false); // Reseta a checkbox em caso de sucesso
     } catch (error: unknown) {
       console.error('Submit error:', error);
       setStatus('error');
@@ -45,6 +48,7 @@ export const LeadMagnet: React.FC = () => {
         if (error.code === '23505') {
           setStatus('success');
           setEmail('');
+          setConsent(false);
         } else {
           setErrorMessage(error.message || 'Ocorreu um erro na submissão. Tente novamente.');
         }
@@ -80,36 +84,52 @@ export const LeadMagnet: React.FC = () => {
             <p className="text-sm opacity-90">Verifique os seus downloads.</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto relative">
-            <div className="grow relative">
-              <input 
-                type="email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={status === 'loading'}
-                placeholder="O seu melhor email" 
-                className="w-full px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary transition-all disabled:opacity-50 backdrop-blur-md" 
-                required 
-              />
-              {status === 'error' && (
-                <span className="absolute -bottom-6 left-4 text-xs text-red-400 font-medium">
-                  {errorMessage}
-                </span>
-              )}
+          /* NOVO: Formulário ajustado para envolver o campo de email, o botão e a checkbox */
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6 justify-center max-w-lg mx-auto relative">
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="grow relative">
+                <input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={status === 'loading'}
+                  placeholder="O seu melhor email" 
+                  className="w-full px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary transition-all disabled:opacity-50 backdrop-blur-md" 
+                  required 
+                />
+                {status === 'error' && (
+                  <span className="absolute -bottom-6 left-4 text-xs text-red-400 font-medium">
+                    {errorMessage}
+                  </span>
+                )}
+              </div>
+              <button 
+                type="submit" 
+                disabled={status === 'loading' || !consent} // O botão também desativa se não houver consentimento
+                className="px-8 py-4 rounded-full bg-accent hover:bg-accent/90 text-white font-bold whitespace-nowrap transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              >
+                {status === 'loading' ? 'A processar...' : 'Download Gratuito'}
+              </button>
             </div>
-            <button 
-              type="submit" 
-              disabled={status === 'loading'}
-              className="px-8 py-4 rounded-full bg-accent hover:bg-accent/90 text-white font-bold whitespace-nowrap transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 cursor-pointer"
-            >
-              {status === 'loading' ? 'A processar...' : 'Download Gratuito'}
-            </button>
+
+            {/* NOVO: Checkbox de Consentimento */}
+            <label className="flex items-start gap-3 text-left cursor-pointer group px-2 sm:px-4 mt-2">
+              <input 
+                type="checkbox" 
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                required
+                disabled={status === 'loading'}
+                className="mt-0.5 shrink-0 w-4 h-4 rounded border-white/30 bg-white/10 text-secondary focus:ring-2 focus:ring-secondary cursor-pointer disabled:opacity-50"
+              />
+              <span className="text-gray-400/80 dark:text-gray-400 text-xs font-medium leading-relaxed group-hover:text-gray-300 transition-colors">
+                Ao submeter este formulário, concordo com a nossa <Link to="/privacidade" className="text-white hover:text-secondary transition-colors underline">Política de Privacidade</Link> e em receber comunicações.
+              </span>
+            </label>
+
           </form>
         )}
-        
-        <p className="text-gray-400/60 dark:text-gray-500 text-xs mt-10 font-medium">
-          Ao submeter este formulário, concorda com a nossa <Link to="/privacidade" className="hover:text-secondary transition-colors underline">Política de Privacidade</Link> e em receber comunicações nossas.
-        </p>
         
       </div>
     </section>

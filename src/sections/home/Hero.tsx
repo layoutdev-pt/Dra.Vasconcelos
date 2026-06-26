@@ -1,54 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Button } from "../../components/Button";
 import { CheckCircle2, Heart, Leaf } from "lucide-react";
 import draHero from "../../assets/images/dra_hero.png";
 import { OptimizedImage } from "../../components/OptimizedImage";
 
-const HERO_PHRASES = [
-  "Jovem e Saudável",
-  "com Mais Vitalidade",
-  "em Equilíbrio Pleno",
-];
-
-const useCountUp = (end: number, duration: number = 2000) => {
-  const [count, setCount] = useState(1);
-  useEffect(() => {
-    let startTime: number | null = null;
-    let animationFrame: number;
-    const animateCount = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = timestamp - startTime;
-      if (progress < duration) {
-        setCount(Math.floor((progress / duration) * end) || 1);
-        animationFrame = requestAnimationFrame(animateCount);
-      } else {
-        setCount(end);
-      }
-    };
-    animationFrame = requestAnimationFrame(animateCount);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [end, duration]);
-  return count;
-};
-
 export const Hero: React.FC = () => {
-  const [phraseIndex, setPhraseIndex] = useState(0);
-  const [animatePhrase, setAnimatePhrase] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAnimatePhrase(false);
-      setTimeout(() => {
-        setPhraseIndex((prev) => (prev + 1) % HERO_PHRASES.length);
-        setAnimatePhrase(true);
-      }, 500);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const successRate = useCountUp(98, 1500);
-  const naturalRate = useCountUp(100, 1500);
-
   return (
     /* bg-hero-bg muda automaticamente via CSS */
     <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden bg-hero-bg transition-colors duration-500">
@@ -60,16 +16,14 @@ export const Hero: React.FC = () => {
               Bem-vindo à Clínica
             </div>
 
-            <h1 className="text-4xl md:text-5xl xl:text-[4rem] font-extrabold text-site-text leading-[1.05] tracking-tight min-h-[140px] md:min-h-[160px] xl:min-h-[200px]">
-              Mantenha-se
-              <span
-                className={`text-secondary block mt-2 transition-all duration-500 transform ${animatePhrase ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-              >
-                {HERO_PHRASES[phraseIndex]}
-              </span>
+            {/* NOVA HEADLINE FIXA - QUEBRAS CONTROLADAS */}
+            <h1 className="text-4xl md:text-5xl xl:text-[3.5rem] font-extrabold text-site-text leading-[1.1] tracking-tight mb-4">
+              Descubra como melhorar <br className="hidden xl:block" />
+              a sua <span className="text-secondary">saúde e vitalidade</span> <br className="hidden lg:block" />
+              com uma abordagem integrativa
             </h1>
 
-            <p className="text-lg text-site-text-muted max-w-lg leading-relaxed font-light mt-[-20px] md:mt-[-40px]">
+            <p className="text-lg text-site-text-muted max-w-lg leading-relaxed font-light">
               Todas as vezes que vai ao médico acredita que está a cuidar da sua
               saúde. Mas tratar sintomas não é o mesmo que tratar a causa. A
               Saúde Integrativa e Biológica procura compreender a origem da doença e
@@ -115,36 +69,26 @@ export const Hero: React.FC = () => {
                 />
               </div>
 
-              {/* Health Score Panel */}
-              <div className="absolute top-48 md:top-12 -left-4 md:-left-8 z-20 glass-panel-brand p-5 rounded-2xl text-white w-44 animate-float-gentle">
-                <div className="flex items-center gap-2 mb-2">
-                  <Heart className="w-4 h-4 fill-white" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">
-                    Health Score
+              {/* Painel: Abordagem Personalizada */}
+              <div className="absolute top-48 md:top-12 -left-4 md:-left-8 z-20 glass-panel-brand p-4 rounded-2xl text-white w-48 animate-float-gentle">
+                <div className="flex items-center gap-3">
+                  <Heart className="w-6 h-6 fill-white shrink-0" />
+                  <span className="text-sm font-bold leading-snug">
+                    Abordagem personalizada e integrativa
                   </span>
-                </div>
-                <div className="text-4xl font-extrabold tracking-tight">
-                  {successRate}%
-                </div>
-                <div className="text-[11px] opacity-80 mt-1 font-medium">
-                  Taxa de Sucesso
                 </div>
               </div>
 
-              {/* Natural Panel usando glass-panel utilitário do index.css */}
-              <div className="absolute top-72 md:top-32 -right-4 md:-right-8 z-20 glass-panel p-3 rounded-2xl shadow-glass flex items-center gap-3">
+              {/* Painel: Estratégias Naturais */}
+              <div className="absolute top-72 md:top-32 -right-4 md:-right-8 z-20 glass-panel p-4 rounded-2xl shadow-glass flex items-center gap-3 w-56">
                 <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center shrink-0 border border-secondary/20">
                   <Leaf className="w-5 h-5 text-secondary" />
                 </div>
-                <div className="pr-4">
-                  <p className="text-[10px] text-site-text-muted font-semibold uppercase tracking-wider">
-                    Abordagem
-                  </p>
-                  <p className="text-sm font-bold text-site-text">
-                    {naturalRate}% Natural
-                  </p>
-                </div>
+                <span className="text-sm font-bold text-site-text leading-snug">
+                  Estratégias naturais e baseadas no estilo de vida
+                </span>
               </div>
+              
             </div>
           </div>
         </div>
