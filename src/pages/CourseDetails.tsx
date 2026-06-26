@@ -1,7 +1,7 @@
 // src/pages/CourseDetails.tsx
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, ShieldCheck, Quote, Star, Battery } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ShieldCheck, Quote, Star, Battery, AlertCircle } from 'lucide-react';
 import { supabase } from '../config/supabase';
 import type { Course } from '../types/course';
 import { CourseComments } from '../sections/academy/CourseComments';
@@ -232,6 +232,16 @@ export const CourseDetails: React.FC = () => {
         <div className="absolute inset-0 opacity-40 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#7cb0b0 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
         
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+          
+          {/* INÍCIO DO DISCLAIMER MÉDICO */}
+          <div className="mb-8 p-4 bg-surface border border-surface-border rounded-2xl flex items-center justify-center gap-3 shadow-sm backdrop-blur-sm">
+            <AlertCircle className="w-6 h-6 flex-shrink-0 text-secondary" />
+            <p className="font-bold text-site-text text-center tracking-wide uppercase text-sm sm:text-base">
+              Conteúdo educativo. Não substitui avaliação médica.
+            </p>
+          </div>
+          {/* FIM DO DISCLAIMER MÉDICO */}
+
           <Link to="/cursos" className="inline-flex items-center gap-2 text-sm text-site-text-muted hover:text-site-text mb-8 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Voltar
           </Link>
@@ -306,44 +316,7 @@ export const CourseDetails: React.FC = () => {
           </div>
         </div>
 
-      {/* 3. CLINICAL RESULTS */}
-      <section className="py-24 bg-site-bg border-y border-surface-border">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-extrabold text-site-text mb-4">Resultados Clínicos Observados</h2>
-            <p className="text-site-text-muted max-w-2xl mx-auto">Dados coletados de um grupo de controlo de 500 participantes após o ciclo completo de 14 dias do protocolo BioReset.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-surface p-8 rounded-3xl shadow-sm border border-surface-border flex flex-col items-center">
-              <div className="w-full flex justify-between items-start">
-                <span className="font-bold text-site-text">Níveis de Energia</span>
-                <span className="text-xs font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded">+30%</span>
-              </div>
-              <BarChart />
-              <p className="text-sm text-site-text-muted mt-6 text-center">Aumento progressivo de vitalidade reportado.</p>
-            </motion.div>
 
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-surface p-8 rounded-3xl shadow-sm border border-surface-border flex flex-col items-center">
-              <div className="w-full flex justify-between items-start">
-                <span className="font-bold text-site-text">Redução de Inchaço</span>
-                <span className="text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-1 rounded">-92%</span>
-              </div>
-              <DonutChart />
-              <p className="text-sm text-site-text-muted mt-6 text-center">Participantes relataram redução visível do inchaço abdominal.</p>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-surface p-8 rounded-3xl shadow-sm border border-surface-border flex flex-col items-center">
-              <div className="w-full flex justify-between items-start">
-                <span className="font-bold text-site-text">Qualidade do Sono</span>
-                <span className="text-xs font-bold text-purple-500 bg-purple-500/10 px-2 py-1 rounded">Melhora</span>
-              </div>
-              <LineChart />
-              <p className="text-sm text-site-text-muted mt-6 text-center">Sono 42% mais profundo e reparador após a 1ª semana.</p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
 
       {/* 4. CURRICULUM / MODULES */}
       {modules && modules.length > 0 && (
