@@ -225,7 +225,7 @@ export const CourseDetails: React.FC = () => {
   const cleanHTML = html ? DOMPurify.sanitize(html) : '';
 
   return (
-    <div className="min-h-screen bg-site-bg font-sans selection:bg-secondary/30 selection:text-site-text">
+    <div className="min-h-screen bg-site-bg font-sans selection:bg-secondary/30 selection:text-site-text flex flex-col">
       
       {/* 1. HERO SECTION (BANNER STYLE) */}
       <section className="relative pt-32 pb-20 bg-site-bg">
@@ -305,18 +305,60 @@ export const CourseDetails: React.FC = () => {
       </section>
 
       {/* 2. OFFER BAR (STICKY OR STATIC) */}
-        <div className="bg-accent text-white py-4 shadow-md sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-6 text-sm font-medium">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
-              OFERTA POR TEMPO LIMITADO
-            </div>
-            <Countdown courseId={course.id} />
-            <p>Garanta a sua inscrição antes que esgote.</p>
+      <div className="bg-accent text-white py-4 shadow-md sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-6 text-sm font-medium">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+            OFERTA POR TEMPO LIMITADO
           </div>
+          <Countdown courseId={course.id} />
+          <p>Garanta a sua inscrição antes que esgote.</p>
         </div>
+      </div>
 
+      {/* 3. RICH TEXT DETAILS (Detalhes do Programa movidos para aqui) */}
+      {(cleanHTML || course.secondary_image_url) && (
+        <section className="py-24 bg-site-bg border-t border-surface-border relative overflow-hidden">
+          {/* Decorative background element */}
+          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-secondary/5 blur-3xl pointer-events-none" />
+          
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-20">
+              
+              {/* Left Side: Secondary Image */}
+              {course.secondary_image_url && (
+                <div className="w-full lg:w-5/12 lg:sticky lg:top-32 relative">
+                  <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative rounded-3xl overflow-hidden shadow-xl shadow-secondary/10 aspect-square max-w-md mx-auto lg:mx-0 border-8 border-surface bg-surface">
+                    <OptimizedImage src={course.secondary_image_url} alt="Detalhes do curso" className="w-full h-full object-contain" />
+                  </motion.div>
+                </div>
+              )}
 
+              {/* Right Side: Rich Text with Premium Card Look */}
+              {cleanHTML && (
+                <div className={`w-full ${course.secondary_image_url ? 'lg:w-7/12' : 'max-w-4xl mx-auto'}`}>
+                  <motion.div 
+                    initial={{ opacity: 0, y: 30 }} 
+                    whileInView={{ opacity: 1, y: 0 }} 
+                    viewport={{ once: true }}
+                    className="bg-surface rounded-[2rem] p-8 md:p-12 shadow-xl shadow-surface-border/50 border border-surface-border relative mt-8 lg:mt-0"
+                  >
+                    <div className="absolute -top-5 left-8 lg:left-12 bg-accent text-white px-6 py-1.5 rounded-full text-xs font-bold tracking-widest shadow-lg shadow-accent/20 uppercase">
+                      Detalhes do Programa
+                    </div>
+                    
+                    <div 
+                      className="prose prose-lg max-w-none text-site-text-muted prose-headings:text-site-text prose-a:text-secondary hover:prose-a:text-secondary-light prose-headings:font-extrabold prose-h2:text-3xl prose-h2:mt-2 prose-h2:mb-6 prose-h2:pb-4 prose-h2:border-b prose-h2:border-surface-border prose-h3:text-2xl prose-p:leading-relaxed prose-ul:list-none prose-ul:pl-0 prose-li:relative prose-li:pl-6 prose-li:before:content-[''] prose-li:before:absolute prose-li:before:left-0 prose-li:before:top-[0.6em] prose-li:before:w-2 prose-li:before:h-2 prose-li:before:bg-secondary prose-li:before:rounded-full break-words [&_*]:!text-site-text [&_a]:!text-secondary! [&_*]:!bg-transparent"
+                      dangerouslySetInnerHTML={{ __html: cleanHTML }}
+                    />
+                  </motion.div>
+                </div>
+              )}
+
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 4. CURRICULUM / MODULES */}
       {modules && modules.length > 0 && (
@@ -393,7 +435,7 @@ export const CourseDetails: React.FC = () => {
         </div>
       </section>
 
-      {/* 5. SUCCESS STORIES */}
+      {/* 6. SUCCESS STORIES */}
       {testimonials && testimonials.length > 0 && (
         <section className="py-24 bg-surface-hero border-y border-surface-border">
           <div className="max-w-7xl mx-auto px-6">
@@ -432,8 +474,13 @@ export const CourseDetails: React.FC = () => {
         </section>
       )}
 
-      {/* 6. GUARANTEE */}
-      <section className="py-24 bg-secondary/[0.03] dark:bg-secondary/[0.05] border-y border-secondary/10">
+      {/* 7. COMMENTS SECTION */}
+      <section className="py-24 px-6 bg-site-bg">
+        <CourseComments courseId={course.id} />
+      </section>
+
+      {/* 8. GUARANTEE (Absoluto Final) */}
+      <section className="py-24 mt-auto bg-secondary/[0.03] dark:bg-secondary/[0.05] border-t border-secondary/10">
         <div className="max-w-3xl mx-auto px-6 text-center flex flex-col items-center">
           <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center mb-8">
             <ShieldCheck className="w-10 h-10 text-secondary" />
@@ -451,54 +498,6 @@ export const CourseDetails: React.FC = () => {
         </div>
       </section>
 
-      {/* 7. RICH TEXT DETAILS (If any extra content is provided) */}
-      {(cleanHTML || course.secondary_image_url) && (
-        <section className="py-24 bg-site-bg border-t border-surface-border relative overflow-hidden">
-          {/* Decorative background element */}
-          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-secondary/5 blur-3xl pointer-events-none" />
-          
-          <div className="max-w-7xl mx-auto px-6 relative z-10">
-            <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-20">
-              
-              {/* Left Side: Secondary Image */}
-              {course.secondary_image_url && (
-                <div className="w-full lg:w-5/12 lg:sticky lg:top-32 relative">
-                  <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative rounded-3xl overflow-hidden shadow-xl shadow-secondary/10 aspect-square max-w-md mx-auto lg:mx-0 border-8 border-surface bg-surface">
-                    <OptimizedImage src={course.secondary_image_url} alt="Detalhes do curso" className="w-full h-full object-contain" />
-                  </motion.div>
-                </div>
-              )}
-
-              {/* Right Side: Rich Text with Premium Card Look */}
-              {cleanHTML && (
-                <div className={`w-full ${course.secondary_image_url ? 'lg:w-7/12' : 'max-w-4xl mx-auto'}`}>
-                  <motion.div 
-                    initial={{ opacity: 0, y: 30 }} 
-                    whileInView={{ opacity: 1, y: 0 }} 
-                    viewport={{ once: true }}
-                    className="bg-surface rounded-[2rem] p-8 md:p-12 shadow-xl shadow-surface-border/50 border border-surface-border relative mt-8 lg:mt-0"
-                  >
-                    <div className="absolute -top-5 left-8 lg:left-12 bg-accent text-white px-6 py-1.5 rounded-full text-xs font-bold tracking-widest shadow-lg shadow-accent/20 uppercase">
-                      Detalhes do Programa
-                    </div>
-                    
-                    <div 
-                      className="prose prose-lg max-w-none text-site-text-muted prose-headings:text-site-text prose-a:text-secondary hover:prose-a:text-secondary-light prose-headings:font-extrabold prose-h2:text-3xl prose-h2:mt-2 prose-h2:mb-6 prose-h2:pb-4 prose-h2:border-b prose-h2:border-surface-border prose-h3:text-2xl prose-p:leading-relaxed prose-ul:list-none prose-ul:pl-0 prose-li:relative prose-li:pl-6 prose-li:before:content-[''] prose-li:before:absolute prose-li:before:left-0 prose-li:before:top-[0.6em] prose-li:before:w-2 prose-li:before:h-2 prose-li:before:bg-secondary prose-li:before:rounded-full break-words [&_*]:!text-site-text [&_a]:!text-secondary! [&_*]:!bg-transparent"
-                      dangerouslySetInnerHTML={{ __html: cleanHTML }}
-                    />
-                  </motion.div>
-                </div>
-              )}
-
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 8. COMMENTS SECTION */}
-      <div className="pb-32 px-6">
-        <CourseComments courseId={course.id} />
-      </div>
     </div>
   );
 };
