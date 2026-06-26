@@ -1,15 +1,15 @@
-import React from 'react';
-import { CoursesHero } from '../sections/academy/CoursesHero';
-import { BioReset } from '../sections/home/BioReset';
-import { AcademyCourses } from '../sections/academy/AcademyCourses';
-import { motion } from 'framer-motion';
+import React from "react";
+import { CoursesHero } from "../sections/academy/CoursesHero";
+import { BioReset } from "../components/BioReset";
+import { AcademyCourses } from "../sections/academy/AcademyCourses";
+import { motion } from "framer-motion";
 
 export const Courses: React.FC = () => {
   return (
     <div className="w-full">
       <CoursesHero />
       {/* <AcademyMetrics /> */}
-      
+
       <section className="py-24 bg-site-bg" id="catalogo">
         <div className="max-w-[1400px] 2xl:max-w-[1600px] mx-auto px-6 lg:px-8 2xl:px-12">
           <motion.div
@@ -21,9 +21,13 @@ export const Courses: React.FC = () => {
             <span className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-bold uppercase tracking-widest mb-5">
               Formação Contínua
             </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-site-text mb-4">Mergulhe Mais Fundo</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-site-text mb-4">
+              Mergulhe Mais Fundo
+            </h2>
             <p className="text-site-text-muted font-light text-lg max-w-2xl mx-auto">
-              Os nossos programas intensivos e cursos práticos desenhados para transformar a sua saúde, com a ajuda da Saúde Integrativa e Biológica.
+              Os nossos programas intensivos e cursos práticos desenhados para
+              transformar a sua saúde, com a ajuda da Saúde Integrativa e
+              Biológica.
             </p>
           </motion.div>
           <AcademyCourses />
@@ -31,7 +35,6 @@ export const Courses: React.FC = () => {
       </section>
 
       <BioReset />
-      
     </div>
   );
 };

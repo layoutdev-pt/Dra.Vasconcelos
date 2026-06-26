@@ -1,0 +1,29 @@
+{
+  "enabled": true,
+  "maxEvents": 120,
+  "events": [
+    {
+      "id": 1,
+      "type": "session:init",
+      "timestamp": "2026-06-25T08:52:38.094Z",
+      "summary": "agent initialized",
+      "sessionId": "dc6552d3-01c4-4f2b-8a0f-036e1c8da1ad"
+    },
+    {
+      "id": 2,
+      "type": "turn:start",
+      "timestamp": "2026-06-25T08:53:13.344Z",
+      "summary": "leave the workspace",
+      "sessionId": "dc6552d3-01c4-4f2b-8a0f-036e1c8da1ad",
+      "detail": "turnId=bc91adfc-1fc3-4362-bd18-28190e38e6bd"
+    },
+    {
+      "id": 3,
+      "type": "turn:done",
+      "timestamp": "2026-06-25T08:53:25.985Z",
+      "summary": "completed",
+      "sessionId": "dc6552d3-01c4-4f2b-8a0f-036e1c8da1ad"
+    }
+  ],
+  "updatedAt": "2026-06-25T08:53:25.985Z"
+}
