@@ -80,7 +80,7 @@ export const BioReset: React.FC = () => {
 
             <div className="pt-6">
               <Link
-                to={`/cursos/${latestCourse.id}`}
+                to={`https://www.draalexandravasconcelos.pt/cursos/bioreset`}
                 className="inline-block bg-secondary hover:bg-secondary/90 text-white px-8 py-3.5 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
                 Garanta Já a Sua Vaga

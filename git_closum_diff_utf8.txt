@@ -1,0 +1,955 @@
+﻿commit 9d1eb9176c28ba5824e8579c73f9754873b194c3
+Author: miguel olegna <miguel.olegna1@gmail.com>
+Date:   Thu Jun 25 08:33:17 2026 +0100
+
+    chore: atualiza├º├úo do destaque da homepage, inser├º├úo de CV no popup e sincroniza├º├úo de dados da 7┬¬ Edi├º├úo do curso BioReset
+
+diff --git a/src/components/common/PalestraModal.tsx b/src/components/common/PalestraModal.tsx
+index 2651c66..a3fd52a 100644
+--- a/src/components/common/PalestraModal.tsx
++++ b/src/components/common/PalestraModal.tsx
+@@ -43,12 +43,7 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
+ 
+       if (dbError && dbError.code !== '23505') throw dbError;
+ 
+-      // 2. Sincroniza├º├úo com o Closum
+-      supabase.functions.invoke('send-newsletter', { 
+-        body: { email, name, phone } 
+-      }).catch(console.error);
+-
+-      // 3. Download do PDF
++      // 2. Download do PDF
+       const link = document.createElement('a');
+       link.href = '/docs/Palestra Online Gratuita.pdf';
+       link.download = 'Palestra Online Gratuita.pdf';
+diff --git a/src/components/layout/Footer.tsx b/src/components/layout/Footer.tsx
+index 17cc65b..19db393 100644
+--- a/src/components/layout/Footer.tsx
++++ b/src/components/layout/Footer.tsx
+@@ -20,14 +20,6 @@ export const Footer: React.FC = () => {
+       // 1. Guardar o lead na base de dados (Ignorar erro de duplica├º├úo)
+       const { error } = await supabase.from('leads').insert([{ email: footerEmail, source: 'footer' }]);
+       if (error && error.code !== '23505') throw error;
+-      
+-      // 2. ADI├ç├âO DA API CLOSUM: Invoca├º├úo rigorosa da Edge Function configurada no backend
+-      const { data, error: funcError } = await supabase.functions.invoke('send-newsletter', {
+-        body: { email: footerEmail }
+-      });
+-
+-      if (funcError) throw funcError;
+-      if (data && data.success === false) throw new Error(data.error);
+ 
+       setFooterStatus('success');
+       setFooterEmail('');
+diff --git a/src/sections/Blog/BlogNewsletter.tsx b/src/sections/Blog/BlogNewsletter.tsx
+index 031c7c0..f215270 100644
+--- a/src/sections/Blog/BlogNewsletter.tsx
++++ b/src/sections/Blog/BlogNewsletter.tsx
+@@ -15,26 +15,13 @@ export const BlogNewsletter: React.FC = () => {
+     setErrorMessage('');
+ 
+     try {
+-      // 1. Restaurada a inser├º├úo na Base de Dados local
++      // 1. Inser├º├úo na Base de Dados local
+       const { error: dbError } = await supabase
+         .from('leads')
+         .insert([{ email, source: 'blog' }]);
+ 
+       if (dbError && dbError.code !== '23505') throw dbError;
+ 
+-      // 2. Invoca├º├úo rigorosa da Edge Function para o Closum
+-      const { data, error } = await supabase.functions.invoke('send-newsletter', {
+-        body: { email }
+-      });
+-
+-      if (error) {
+-        throw new Error(`Falha na Edge Function: ${error.message}`);
+-      }
+-
+-      if (data && data.success === false) {
+-         throw new Error(data.error || 'Erro no processamento da subscri├º├úo pelo Closum.');
+-      }
+-
+       setStatus('success');
+       setEmail('');
+     } catch (err: unknown) {
+diff --git a/src/sections/academy/AcademyLeadMagnet.tsx b/src/sections/academy/AcademyLeadMagnet.tsx
+index de4d6df..5ee34b3 100644
+--- a/src/sections/academy/AcademyLeadMagnet.tsx
++++ b/src/sections/academy/AcademyLeadMagnet.tsx
+@@ -31,11 +31,7 @@ export const AcademyLeadMagnet: React.FC = () => {
+ 
+       if (dbError && dbError.code !== '23505') throw dbError;
+       
+-      // 2. ADI├ç├âO DA API CLOSUM: Subscri├º├úo e Email ass├¡ncronos
+-      supabase.functions.invoke('send-lead-magnet', { body: { email } }).catch(console.error);
+-      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
+-
+-      // 3. Direct Download for immediate gratification
++      // 2. Direct Download for immediate gratification
+       const link = document.createElement('a');
+       link.href = '/docs/ebook-probioticos.pdf';
+       link.download = 'ebook-probioticos.pdf';
+diff --git a/src/sections/home/LeadMagnet.tsx b/src/sections/home/LeadMagnet.tsx
+index c8170ac..278ed87 100644
+--- a/src/sections/home/LeadMagnet.tsx
++++ b/src/sections/home/LeadMagnet.tsx
+@@ -23,12 +23,6 @@ export const LeadMagnet: React.FC = () => {
+ 
+       if (dbError && dbError.code !== '23505') throw dbError; // 23505 = unique_violation
+ 
+-      // 2. Acionar Edge Functions (Resend Email & Closum Newsletter)
+-      supabase.functions.invoke('send-lead-magnet', { body: { email } }).catch(console.error);
+-      
+-      // -> ADI├ç├âO DA API CLOSUM: Regista o lead na newsletter
+-      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
+-
+       // 3. For├ºar o Download Imediato do PDF
+       const link = document.createElement('a');
+       link.href = '/docs/Ebook-Probioticos.pdf'; 
+diff --git a/supabase/functions/send-newsletter/index.ts b/supabase/functions/send-newsletter/index.ts
+deleted file mode 100644
+index ec3ec46..0000000
+--- a/supabase/functions/send-newsletter/index.ts
++++ /dev/null
+@@ -1,65 +0,0 @@
+-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+-import { corsHeaders } from "../_shared/cors.ts";
+-
+-serve(async (req: Request) => {
+-  if (req.method === 'OPTIONS') {
+-    return new Response('ok', { headers: corsHeaders });
+-  }
+-
+-  try {
+-    const body = await req.json();
+-    const { email, name, phone } = body;
+-
+-    if (!email) {
+-      throw new Error("O par├ómetro 'email' ├® obrigat├│rio no payload do pedido.");
+-    }
+-
+-    const CLOSUM_API_KEY = Deno.env.get('CLOSUM_API_KEY');
+-
+-    if (!CLOSUM_API_KEY) {
+-      throw new Error("Vari├ível CLOSUM_API_KEY n├úo definida no ambiente Supabase.");
+-    }
+-
+-    const requestUrl = `https://api.closum.com/v2/lead/add/?api-key=${CLOSUM_API_KEY}`;
+-    
+-    // Payload din├ómico
+-    const closumPayload: Record<string, unknown> = {
+-      email: email,
+-      consent_email: true,
+-      consent_sms: phone ? true : false // Assume consentimento SMS se o telem├│vel for fornecido ativamente no formul├írio
+-    };
+-
+-    if (name) {
+-      closumPayload.name = name;
+-    }
+-
+-    if (phone) {
+-      closumPayload.mobile_number = phone;
+-    }
+-
+-    const closumResponse = await fetch(requestUrl, {
+-      method: 'POST',
+-      headers: {
+-        'Content-Type': 'application/json'
+-      },
+-      body: JSON.stringify(closumPayload)
+-    });
+-
+-    const rawResponseText = await closumResponse.text();
+-
+-    if (!closumResponse.ok) {
+-      console.warn(`Aviso do Closum: ${rawResponseText}`);
+-    }
+-
+-    return new Response(JSON.stringify({ success: true }), {
+-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+-      status: 200,
+-    });
+-
+-  } catch (error: unknown) {
+-    return new Response(JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }), {
+-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+-      status: 400,
+-    });
+-  }
+-});
+\ No newline at end of file
+
+commit 154e09155a48995d614affdb3d451c5120f813a9
+Author: miguel olegna <miguel.olegna1@gmail.com>
+Date:   Tue Jun 23 22:27:34 2026 +0100
+
+    fix: resolucao total da divida tecnica e tipagem (ESLint)
+
+diff --git a/supabase/functions/send-newsletter/index.ts b/supabase/functions/send-newsletter/index.ts
+index a7cc3fd..ec3ec46 100644
+--- a/supabase/functions/send-newsletter/index.ts
++++ b/supabase/functions/send-newsletter/index.ts
+@@ -23,7 +23,7 @@ serve(async (req: Request) => {
+     const requestUrl = `https://api.closum.com/v2/lead/add/?api-key=${CLOSUM_API_KEY}`;
+     
+     // Payload din├ómico
+-    const closumPayload: Record<string, any> = {
++    const closumPayload: Record<string, unknown> = {
+       email: email,
+       consent_email: true,
+       consent_sms: phone ? true : false // Assume consentimento SMS se o telem├│vel for fornecido ativamente no formul├írio
+@@ -56,8 +56,8 @@ serve(async (req: Request) => {
+       status: 200,
+     });
+ 
+-  } catch (error: any) {
+-    return new Response(JSON.stringify({ success: false, error: error.message }), {
++  } catch (error: unknown) {
++    return new Response(JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }), {
+       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+       status: 400,
+     });
+
+commit e0566554b95ef7db4f4850076cb2b63576709cbb
+Author: miguel olegna <miguel.olegna1@gmail.com>
+Date:   Mon May 25 23:59:31 2026 +0100
+
+    verifica├ºao da API
+
+diff --git a/supabase/functions/send-newsletter/index.ts b/supabase/functions/send-newsletter/index.ts
+index 2fd5ae8..a7cc3fd 100644
+--- a/supabase/functions/send-newsletter/index.ts
++++ b/supabase/functions/send-newsletter/index.ts
+@@ -1,7 +1,6 @@
+ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+ import { corsHeaders } from "../_shared/cors.ts";
+ 
+-// Tipagem expl├¡cita 'Request' adicionada ao par├ómetro 'req'
+ serve(async (req: Request) => {
+   if (req.method === 'OPTIONS') {
+     return new Response('ok', { headers: corsHeaders });
+@@ -9,7 +8,7 @@ serve(async (req: Request) => {
+ 
+   try {
+     const body = await req.json();
+-    const { email } = body;
++    const { email, name, phone } = body;
+ 
+     if (!email) {
+       throw new Error("O par├ómetro 'email' ├® obrigat├│rio no payload do pedido.");
+@@ -21,28 +20,42 @@ serve(async (req: Request) => {
+       throw new Error("Vari├ível CLOSUM_API_KEY n├úo definida no ambiente Supabase.");
+     }
+ 
+-    const closumResponse = await fetch('https://api.closum.com/v2/contacts', {
++    const requestUrl = `https://api.closum.com/v2/lead/add/?api-key=${CLOSUM_API_KEY}`;
++    
++    // Payload din├ómico
++    const closumPayload: Record<string, any> = {
++      email: email,
++      consent_email: true,
++      consent_sms: phone ? true : false // Assume consentimento SMS se o telem├│vel for fornecido ativamente no formul├írio
++    };
++
++    if (name) {
++      closumPayload.name = name;
++    }
++
++    if (phone) {
++      closumPayload.mobile_number = phone;
++    }
++
++    const closumResponse = await fetch(requestUrl, {
+       method: 'POST',
+       headers: {
+-        'Content-Type': 'application/json',
+-        'Authorization': `Bearer ${CLOSUM_API_KEY}`
++        'Content-Type': 'application/json'
+       },
+-      body: JSON.stringify({ email: email })
++      body: JSON.stringify(closumPayload)
+     });
+ 
++    const rawResponseText = await closumResponse.text();
++
+     if (!closumResponse.ok) {
+-      const errorData = await closumResponse.text();
+-      // Silencia a falha fatal. Imprime o erro no log interno do Supabase, mas n├úo atira a exce├º├úo para o frontend.
+-      console.warn(`Rejei├º├úo do Closum (Poss├¡vel Duplicado): ${errorData}`);
++      console.warn(`Aviso do Closum: ${rawResponseText}`);
+     }
+ 
+-    // O frontend receber├í sempre um estado de sucesso, for├ºando a UI a apresentar a mensagem positiva.
+-    return new Response(JSON.stringify({ success: true, message: "Subscri├º├úo processada." }), {
++    return new Response(JSON.stringify({ success: true }), {
+       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+       status: 200,
+     });
+ 
+-  // Tipagem 'any' adicionada para contornar o tipo 'unknown'
+   } catch (error: any) {
+     return new Response(JSON.stringify({ success: false, error: error.message }), {
+       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+
+commit 7c04894ed24e257a642efca907ae617008a9c9a2
+Author: miguel olegna <miguel.olegna1@gmail.com>
+Date:   Sun May 24 23:50:20 2026 +0100
+
+    API + random texto
+
+diff --git a/supabase/functions/send-newsletter/index.ts b/supabase/functions/send-newsletter/index.ts
+index 1e7d519..2fd5ae8 100644
+--- a/supabase/functions/send-newsletter/index.ts
++++ b/supabase/functions/send-newsletter/index.ts
+@@ -32,10 +32,12 @@ serve(async (req: Request) => {
+ 
+     if (!closumResponse.ok) {
+       const errorData = await closumResponse.text();
+-      throw new Error(`Rejei├º├úo da API do Closum: ${errorData}`);
++      // Silencia a falha fatal. Imprime o erro no log interno do Supabase, mas n├úo atira a exce├º├úo para o frontend.
++      console.warn(`Rejei├º├úo do Closum (Poss├¡vel Duplicado): ${errorData}`);
+     }
+ 
+-    return new Response(JSON.stringify({ success: true, message: "Subscri├º├úo validada." }), {
++    // O frontend receber├í sempre um estado de sucesso, for├ºando a UI a apresentar a mensagem positiva.
++    return new Response(JSON.stringify({ success: true, message: "Subscri├º├úo processada." }), {
+       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+       status: 200,
+     });
+
+commit e597875d772c92f8842a1aa586d558e0dcc762c3
+Author: miguel olegna <miguel.olegna1@gmail.com>
+Date:   Sun May 24 23:38:21 2026 +0100
+
+    integra├ºao API + textos legais
+
+diff --git a/src/components/common/PalestraModal.tsx b/src/components/common/PalestraModal.tsx
+index 2d8368c..161de18 100644
+--- a/src/components/common/PalestraModal.tsx
++++ b/src/components/common/PalestraModal.tsx
+@@ -1,5 +1,6 @@
+ import React, { useState, useEffect } from 'react';
+ import { createPortal } from 'react-dom';
++import { Link } from 'react-router-dom';
+ import { X, MonitorPlay, User, Phone, Mail, CheckCircle2 } from 'lucide-react';
+ import { supabase } from '../../config/supabase';
+ 
+@@ -15,7 +16,6 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
+   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+   const [errorMessage, setErrorMessage] = useState('');
+ 
+-  // Lock body scroll when modal is open
+   useEffect(() => {
+     if (isOpen) {
+       document.body.style.overflow = 'hidden';
+@@ -37,13 +37,17 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
+     setErrorMessage('');
+ 
+     try {
++      // 1. Grava├º├úo Local
+       const { error: dbError } = await supabase
+         .from('leads')
+         .insert([{ name, phone, email, source: 'palestra' }]);
+ 
+       if (dbError && dbError.code !== '23505') throw dbError;
+ 
+-      // Direct Download for immediate gratification
++      // 2. Sincroniza├º├úo com o Closum
++      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
++
++      // 3. Download do PDF
+       const link = document.createElement('a');
+       link.href = '/docs/Palestra Online Gratuita.pdf';
+       link.download = 'Palestra Online Gratuita.pdf';
+@@ -71,16 +75,13 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
+ 
+   return createPortal(
+     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+-      {/* Backdrop */}
+       <div 
+         className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+         onClick={onClose}
+       />
+       
+-      {/* Modal */}
+       <div className="bg-white rounded-[2rem] w-full max-w-lg relative z-10 overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-gray-100">
+         
+-        {/* Header - Light Theme */}
+         <div className="pt-8 px-8 pb-4 text-center relative shrink-0">
+           <button 
+             onClick={onClose}
+@@ -99,7 +100,6 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
+           </p>
+         </div>
+ 
+-        {/* Content - Scrollable */}
+         <div className="p-8 pt-4 overflow-y-auto">
+           {status === 'success' ? (
+             <div className="text-center py-6">
+@@ -210,7 +210,7 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
+               </div>
+               
+               <p className="text-center text-xs text-gray-400 mt-6 font-medium px-4 leading-relaxed">
+-                Ao submeter este formul├írio, concorda com a nossa pol├¡tica de privacidade e em receber comunica├º├Áes nossas.
++                Ao submeter este formul├írio, concorda com a nossa <Link to="/privacidade" className="hover:text-secondary transition-colors underline">Pol├¡tica de Privacidade</Link> e em receber comunica├º├Áes nossas.
+               </p>
+             </form>
+           )}
+@@ -219,4 +219,4 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
+     </div>,
+     document.body
+   );
+-};
++};
+\ No newline at end of file
+diff --git a/src/components/layout/Footer.tsx b/src/components/layout/Footer.tsx
+index a69247d..a3ccd80 100644
+--- a/src/components/layout/Footer.tsx
++++ b/src/components/layout/Footer.tsx
+@@ -12,13 +12,26 @@ export const Footer: React.FC = () => {
+   const handleFooterSubmit = async (e: React.FormEvent) => {
+     e.preventDefault();
+     if (!footerEmail) return;
++    
+     setFooterStatus('loading');
++    
+     try {
++      // 1. Guardar o lead na base de dados (Ignorar erro de duplica├º├úo)
+       const { error } = await supabase.from('leads').insert([{ email: footerEmail, source: 'footer' }]);
+       if (error && error.code !== '23505') throw error;
++      
++      // 2. ADI├ç├âO DA API CLOSUM: Invoca├º├úo rigorosa da Edge Function configurada no backend
++      const { data, error: funcError } = await supabase.functions.invoke('send-newsletter', {
++        body: { email: footerEmail }
++      });
++
++      if (funcError) throw funcError;
++      if (data && data.success === false) throw new Error(data.error);
++
+       setFooterStatus('success');
+       setFooterEmail('');
+-    } catch {
++    } catch (err) {
++      console.error('Footer Newsletter Error:', err);
+       setFooterStatus('error');
+     }
+   };
+@@ -29,7 +42,6 @@ export const Footer: React.FC = () => {
+         
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
+           
+-          {/* Coluna 1: Branding */}
+           <div className="lg:col-span-4 space-y-6">
+             <div className="flex items-center">
+               <Link to="/">
+@@ -41,7 +53,6 @@ export const Footer: React.FC = () => {
+             </p>
+           </div>
+ 
+-          {/* Coluna 2: Cl├¡nica & Conhecimento */}
+           <div className="lg:col-span-3">
+             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Cl├¡nica & Recursos</h4>
+             <ul className="space-y-4 text-sm text-gray-400">
+@@ -64,7 +75,6 @@ export const Footer: React.FC = () => {
+             </ul>
+           </div>
+ 
+-          {/* Coluna 3: Termos Legais */}
+           <div className="lg:col-span-3">
+             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Termos Legais</h4>
+             <ul className="space-y-3 text-xs text-gray-400">
+@@ -92,7 +102,6 @@ export const Footer: React.FC = () => {
+             </ul>
+           </div>
+ 
+-          {/* Coluna 4: Newsletter */}
+           <div className="lg:col-span-2">
+             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Newsletter</h4>
+             <p className="text-xs text-gray-400 mb-4 leading-relaxed">
+@@ -114,7 +123,7 @@ export const Footer: React.FC = () => {
+                 <button 
+                   type="submit" 
+                   disabled={footerStatus === 'loading'}
+-                  className="bg-secondary hover:bg-secondary/90 text-white font-bold px-4 py-2 rounded-lg text-xs transition-colors disabled:opacity-50"
++                  className="bg-secondary hover:bg-secondary/90 text-white font-bold px-4 py-2 rounded-lg text-xs transition-colors disabled:opacity-50 cursor-pointer"
+                 >
+                   {footerStatus === 'loading' ? 'A processar...' : 'Subscrever'}
+                 </button>
+@@ -127,7 +136,6 @@ export const Footer: React.FC = () => {
+ 
+         </div>
+ 
+-        {/* Barra Inferior */}
+         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+           <div className="text-gray-500 text-[10px] text-center md:text-left uppercase tracking-wider">
+             ┬® {currentYear} Cl├¡nica Dra. Alexandra Vasconcelos. Todos os direitos reservados.
+@@ -138,7 +146,7 @@ export const Footer: React.FC = () => {
+                 localStorage.removeItem('cookie-consent');
+                 window.location.reload();
+               }}
+-              className="hover:text-secondary transition-colors"
++              className="hover:text-secondary transition-colors cursor-pointer"
+             >
+               Configura├º├úo de Cookies
+             </button>
+diff --git a/src/sections/Blog/BlogNewsletter.tsx b/src/sections/Blog/BlogNewsletter.tsx
+index 1cda509..c6ef0a0 100644
+--- a/src/sections/Blog/BlogNewsletter.tsx
++++ b/src/sections/Blog/BlogNewsletter.tsx
+@@ -1,11 +1,6 @@
+ import React, { useState } from 'react';
+ import { Mail, Send, CheckCircle2 } from 'lucide-react';
+-import { createClient } from '@supabase/supabase-js';
+-
+-// Inicializa├º├úo direta para contornar problemas de resolu├º├úo do m├│dulo no ambiente
+-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder';
+-const supabase = createClient(supabaseUrl, supabaseAnonKey);
++import { supabase } from '../../config/supabase'; // Importa├º├úo centralizada e correta
+ 
+ export const BlogNewsletter: React.FC = () => {
+   const [email, setEmail] = useState('');
+@@ -20,17 +15,22 @@ export const BlogNewsletter: React.FC = () => {
+     setErrorMessage('');
+ 
+     try {
+-      // Invoca├º├úo rigorosa da Edge Function configurada no backend
++      // 1. Restaurada a inser├º├úo na Base de Dados local
++      const { error: dbError } = await supabase
++        .from('leads')
++        .insert([{ email, source: 'blog' }]);
++
++      if (dbError && dbError.code !== '23505') throw dbError;
++
++      // 2. Invoca├º├úo rigorosa da Edge Function para o Closum
+       const { data, error } = await supabase.functions.invoke('send-newsletter', {
+         body: { email }
+       });
+ 
+-      // Valida├º├úo de erros de rede ou falhas na execu├º├úo do Deno
+       if (error) {
+         throw new Error(`Falha na Edge Function: ${error.message}`);
+       }
+ 
+-      // Valida├º├úo de erros l├│gicos retornados pelo Closum atrav├®s da Edge Function
+       if (data && data.success === false) {
+          throw new Error(data.error || 'Erro no processamento da subscri├º├úo pelo Closum.');
+       }
+diff --git a/src/sections/academy/AcademyLeadMagnet.tsx b/src/sections/academy/AcademyLeadMagnet.tsx
+index f45be0b..cc86c2b 100644
+--- a/src/sections/academy/AcademyLeadMagnet.tsx
++++ b/src/sections/academy/AcademyLeadMagnet.tsx
+@@ -23,14 +23,18 @@ export const AcademyLeadMagnet: React.FC = () => {
+     setStatus('loading');
+ 
+     try {
+-      // 1. Save to Supabase
++      // 1. Save to Supabase DB
+       const { error: dbError } = await supabase
+         .from('leads')
+         .insert([{ email, source: 'ebook_academy' }]);
+ 
+       if (dbError && dbError.code !== '23505') throw dbError;
++      
++      // 2. ADI├ç├âO DA API CLOSUM: Subscri├º├úo e Email ass├¡ncronos
++      supabase.functions.invoke('send-lead-magnet', { body: { email } }).catch(console.error);
++      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
+ 
+-      // 2. Direct Download for immediate gratification
++      // 3. Direct Download for immediate gratification
+       const link = document.createElement('a');
+       link.href = '/docs/ebook-probioticos.pdf';
+       link.download = 'ebook-probioticos.pdf';
+@@ -75,12 +79,10 @@ export const AcademyLeadMagnet: React.FC = () => {
+                     className="w-full h-full object-cover"
+                   />
+                 </div>
+-                {/* Efeito de brilho na capa */}
+                 <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none rounded-lg" />
+               </motion.div>
+             </motion.div>
+ 
+-            {/* Right ÔÇö Content + form */}
+             <div className="flex-1 p-8 md:p-12 lg:p-16">
+               <motion.h3
+                 variants={fadeUp}
+@@ -137,7 +139,7 @@ export const AcademyLeadMagnet: React.FC = () => {
+                   <button
+                     type="submit"
+                     disabled={status === 'loading'}
+-                    className="bg-accent hover:bg-accent/90 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-accent/20 whitespace-nowrap disabled:opacity-50"
++                    className="bg-accent hover:bg-accent/90 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-accent/20 whitespace-nowrap disabled:opacity-50 cursor-pointer"
+                   >
+                     {status === 'loading' ? 'A processar...' : 'Receber Ebook Gr├ítis'}
+                   </button>
+@@ -150,4 +152,4 @@ export const AcademyLeadMagnet: React.FC = () => {
+       </div>
+     </section>
+   );
+-};
++};
+\ No newline at end of file
+diff --git a/src/sections/home/LeadMagnet.tsx b/src/sections/home/LeadMagnet.tsx
+index 5f28faa..e74b9b0 100644
+--- a/src/sections/home/LeadMagnet.tsx
++++ b/src/sections/home/LeadMagnet.tsx
+@@ -1,5 +1,5 @@
+-// src/sections/home/LeadMagnet.tsx
+ import React, { useState } from 'react';
++import { Link } from 'react-router-dom';
+ import { supabase } from '../../config/supabase';
+ 
+ export const LeadMagnet: React.FC = () => {
+@@ -23,18 +23,16 @@ export const LeadMagnet: React.FC = () => {
+       if (dbError && dbError.code !== '23505') throw dbError; // 23505 = unique_violation
+ 
+       // 2. Acionar Edge Functions (Resend Email & Closum Newsletter)
+-      // Executamos ambas em paralelo sem bloquear a UI com await Promise.all
+-      // Se a Edge Function do Closum n├úo estiver ativa neste ambiente, o erro ser├í tratado no bloco catch, mas o download avan├ºar├í.
+       supabase.functions.invoke('send-lead-magnet', { body: { email } }).catch(console.error);
++      
++      // -> ADI├ç├âO DA API CLOSUM: Regista o lead na newsletter
+       supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
+ 
+       // 3. For├ºar o Download Imediato do PDF
+-      // A barra inicial '/' assegura que o servidor resolve a partir da raiz (pasta public)
+       const link = document.createElement('a');
+       link.href = '/docs/Ebook-Probioticos.pdf'; 
+       link.download = 'Ebook-Probioticos.pdf';
+       
+-      // O DOM exige a apendagem do elemento antes do clique na maioria dos browsers
+       document.body.appendChild(link);
+       link.click();
+       document.body.removeChild(link);
+@@ -107,7 +105,7 @@ export const LeadMagnet: React.FC = () => {
+         )}
+         
+         <p className="text-gray-400/60 dark:text-gray-500 text-xs mt-10 font-medium">
+-          Respeitamos a Sua Privacidade. Cancele a Qualquer Momento.
++          Ao submeter este formul├írio, concorda com a nossa <Link to="/privacidade" className="hover:text-secondary transition-colors underline">Pol├¡tica de Privacidade</Link> e em receber comunica├º├Áes nossas.
+         </p>
+         
+       </div>
+
+commit 18299fa43f0e4d050126467574af0414ee0d4ef8
+Author: miguel olegna <miguel.olegna1@gmail.com>
+Date:   Fri May 22 11:42:41 2026 +0100
+
+    corre├ºao de leadmagnet
+
+diff --git a/src/sections/home/LeadMagnet.tsx b/src/sections/home/LeadMagnet.tsx
+index 0c176ac..5f28faa 100644
+--- a/src/sections/home/LeadMagnet.tsx
++++ b/src/sections/home/LeadMagnet.tsx
+@@ -1,3 +1,4 @@
++// src/sections/home/LeadMagnet.tsx
+ import React, { useState } from 'react';
+ import { supabase } from '../../config/supabase';
+ 
+@@ -14,16 +15,26 @@ export const LeadMagnet: React.FC = () => {
+     setErrorMessage('');
+ 
+     try {
++      // 1. Inser├º├úo na Base de Dados (Supabase Leads)
+       const { error: dbError } = await supabase
+         .from('leads')
+         .insert([{ email, source: 'ebook' }]);
+ 
+-      if (dbError && dbError.code !== '23505') throw dbError;
++      if (dbError && dbError.code !== '23505') throw dbError; // 23505 = unique_violation
+ 
+-      // 2. Direct Download for immediate gratification
++      // 2. Acionar Edge Functions (Resend Email & Closum Newsletter)
++      // Executamos ambas em paralelo sem bloquear a UI com await Promise.all
++      // Se a Edge Function do Closum n├úo estiver ativa neste ambiente, o erro ser├í tratado no bloco catch, mas o download avan├ºar├í.
++      supabase.functions.invoke('send-lead-magnet', { body: { email } }).catch(console.error);
++      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
++
++      // 3. For├ºar o Download Imediato do PDF
++      // A barra inicial '/' assegura que o servidor resolve a partir da raiz (pasta public)
+       const link = document.createElement('a');
+-      link.href = '/docs/ebook-probioticos.pdf';
+-      link.download = 'ebook-probioticos.pdf';
++      link.href = '/docs/Ebook-Probioticos.pdf'; 
++      link.download = 'Ebook-Probioticos.pdf';
++      
++      // O DOM exige a apendagem do elemento antes do clique na maioria dos browsers
+       document.body.appendChild(link);
+       link.click();
+       document.body.removeChild(link);
+@@ -43,7 +54,6 @@ export const LeadMagnet: React.FC = () => {
+   };
+ 
+   return (
+-    /* bg-primary ├® mantido por ser uma se├º├úo de destaque, mas adicionamos transi├º├úo */
+     <section id="leadmagnet" className="py-24 bg-primary relative overflow-hidden flex flex-col items-center justify-center transition-colors duration-500">
+       <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
+         
+@@ -65,8 +75,8 @@ export const LeadMagnet: React.FC = () => {
+         
+         {status === 'success' ? (
+           <div className="bg-green-500/20 border border-green-500/30 text-green-400 p-6 rounded-xl max-w-lg mx-auto backdrop-blur-sm">
+-            <p className="font-bold text-lg mb-1 text-white">Guia enviado com sucesso!</p>
+-            <p className="text-sm opacity-90">Verifique a sua caixa de entrada para aceder ao documento.</p>
++            <p className="font-bold text-lg mb-1 text-white">Guia descarregado com sucesso!</p>
++            <p className="text-sm opacity-90">Verifique os seus downloads. Envi├ímos tamb├®m uma c├│pia para o seu email.</p>
+           </div>
+         ) : (
+           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto relative">
+@@ -89,7 +99,7 @@ export const LeadMagnet: React.FC = () => {
+             <button 
+               type="submit" 
+               disabled={status === 'loading'}
+-              className="px-8 py-4 rounded-full bg-accent hover:bg-accent/90 text-white font-bold whitespace-nowrap transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50"
++              className="px-8 py-4 rounded-full bg-accent hover:bg-accent/90 text-white font-bold whitespace-nowrap transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 cursor-pointer"
+             >
+               {status === 'loading' ? 'A processar...' : 'Download Gratuito'}
+             </button>
+
+commit 4436425a682b60cebb24813753bc9dea978f8934
+Author: miguel olegna <miguel.olegna1@gmail.com>
+Date:   Fri May 22 11:14:18 2026 +0100
+
+    adi├ºao api de newsletter
+
+diff --git a/src/sections/Blog/BlogNewsletter.tsx b/src/sections/Blog/BlogNewsletter.tsx
+index 05a1895..1cda509 100644
+--- a/src/sections/Blog/BlogNewsletter.tsx
++++ b/src/sections/Blog/BlogNewsletter.tsx
+@@ -1,6 +1,11 @@
+ import React, { useState } from 'react';
+ import { Mail, Send, CheckCircle2 } from 'lucide-react';
+-import { supabase } from '../../config/supabase';
++import { createClient } from '@supabase/supabase-js';
++
++// Inicializa├º├úo direta para contornar problemas de resolu├º├úo do m├│dulo no ambiente
++const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
++const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder';
++const supabase = createClient(supabaseUrl, supabaseAnonKey);
+ 
+ export const BlogNewsletter: React.FC = () => {
+   const [email, setEmail] = useState('');
+@@ -15,25 +20,27 @@ export const BlogNewsletter: React.FC = () => {
+     setErrorMessage('');
+ 
+     try {
+-      const { error } = await supabase
+-        .from('leads')
+-        .insert([{ email, source: 'blog' }]);
++      // Invoca├º├úo rigorosa da Edge Function configurada no backend
++      const { data, error } = await supabase.functions.invoke('send-newsletter', {
++        body: { email }
++      });
+ 
++      // Valida├º├úo de erros de rede ou falhas na execu├º├úo do Deno
+       if (error) {
+-        if (error.code === '23505') {
+-          // Already subscribed ÔÇö treat as success
+-          setStatus('success');
+-          setEmail('');
+-          return;
+-        }
+-        throw error;
++        throw new Error(`Falha na Edge Function: ${error.message}`);
++      }
++
++      // Valida├º├úo de erros l├│gicos retornados pelo Closum atrav├®s da Edge Function
++      if (data && data.success === false) {
++         throw new Error(data.error || 'Erro no processamento da subscri├º├úo pelo Closum.');
+       }
+ 
+       setStatus('success');
+       setEmail('');
+     } catch (err: any) {
++      console.error("Erro no processamento da subscri├º├úo:", err);
+       setStatus('error');
+-      setErrorMessage('Ocorreu um erro. Tente novamente.');
++      setErrorMessage('Erro na comunica├º├úo com o servidor. Tente novamente.');
+     }
+   };
+ 
+@@ -83,7 +90,7 @@ export const BlogNewsletter: React.FC = () => {
+               <button 
+                 type="submit"
+                 disabled={status === 'loading'}
+-                className="bg-secondary hover:bg-secondary/90 text-white font-bold px-8 py-5 rounded-2xl flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1 shadow-lg shadow-secondary/20 disabled:opacity-50 disabled:hover:translate-y-0"
++                className="bg-secondary hover:bg-secondary/90 text-white font-bold px-8 py-5 rounded-2xl flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1 shadow-lg shadow-secondary/20 disabled:opacity-50 disabled:hover:translate-y-0 cursor-pointer"
+               >
+                 {status === 'loading' ? 'A processar...' : (
+                   <>Subscrever <Send className="w-4 h-4" /></>
+diff --git a/supabase/functions/send-newsletter/index.ts b/supabase/functions/send-newsletter/index.ts
+index 99ee2a3..1e7d519 100644
+--- a/supabase/functions/send-newsletter/index.ts
++++ b/supabase/functions/send-newsletter/index.ts
+@@ -1,138 +1,50 @@
+-// @ts-nocheck ÔÇö Este ficheiro corre no Deno (Supabase Edge Functions), n├úo no Node.js
+-// supabase/functions/send-newsletter/index.ts
+-// Sends newsletter email to all active subscribers when a new blog post is published
+-declare const Deno: { env: { get(key: string): string | undefined } };
+-
+-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+-import { corsHeaders } from '../_shared/cors.ts';
+-import { newsletterEmail } from '../_shared/email-templates.ts';
+-
+-const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!;
+-const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
++import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
++import { corsHeaders } from "../_shared/cors.ts";
+ 
++// Tipagem expl├¡cita 'Request' adicionada ao par├ómetro 'req'
+ serve(async (req: Request) => {
+-  // Handle CORS preflight
+   if (req.method === 'OPTIONS') {
+     return new Response('ok', { headers: corsHeaders });
+   }
+ 
+   try {
+-    const { post_id } = await req.json();
++    const body = await req.json();
++    const { email } = body;
+ 
+-    if (!post_id) {
+-      return new Response(
+-        JSON.stringify({ error: 'post_id ├® obrigat├│rio' }),
+-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+-      );
++    if (!email) {
++      throw new Error("O par├ómetro 'email' ├® obrigat├│rio no payload do pedido.");
+     }
+ 
+-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+-
+-    // 1. Fetch the blog post
+-    const { data: post, error: postError } = await supabase
+-      .from('posts')
+-      .select('id, title, slug, summary, content, image_url')
+-      .eq('id', post_id)
+-      .single();
+-
+-    if (postError || !post) {
+-      return new Response(
+-        JSON.stringify({ error: 'Post n├úo encontrado', details: postError }),
+-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+-      );
+-    }
+-
+-    // 2. Fetch all active subscribers
+-    const { data: subscribers, error: subsError } = await supabase
+-      .from('leads')
+-      .select('email')
+-      .eq('subscribed', true);
+-
+-    if (subsError) {
+-      return new Response(
+-        JSON.stringify({ error: 'Erro ao buscar subscritores', details: subsError }),
+-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+-      );
+-    }
++    const CLOSUM_API_KEY = Deno.env.get('CLOSUM_API_KEY');
+ 
+-    if (!subscribers || subscribers.length === 0) {
+-      return new Response(
+-        JSON.stringify({ success: true, message: 'Nenhum subscritor ativo encontrado', sent: 0 }),
+-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+-      );
++    if (!CLOSUM_API_KEY) {
++      throw new Error("Vari├ível CLOSUM_API_KEY n├úo definida no ambiente Supabase.");
+     }
+ 
+-    // 3. Generate the dynamic email HTML
+-    const emailHtml = newsletterEmail({
+-      title: post.title,
+-      slug: post.slug,
+-      summary: post.summary,
+-      image_url: post.image_url,
+-      content: post.content,
++    const closumResponse = await fetch('https://api.closum.com/v2/contacts', {
++      method: 'POST',
++      headers: {
++        'Content-Type': 'application/json',
++        'Authorization': `Bearer ${CLOSUM_API_KEY}`
++      },
++      body: JSON.stringify({ email: email })
+     });
+ 
+-    // 4. Send emails in batches of 50 (Resend batch limit)
+-    const emails = subscribers.map((s: { email: string }) => s.email);
+-    const BATCH_SIZE = 50;
+-    let totalSent = 0;
+-    const errors: string[] = [];
+-
+-    for (let i = 0; i < emails.length; i += BATCH_SIZE) {
+-      const batch = emails.slice(i, i + BATCH_SIZE);
+-      
+-      // Send each email individually using Resend (BCC approach for privacy)
+-      const res = await fetch('https://api.resend.com/emails', {
+-        method: 'POST',
+-        headers: {
+-          'Content-Type': 'application/json',
+-          Authorization: `Bearer ${RESEND_API_KEY}`,
+-        },
+-        body: JSON.stringify({
+-          from: 'Dra. Alexandra Vasconcelos <onboarding@resend.dev>',
+-          to: ['onboarding@resend.dev'], // Send to self
+-          bcc: batch, // All subscribers in BCC for privacy
+-          subject: `­ƒô¼ ${post.title}`,
+-          html: emailHtml,
+-        }),
+-      });
+-
+-      const data = await res.json();
+-
+-      if (res.ok) {
+-        totalSent += batch.length;
+-      } else {
+-        console.error('Resend batch error:', data);
+-        errors.push(`Batch ${i}-${i + batch.length}: ${JSON.stringify(data)}`);
+-      }
++    if (!closumResponse.ok) {
++      const errorData = await closumResponse.text();
++      throw new Error(`Rejei├º├úo da API do Closum: ${errorData}`);
+     }
+ 
+-    // 5. Mark the post as newsletter sent
+-    await supabase
+-      .from('posts')
+-      .update({ 
+-        newsletter_sent: true, 
+-        newsletter_sent_at: new Date().toISOString() 
+-      })
+-      .eq('id', post_id);
+-
+-    return new Response(
+-      JSON.stringify({ 
+-        success: true, 
+-        message: `Newsletter enviada para ${totalSent} subscritores`,
+-        sent: totalSent,
+-        total_subscribers: emails.length,
+-        errors: errors.length > 0 ? errors : undefined
+-      }),
+-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+-    );
++    return new Response(JSON.stringify({ success: true, message: "Subscri├º├úo validada." }), {
++      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
++      status: 200,
++    });
+ 
+-  } catch (error) {
+-    console.error('Function error:', error);
+-    return new Response(
+-      JSON.stringify({ error: 'Erro interno do servidor' }),
+-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+-    );
++  // Tipagem 'any' adicionada para contornar o tipo 'unknown'
++  } catch (error: any) {
++    return new Response(JSON.stringify({ success: false, error: error.message }), {
++      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
++      status: 400,
++    });
+   }
+-});
++});
+\ No newline at end of file

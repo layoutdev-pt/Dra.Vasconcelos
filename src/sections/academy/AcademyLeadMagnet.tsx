@@ -37,7 +37,10 @@ export const AcademyLeadMagnet: React.FC = () => {
 
       if (dbError && dbError.code !== "23505") throw dbError;
 
-      // 2. Direct Download for immediate gratification
+      // 2. ADIÇÃO DA API CLOSUM: Subscrição assíncrona
+      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
+
+      // 3. Direct Download for immediate gratification
       const link = document.createElement("a");
       link.href = "/docs/ebook-probioticos.pdf";
       link.download = "ebook-probioticos.pdf";
@@ -117,10 +120,10 @@ export const AcademyLeadMagnet: React.FC = () => {
                   <CheckCircle2 className="w-6 h-6 text-green-500 shrink-0" />
                   <div>
                     <p className="font-bold text-green-600 text-sm">
-                      Ebook transferido com sucesso!
+                      Download concluído com sucesso!
                     </p>
                     <p className="text-green-500 text-xs mt-0.5 opacity-80">
-                      Verifique as transferências do seu dispositivo.
+                      O seu guia foi guardado automaticamente nas descargas do seu dispositivo.
                     </p>
                   </div>
                 </motion.div>

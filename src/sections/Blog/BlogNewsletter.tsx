@@ -22,6 +22,19 @@ export const BlogNewsletter: React.FC = () => {
 
       if (dbError && dbError.code !== '23505') throw dbError;
 
+      // 2. Invocação rigorosa da Edge Function para o Closum
+      const { data, error } = await supabase.functions.invoke('send-newsletter', {
+        body: { email }
+      });
+
+      if (error) {
+        throw new Error(`Falha na Edge Function: ${error.message}`);
+      }
+
+      if (data && data.success === false) {
+         throw new Error(data.error || 'Erro no processamento da subscrição pelo Closum.');
+      }
+
       setStatus('success');
       setEmail('');
     } catch (err: unknown) {

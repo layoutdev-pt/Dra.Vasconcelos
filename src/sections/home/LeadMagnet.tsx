@@ -23,6 +23,9 @@ export const LeadMagnet: React.FC = () => {
 
       if (dbError && dbError.code !== '23505') throw dbError; // 23505 = unique_violation
 
+      // -> ADIÇÃO DA API CLOSUM: Regista o lead na newsletter
+      supabase.functions.invoke('send-newsletter', { body: { email } }).catch(console.error);
+
       // 3. Forçar o Download Imediato do PDF
       const link = document.createElement('a');
       link.href = '/docs/Ebook-Probioticos.pdf'; 
