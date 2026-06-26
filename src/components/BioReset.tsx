@@ -39,7 +39,7 @@ export const BioReset: React.FC = () => {
             <p className="text-lg text-site-text-muted leading-relaxed font-light">
               Início: 27 de Setembro de 2026. Prepara o teu corpo para a nova
               estação com um reset profundo e recupera a tua vitalidade! Sob a
-              orientação da Dra. Alexandra Correia, este é o programa prático
+              orientação da Dra. Alexandra Vasconcelos, este é o programa prático
               que vai transformar a tua saúde.
             </p>
 
