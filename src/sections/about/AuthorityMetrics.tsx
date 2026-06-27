@@ -78,7 +78,8 @@ export const AuthorityMetrics: React.FC = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+            {/* O SEGREDO ESTÁ AQUI: Adicionado "items-start" para evitar que os cartões estiquem */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 items-start">
               {[
                 "Especialista em Saúde Natural Integrativa",
                 "Farmacêutica, Naturopata e Fitoterapeuta",
@@ -89,9 +90,11 @@ export const AuthorityMetrics: React.FC = () => {
                 "Especialização em Nutrição Celular Ativa – Madrid INCA",
                 "Mestre em Homeopatia Unicista e Homotoxicologia",
                 "Prática clínica em Biorressonância e Saúde Integrativa e Biológica",
+                "Com prática clínica, diplomada e formadora em Bioressonância e Medicina Bioreguladora.",
                 "Membro da ABNPIOM (Asociación Española Prof. en Nutrición y Med. Integrativa)",
-                "Membro da APMI (Associação Portuguesa de Medicina Integrativa)",
+                "Membro da SPMI (Sociedade Portuguesa de Medicina Integrativa)",
                 'Autora: "Dairy Products: Impact on Prostate Cancer?" (Frontiers Front. Nutr.)',
+                "Pós-graduada em Adequação Nutricional e Manutenção da Homeostase — Prevenção e Tratamento de Doenças Relacionadas com a Idade, pela Academia Dr. Lair Ribeiro e pelo Centro Universitário INGA, Brasil.",
               ].map((exp, idx) => (
                 <div
                   key={idx}
