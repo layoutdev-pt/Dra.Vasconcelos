@@ -111,13 +111,13 @@ export const ConsultationDetails: React.FC = () => {
                     </h3>
                     <div className="max-w-3xl mx-auto space-y-6 text-site-text-muted font-light leading-relaxed text-lg">
                       <p>
-                        A consulta tem uma duração aproximada de <strong>2 horas</strong>, durante as quais serão abordados todos os fatores de risco que possam contribuir para o seu envelhecimento acelerado e para o surgimento de doenças. O principal objetivo é identificar e corrigir as causas que levam a estes distúrbios.
+                        A consulta tem uma duração aproximada de <strong>2 horas</strong>, durante as quais serão abordados todos os fatores de risco que possam contribuir para o seu envelhecimento acelerado e para o surgimento de doenças. O principal objetivo é identificar e abordar as causas que levam a estes distúrbios.
                       </p>
                       <p>
                         Alterações da microbiota intestinal, toxicidade, desequilíbrios emocionais, presença de agentes patogénicos e outras causas estão frequentemente correlacionadas com doenças ou sintomas desagradáveis que afetam o nosso bem-estar.
                       </p>
                       <p>
-                        Na consulta, são propostas medidas e estratégias para reverter doenças e promover um envelhecimento saudável. Estas podem incluir alterações no estilo de vida e na alimentação, adaptadas à situação clínica e às necessidades específicas de cada pessoa, bem como a eliminação de fatores tóxicos.
+                        Na consulta, são propostas medidas e estratégias para reduzir fatores de risco e promover um envelhecimento saudável. Estas podem incluir alterações no estilo de vida e na alimentação, adaptadas à situação clínica e às necessidades específicas de cada pessoa, bem como a eliminação de fatores tóxicos.
                       </p>
                       <div className="bg-secondary/10 p-6 rounded-2xl border border-secondary/20 mt-8">
                         <p className="m-0 text-site-text">

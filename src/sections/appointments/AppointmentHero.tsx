@@ -52,7 +52,7 @@ export const AppointmentHero: React.FC = () => {
           custom={2}
           className="text-lg md:text-xl text-site-text-muted max-w-2xl font-light mb-10 leading-relaxed"
         >
-          Uma abordagem personalizada que une a medicina convencional à Saúde Integrativa e Biológica para otimizar a causa raiz dos seus sintomas.
+          Uma abordagem personalizada que complementa a medicina convencional com abordagens integrativas e biológicas para compreender e abordar fatores que possam estar na origem dos sintomas.
         </motion.p>
 
         {/* CTA Button */}

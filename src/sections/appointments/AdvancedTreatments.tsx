@@ -93,14 +93,14 @@ export const AdvancedTreatments: React.FC = () => {
           className="text-center max-w-2xl mx-auto mb-16"
         >
           <motion.span variants={fadeInUp} custom={0} className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-bold uppercase tracking-widest mb-5">
-            Diagnóstico Avançado
+            Avaliação Integrativa Avançada
           </motion.span>
           <motion.h2 variants={fadeInUp} custom={1} className="text-3xl md:text-5xl font-bold text-site-text mb-6 leading-tight">
             Tecnologia de Ponta para<br />
             <span className="text-secondary font-serif font-medium italic">Saúde Integrativa e Biológica</span>
           </motion.h2>
           <motion.p variants={fadeInUp} custom={2} className="text-site-text-muted font-light text-lg md:text-xl leading-relaxed">
-            Exploramos além dos sintomas através de diagnósticos detalhados, desenhando um plano terapêutico verdadeiramente personalizado.
+            Exploramos além dos sintomas através de diagnósticos detalhados, desenhando um plano de intervenção integrativa verdadeiramente personalizado.
           </motion.p>
         </motion.div>
 
@@ -139,50 +139,6 @@ export const AdvancedTreatments: React.FC = () => {
         <div className="max-w-5xl mx-auto bg-surface rounded-[2.5rem] border border-surface-border shadow-[0_12px_40px_-10px_rgba(124,176,176,0.2)] overflow-hidden min-h-[480px]">
           <AnimatePresence mode="wait">
 
-            {/* TAB: Pronutri 
-            {activeTab === 'pronutri' && (
-              <motion.div
-                key="pronutri"
-                variants={tabContentAnimation}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                className="grid grid-cols-1 lg:grid-cols-2 p-8 md:p-14 gap-12 items-center h-full"
-              >
-                <div className="flex flex-col h-full justify-center">
-                  <span className="inline-block px-3 py-1 rounded-full bg-accent/10 text-accent text-xs font-bold uppercase tracking-widest w-fit mb-4">
-                    Bioressonância
-                  </span>
-                  <h3 className="text-3xl md:text-4xl font-bold text-site-text mb-6">
-                    Teste de Intolerâncias <br />
-                    <span className="text-site-text-muted/60 font-medium text-2xl">(Pronutri A)</span>
-                  </h3>
-                  <p className="text-site-text-muted font-light text-lg leading-relaxed mb-8">
-                    Identificamos as respostas bioelétricas do seu organismo a várias frequências de forma 100% não invasiva, sem necessidade de extração de sangue.
-                  </p>
-                  <div className="flex items-center gap-3 py-3 px-5 bg-secondary/5 rounded-2xl border border-secondary/10 w-fit">
-                    <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" />
-                    <p className="text-sm text-site-text font-semibold">Tecnologia indolor de alta precisão</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-6">
-                  {PRONUTRI_STEPS.map((step, i) => (
-                    <div key={i} className="flex gap-5 bg-surface-muted p-5 rounded-2xl border border-surface-border hover:border-secondary/20 transition-colors">
-                      <div className="w-12 h-12 rounded-full bg-surface shadow-sm border border-surface-border flex items-center justify-center shrink-0">
-                        <span className="text-secondary font-bold text-sm">{step.num}</span>
-                      </div>
-                      <div>
-                        <p className="font-bold text-site-text text-base mb-1">{step.label}</p>
-                        <p className="text-site-text-muted font-light text-sm leading-relaxed">{step.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-            */}
-
             {/* TAB: Termografia */}
             {activeTab === 'thermography' && (
               <motion.div
@@ -204,7 +160,7 @@ export const AdvancedTreatments: React.FC = () => {
                     Mapeamento térmico corporal por câmara digital infravermelha de alta resolução que deteta variações de temperatura microscópicas.
                   </p>
                   <p className="text-site-text-muted font-light text-lg leading-relaxed mb-8">
-                    Permite o diagnóstico precoce de patologias, processos degenerativos e inflamatórios, muitas vezes meses ou anos antes do aparecimento de sintomas físicos.
+                    Pode ajudar na identificação precoce de alterações fisiológicas que mereçam avaliação adicional, processos degenerativos e inflamatórios, muitas vezes meses ou anos antes do aparecimento de sintomas físicos.
                   </p>
                   <div className="flex items-center gap-3 py-3 px-5 bg-secondary/5 rounded-2xl border border-secondary/10 w-fit">
                     <Thermometer className="w-5 h-5 text-secondary shrink-0" />
