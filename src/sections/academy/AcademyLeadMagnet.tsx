@@ -19,13 +19,14 @@ const fadeUp = {
 
 export const AcademyLeadMagnet: React.FC = () => {
   const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim() || !consent) return;
 
     setStatus("loading");
 
@@ -50,6 +51,7 @@ export const AcademyLeadMagnet: React.FC = () => {
 
       setStatus("success");
       setEmail("");
+      setConsent(false);
     } catch (err: unknown) {
       console.error("Error in lead magnet:", err);
       setStatus("error");
@@ -129,40 +131,53 @@ export const AcademyLeadMagnet: React.FC = () => {
                 </motion.div>
               ) : (
                 <motion.div variants={fadeUp} custom={3} className="max-w-lg">
-                  <form
-                    onSubmit={handleSubmit}
-                    className="flex flex-col sm:flex-row gap-3"
-                  >
-                    <div className="relative flex-1">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-site-text-muted" />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={status === "loading"}
-                        placeholder="O seu melhor email"
-                        required
-                        className="w-full pl-11 pr-4 py-3.5 bg-surface-muted border border-surface-border rounded-xl text-sm text-site-text placeholder-site-text-muted/60 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all disabled:opacity-50"
-                      />
-                      {status === "error" && (
-                        <span className="absolute -bottom-6 left-4 text-xs text-red-400 font-medium">
-                          Ocorreu um erro. Tente novamente.
-                        </span>
-                      )}
+                  <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <div className="relative flex-1">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-site-text-muted" />
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          disabled={status === "loading"}
+                          placeholder="O seu melhor email"
+                          required
+                          className="w-full pl-11 pr-4 py-3.5 bg-surface-muted border border-surface-border rounded-xl text-sm text-site-text placeholder-site-text-muted/60 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all disabled:opacity-50"
+                        />
+                        {status === "error" && (
+                          <span className="absolute -bottom-6 left-4 text-xs text-red-400 font-medium">
+                            Ocorreu um erro. Tente novamente.
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={status === "loading" || !consent}
+                        className="bg-accent hover:bg-accent/90 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-accent/20 whitespace-nowrap disabled:opacity-50 cursor-pointer"
+                      >
+                        {status === "loading"
+                          ? "A processar..."
+                          : "Receber Ebook Grátis"}
+                      </button>
                     </div>
-                    <button
-                      type="submit"
-                      disabled={status === "loading"}
-                      className="bg-accent hover:bg-accent/90 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition-all duration-200 hover:-translate-y-0.5 shadow-md shadow-accent/20 whitespace-nowrap disabled:opacity-50 cursor-pointer"
-                    >
-                      {status === "loading"
-                        ? "A processar..."
-                        : "Receber Ebook Grátis"}
-                    </button>
+                    
+                    <div className="flex items-start gap-3 mt-2">
+                      <input
+                        type="checkbox"
+                        id="consent-academy"
+                        required
+                        checked={consent}
+                        onChange={(e) => setConsent(e.target.checked)}
+                        className="mt-0.5 shrink-0 w-4 h-4 rounded border-surface-border text-secondary focus:ring-secondary/30 bg-surface-muted cursor-pointer"
+                      />
+                      <label 
+                        htmlFor="consent-academy" 
+                        className="text-[12px] text-site-text-muted/80 leading-tight cursor-pointer select-none"
+                      >
+                        Ao submeter este formulário, concorda com a nossa <a href="/politica-privacidade" className="underline hover:text-secondary transition-colors" target="_blank" rel="noopener noreferrer">Política de Privacidade</a> e em receber comunicações nossas.
+                      </label>
+                    </div>
                   </form>
-                  <p className="w-full text-[11px] text-site-text-muted/60 mt-3 text-center sm:text-left leading-tight">
-                    Ao submeter este formulário, concorda com a nossa <a href="/politica-privacidade" className="underline hover:text-site-text-muted transition-colors">Política de Privacidade</a> e em receber comunicações nossas.
-                  </p>
                 </motion.div>
               )}
             </div>
