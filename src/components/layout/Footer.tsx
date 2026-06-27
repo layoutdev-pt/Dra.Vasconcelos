@@ -23,8 +23,8 @@ export const Footer: React.FC = () => {
       
       // 2. ADIÇÃO DA API CLOSUM: Invocação rigorosa da Edge Function configurada no backend
       const { data, error: funcError } = await supabase.functions.invoke('send-newsletter', {
-  body: { email: footerEmail, list_id: 41676 }
-});
+        body: { email: footerEmail, list_id: 41676 }
+      });
 
       if (funcError) throw funcError;
       if (data && data.success === false) throw new Error(data.error);
@@ -49,8 +49,9 @@ export const Footer: React.FC = () => {
                 <OptimizedImage src={whiteLogo} alt="Dra. Alexandra Vasconcelos" objectFit="object-contain" wrapperClassName="h-20 md:h-28 w-auto transition-all duration-500" className="object-left" />
               </Link>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
-              Empoderando pacientes através do conhecimento integrativo de ponta para um amanhã com mais vitalidade e saúde plena.
+            {/* O Disclaimer Legal atualizado e com texto reduzido (text-xs) */}
+            <p className="text-gray-400/90 text-xs leading-relaxed max-w-md text-justify md:text-left">
+              A Dra. Alexandra Vasconcelos é farmacêutica e exerce enquanto naturopata e fitoterapeuta. O acompanhamento realizado insere-se no âmbito da saúde integrativa e não substitui diagnóstico, tratamento ou acompanhamento médico. Sempre que necessário, existe articulação com profissionais médicos devidamente habilitados.
             </p>
           </div>
 
