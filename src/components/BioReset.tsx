@@ -3,7 +3,7 @@ import { CheckCircle2, Loader2 } from "lucide-react"; // Corrigido: Importação
 import { useCourses } from "../hooks/useCourses"; // Corrigido: Importação do Hook
 import { Link } from "react-router-dom"; // Corrigido: Importação do Link
 import { OptimizedImage } from "./OptimizedImage";
-import bioResetImage from "../assets/images/curso1.jpg";
+import bioResetImage from "../assets/images/curso1.webp";
 
 export const BioReset: React.FC = () => {
   const { courses, loading } = useCourses();

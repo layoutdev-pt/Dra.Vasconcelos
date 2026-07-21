@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowDown, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
-import bookHero from '../../assets/images/book_hero.png';
+import bookHero from '../../assets/images/book_hero.webp';
 import { OptimizedImage } from '../../components/OptimizedImage';
 
 const fadeUp = {

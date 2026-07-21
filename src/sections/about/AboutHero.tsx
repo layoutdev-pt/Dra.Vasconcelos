@@ -1,5 +1,5 @@
 import React from 'react';
-import draHero from '../../assets/images/dra3.jpg';
+import draHero from '../../assets/images/dra3.webp';
 import { ArrowDown } from 'lucide-react';
 import { OptimizedImage } from '../../components/OptimizedImage';
 

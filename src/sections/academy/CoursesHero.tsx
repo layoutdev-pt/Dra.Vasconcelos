@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowDown, GraduationCap } from 'lucide-react';
 import { motion } from 'framer-motion';
-import coursesHero from '../../assets/images/courses_hero.png'; // I will rename the generated image to this or use the absolute path for now
+import coursesHero from '../../assets/images/courses_hero.webp'; // I will rename the generated image to this or use the absolute path for now
 import { OptimizedImage } from '../../components/OptimizedImage';
 
 const fadeUp = {

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { PlayCircle, CheckCircle2 } from 'lucide-react';
 import { PalestraModal } from '../../components/common/PalestraModal';
-import palestraImg from '../../assets/images/Palestra Online Gratuita.jpeg';
+import palestraImg from '../../assets/images/Palestra Online Gratuita.webp';
 import { OptimizedImage } from '../../components/OptimizedImage';
 
 export const PalestraSection: React.FC = () => {

@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { ThemeProvider } from './context/ThemeContext';
+import { BioResetPromoNotification } from './components/BioResetPromoNotification';
 import { Toaster } from 'react-hot-toast';
 
 // Lazy loaded pages
@@ -92,6 +93,7 @@ const AppShell: React.FC = () => {
 
       {!isStandalone && <Footer />}
       {!isStandalone && <WhatsAppButton />}
+      {!isStandalone && <BioResetPromoNotification />}
       <CookieBanner />
     </div>
   );

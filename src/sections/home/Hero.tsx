@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../../components/Button";
 import { CheckCircle2, Heart, Leaf } from "lucide-react";
-import draHero from "../../assets/images/dra_hero.png";
+import draHero from "../../assets/images/dra_hero.webp";
 import { OptimizedImage } from "../../components/OptimizedImage";
 
 export const Hero: React.FC = () => {

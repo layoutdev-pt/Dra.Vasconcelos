@@ -1,7 +1,7 @@
 import React from 'react';
 import { CourseCard, type CourseCardProps } from '../../components/CourseCard';
-import curso1 from '../../assets/images/curso1.jpg';
-import curso2 from '../../assets/images/curso2.png';
+import curso1 from '../../assets/images/curso1.webp';
+import curso2 from '../../assets/images/curso2.webp';
 import curso3 from '../../assets/images/curso3.webp';
 
 export const CourseGrid: React.FC = () => {
