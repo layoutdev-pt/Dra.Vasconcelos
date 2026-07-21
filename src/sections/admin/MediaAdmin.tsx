@@ -122,7 +122,7 @@ const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; maxPosition: number; o
 
       if (isNew) {
         await notifyAllUsers(
-          '📺 Dra. Alexandra nos Média!',
+          '📺 Dra. Alexandra nos Media!',
           `Nova publicação disponível: "${payload.title}". Veja agora!`,
           payload.external_url || '/media'
         );
@@ -244,7 +244,7 @@ export const MediaAdmin: React.FC = () => {
   };
 
   const deleteMedia = async (id: string) => {
-    if(!window.confirm('Tem a certeza que deseja apagar esta referência dos Média?')) return;
+    if(!window.confirm('Tem a certeza que deseja apagar esta referência dos Media?')) return;
     const { error } = await supabase.from('media').delete().eq('id', id);
     if (!error) fetchMedia();
   };
@@ -282,7 +282,7 @@ export const MediaAdmin: React.FC = () => {
                   </SortableContext>
                 </DndContext>
                 {mediaList.length === 0 && (
-                  <tr><td colSpan={5} className="px-6 py-12 text-center text-gray-500 italic">Nenhum registo nos média encontrado.</td></tr>
+                  <tr><td colSpan={5} className="px-6 py-12 text-center text-gray-500 italic">Nenhum registo nos media encontrado.</td></tr>
                 )}
               </tbody>
             </table>

@@ -1,5 +1,5 @@
-import React from 'react';
-import { PlayCircle } from 'lucide-react';
+import React from "react";
+import { PlayCircle } from "lucide-react";
 
 export const MidiaHero: React.FC = () => {
   return (
@@ -14,10 +14,11 @@ export const MidiaHero: React.FC = () => {
           Presença na Comunicação
         </span>
         <h1 className="text-5xl lg:text-6xl font-extrabold text-site-text mt-4">
-          Dra. Alexandra <span className="text-secondary">na Mídia</span>
+          Dra. Alexandra <span className="text-secondary">na Media</span>
         </h1>
         <p className="text-site-text-muted mt-6 max-w-2xl mx-auto text-lg font-light">
-          Acompanhe entrevistas, participações em programas de televisão e artigos publicados em canais externos.
+          Acompanhe entrevistas, participações em programas de televisão e
+          artigos publicados em canais externos.
         </p>
       </div>
     </section>

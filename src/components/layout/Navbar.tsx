@@ -24,7 +24,7 @@ const NAV_LINKS = [
   { to: "/cursos", label: "Cursos" },
   { to: "/livros", label: "Livros" },
   { to: "/blog", label: "Blog" },
-  { to: "/midia", label: "Mídia" },
+  { to: "/midia", label: "Media" },
 ];
 
 export const Navbar: React.FC = () => {
@@ -81,8 +81,8 @@ export const Navbar: React.FC = () => {
         >
           {/* ── Logo ───────────────────────── */}
           <div className="flex-shrink-0 flex items-center">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className={`flex items-center relative transition-all duration-500 ${
                 isScrolled ? "h-8 md:h-12" : "h-12 md:h-16"
               }`}
