@@ -29,9 +29,8 @@ export const BioResetPromoNotification: React.FC = () => {
 
     const handleResize = () => {
       const mobile = checkMobile();
-      // If window resizes to mobile while modal is open, switch to sticky footer to respect anti-interstitial rules
       setDisplayMode((currentMode) => {
-        if (mobile && currentMode === "modal") {
+        if (mobile && currentMode === "minimized") {
           return "sticky-footer";
         }
         if (!mobile && currentMode === "sticky-footer") {
@@ -57,12 +56,7 @@ export const BioResetPromoNotification: React.FC = () => {
       // Delay of 3000ms (within 2500ms - 3500ms range) AFTER window load / DOM complete
       timerRef.current = setTimeout(() => {
         sessionStorage.setItem(PROMO_SESSION_KEY, "true");
-        const mobileView = window.innerWidth < 768;
-        if (mobileView) {
-          setDisplayMode("sticky-footer");
-        } else {
-          setDisplayMode("modal");
-        }
+        setDisplayMode("modal");
       }, 3000);
     };
 
@@ -97,16 +91,11 @@ export const BioResetPromoNotification: React.FC = () => {
   }, [displayMode, isMobile]);
 
   const handleCloseModal = () => {
-    // Desktop: Transition to minimized non-modal state
-    setDisplayMode("minimized");
+    setDisplayMode(isMobile ? "sticky-footer" : "minimized");
   };
 
   const handleOpenModal = () => {
-    if (!isMobile) {
-      setDisplayMode("modal");
-    } else {
-      setDisplayMode("sticky-footer");
-    }
+    setDisplayMode("modal");
   };
 
   const handleClosePermanently = () => {
@@ -117,8 +106,8 @@ export const BioResetPromoNotification: React.FC = () => {
 
   return (
     <AnimatePresence>
-      {/* ─── DESKTOP MODAL CENTRAL (ESTRITAMENTE DESKTOP) ─── */}
-      {!isMobile && displayMode === "modal" && (
+      {/* ─── MODAL CENTRAL (DESKTOP E MOBILE) ─── */}
+      {displayMode === "modal" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
           {/* Backdrop Overlay */}
           <motion.div
@@ -152,19 +141,19 @@ export const BioResetPromoNotification: React.FC = () => {
             </button>
 
             {/* Banner Image Header */}
-            <div className="relative h-48 sm:h-56 w-full overflow-hidden bg-primary">
+            <div className={`relative w-full overflow-hidden bg-primary ${isMobile ? "aspect-[4/5] max-h-[40vh]" : "h-48 sm:h-56"}`}>
               <img
-                src={bioResetCapa}
+                src={isMobile ? bioResetStorie : bioResetCapa}
                 alt="BioReset 14 Dias"
                 className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-primary/40" />
               
-              {/* Badge */}
+              {/* Badge
               <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary text-white text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-md">
                 <Sparkles className="w-3.5 h-3.5" />
                 7.ª Edição Especial
-              </div>
+              </div> */}
             </div>
 
             {/* Content Body */}
@@ -174,29 +163,29 @@ export const BioResetPromoNotification: React.FC = () => {
                   id="modal-promo-title"
                   className="text-2xl sm:text-3xl font-extrabold text-site-text tracking-tight flex items-center gap-2"
                 >
-                  BioReset®️ 14 Dias está de volta! <span className="inline-block animate-bounce">💚</span>
+                  BioReset®️ 14 Dias
                 </h2>
                 
                 {/* Trecho com fundo --color-primary conforme pedido */}
                 <div className="inline-flex items-center gap-2 text-xs font-semibold text-white bg-primary px-3.5 py-1.5 rounded-full border border-primary/20 shadow-sm">
                   <Calendar className="w-3.5 h-3.5 text-secondary-light" />
-                  <span>Início: 27 de Setembro</span>
+                  <span>7.ª Edição Especial de Outono 🍂</span>
                 </div>
               </div>
 
               <p className="text-site-text-muted text-base leading-relaxed font-normal">
-                A 7.ª edição do BioReset®️ 14 Dias começa a 27 de setembro, com acompanhamento especializado, sessões online e apoio diário. As vagas são limitadas e esgotam sempre.
+                Prepare o seu corpo para a nova estação e recupere a sua vitalidade, com a orientação da Dra. Alexandra Vasconcelos. Vagas limitadas — esgotam sempre.
               </p>
 
               {/* Destaques do Curso */}
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <div className="flex items-center gap-2 text-xs font-medium text-site-text bg-surface-muted p-2.5 rounded-xl border border-surface-border">
                   <ShieldCheck className="w-4 h-4 text-secondary shrink-0" />
-                  <span>Acompanhamento Especializado</span>
+                  <span>Acompanhamento Diário</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-medium text-site-text bg-surface-muted p-2.5 rounded-xl border border-surface-border">
                   <Sparkles className="w-4 h-4 text-secondary shrink-0" />
-                  <span>Sessões & Apoio Diário</span>
+                  <span>4 Sessões Online de Apoio</span>
                 </div>
               </div>
 
@@ -210,12 +199,6 @@ export const BioResetPromoNotification: React.FC = () => {
                   <ArrowRight className="w-4 h-4" />
                 </a>
 
-                <button
-                  onClick={handleCloseModal}
-                  className="w-full sm:w-auto text-xs text-site-text-muted hover:text-site-text py-3 px-4 rounded-xl transition-colors font-medium text-center"
-                >
-                  Minimizar
-                </button>
               </div>
             </div>
           </motion.div>
@@ -254,7 +237,7 @@ export const BioResetPromoNotification: React.FC = () => {
                   BioReset®️ 14 Dias
                 </div>
                 <h4 className="text-xs font-bold text-site-text truncate">
-                  7.ª Edição - 27 Setembro
+                  7.ª Edição Especial de Outono 🍂
                 </h4>
                 <p className="text-[10px] text-site-text-muted flex items-center gap-1 mt-0.5">
                   <span>Clique para ver</span>
@@ -288,7 +271,10 @@ export const BioResetPromoNotification: React.FC = () => {
           aria-label="Notificação Promocional BioReset"
         >
           {/* Thumbnail & Title/Info */}
-          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+          <div 
+            className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer"
+            onClick={handleOpenModal}
+          >
             <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-surface-border bg-primary">
               <img
                 src={bioResetStorie}
@@ -305,7 +291,7 @@ export const BioResetPromoNotification: React.FC = () => {
                 </h3>
               </div>
               <p className="text-[11px] text-site-text-muted truncate mt-0.5">
-                7.ª Edição • Início a 27 Set
+                7.ª Edição Especial de Outono 🍂
               </p>
             </div>
           </div>
