@@ -30,7 +30,7 @@ export const AppointmentHero: React.FC = () => {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 text-secondary font-medium text-xs md:text-sm mb-8 shadow-sm border border-secondary/20"
         >
           <Video className="w-4 h-4" />
-          <span>Primeira consulta exclusivamente online</span>
+          <span>Primeira consulta exclusivamente online via Zoom</span>
         </motion.div>
 
         {/* Headlines */}
