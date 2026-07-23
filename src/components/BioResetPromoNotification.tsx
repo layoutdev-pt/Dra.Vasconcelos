@@ -141,9 +141,9 @@ export const BioResetPromoNotification: React.FC = () => {
             </button>
 
             {/* Banner Image Header */}
-            <div className={`relative w-full overflow-hidden bg-primary ${isMobile ? "aspect-[4/5] max-h-[40vh]" : "h-48 sm:h-56"}`}>
+            <div className="relative h-48 sm:h-56 w-full overflow-hidden bg-primary">
               <img
-                src={isMobile ? bioResetStorie : bioResetCapa}
+                src={bioResetCapa}
                 alt="BioReset 14 Dias"
                 className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
               />
