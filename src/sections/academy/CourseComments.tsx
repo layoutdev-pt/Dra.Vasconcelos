@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // src/sections/academy/CourseComments.tsx
 import React, { useState, useEffect, useCallback } from "react";
+import { supabase } from "../../config/supabase";
+import { useAuth } from "../../context/authUtils";
 import {
   MessageSquare,
   Flag,
@@ -12,37 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-
-// Mocks para resolver os problemas de compilação
-const supabase = {
-  from: (_table: string) => ({
-    select: (_columns?: string) => ({
-      eq: (_field: string, _val: unknown) => ({
-        order: (_field: string, _opts?: unknown) => Promise.resolve({ data: [] as unknown[] }),
-        single: () => Promise.resolve({ data: { banned: false } })
-      })
-    }),
-    insert: (_data: unknown) => Promise.resolve({ error: null as { message: string, code?: string } | null }),
-    delete: () => ({
-      eq: (_field: string, _val: unknown) => Promise.resolve({ error: null as { message: string, code?: string } | null })
-    })
-  })
-};
-
-const useAuth = () => ({
-  user: { id: "1", email: "teste@exemplo.com", user_metadata: { avatar_url: null } },
-  isAdmin: true
-});
-
-interface OptimizedImageProps {
-  src: string;
-  alt?: string;
-  className?: string;
-}
-const OptimizedImage: React.FC<OptimizedImageProps> = ({ src, alt, className }) => (
-  <img src={src} alt={alt || ""} className={className} />
-);
-// Fim dos Mocks
+import { OptimizedImage } from "../../components/OptimizedImage";
 
 interface CommentWithProfile {
   id: string;
@@ -73,8 +44,12 @@ export const CourseComments: React.FC<CourseCommentsProps> = ({ courseId }) => {
   const [replyText, setReplyText] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const handleSetComments = useCallback((data: CommentWithProfile[]) => setComments(data), []);
+  const handleSetLoading = useCallback((isLoading: boolean) => setLoading(isLoading), []);
+  const handleSetIsBanned = useCallback((banned: boolean) => setIsBanned(banned), []);
+
   const fetchComments = useCallback(async () => {
-    setLoading(true);
+    handleSetLoading(true);
     const { data } = await supabase
       .from("comments")
       .select("*, profiles(email, avatar_url, banned)")
@@ -82,28 +57,36 @@ export const CourseComments: React.FC<CourseCommentsProps> = ({ courseId }) => {
       .order("created_at", { ascending: true });
 
     if (data) {
-      setComments(data as CommentWithProfile[]);
+      handleSetComments(data as CommentWithProfile[]);
     }
-    setLoading(false);
-  }, [courseId]);
-
-  const checkBanStatus = useCallback(async () => {
-    if (!user) return;
-    const { data } = await supabase
-      .from("profiles")
-      .select("banned")
-      .eq("id", user.id)
-      .single();
-    if (data) setIsBanned(data.banned);
-  }, [user]);
+    handleSetLoading(false);
+  }, [courseId, handleSetLoading, handleSetComments]);
 
   useEffect(() => {
     let isMounted = true;
 
     const init = async () => {
+      if (!isMounted) return;
+      handleSetLoading(true);
+
+      if (user) {
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("banned")
+          .eq("id", user.id)
+          .single();
+        if (isMounted && profileData) handleSetIsBanned(profileData.banned);
+      }
+
+      const { data } = await supabase
+        .from("comments")
+        .select("*, profiles(email, avatar_url, banned)")
+        .eq("course_id", courseId)
+        .order("created_at", { ascending: true });
+
       if (isMounted) {
-        await checkBanStatus();
-        await fetchComments();
+        if (data) handleSetComments(data as CommentWithProfile[]);
+        handleSetLoading(false);
       }
     };
 
@@ -112,7 +95,7 @@ export const CourseComments: React.FC<CourseCommentsProps> = ({ courseId }) => {
     return () => {
       isMounted = false;
     };
-  }, [checkBanStatus, fetchComments]);
+  }, [courseId, user, handleSetLoading, handleSetIsBanned, handleSetComments]);
 
   // Post a new top-level comment
   const handleSubmit = async () => {

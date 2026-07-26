@@ -1,5 +1,5 @@
 // src/pages/CourseDetails.tsx
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, ShieldCheck, Quote, Star, Battery, AlertCircle } from 'lucide-react';
 import { supabase } from '../config/supabase';
@@ -32,61 +32,6 @@ const parseContent = (contentStr: string): { html: string, modules: Module[], te
   } catch (e: unknown) { console.error(e); }
   return { html: contentStr, modules: [], testimonials: [] };
 };
-
-const BarChart = () => (
-  <div className="flex items-end justify-center gap-2 h-28 mt-6">
-    {[20, 35, 50, 75, 100].map((h, i) => (
-      <motion.div 
-        key={i}
-        initial={{ height: 0 }}
-        whileInView={{ height: `${h}%` }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: i * 0.1, ease: 'easeOut' }}
-        className={`w-8 rounded-t-md ${i === 4 ? 'bg-secondary' : 'bg-secondary/30'}`}
-      />
-    ))}
-  </div>
-);
-
-const DonutChart = () => (
-  <div className="relative w-28 h-28 mx-auto mt-6">
-    <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
-      <circle cx="50" cy="50" r="40" stroke="#f1f5f9" strokeWidth="12" fill="none" />
-      <motion.circle 
-        cx="50" cy="50" r="40" 
-        stroke="var(--color-secondary)" strokeWidth="12" fill="none"
-        strokeDasharray="251.2"
-        initial={{ strokeDashoffset: 251.2 }}
-        whileInView={{ strokeDashoffset: 251.2 * 0.08 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.5, ease: "easeOut" }}
-      />
-    </svg>
-    <div className="absolute inset-0 flex items-center justify-center flex-col">
-      <span className="text-2xl font-bold text-site-text">92%</span>
-    </div>
-  </div>
-);
-
-const LineChart = () => (
-  <div className="w-full h-28 mt-6 relative">
-    <svg viewBox="0 0 100 40" className="w-full h-full" preserveAspectRatio="none">
-      <motion.path 
-        d="M5 35 Q 25 30, 50 20 T 95 5" 
-        fill="none" 
-        stroke="var(--color-secondary)" 
-        strokeWidth="2.5"
-        initial={{ pathLength: 0 }}
-        whileInView={{ pathLength: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.5, ease: "easeInOut" }}
-      />
-      <motion.circle cx="5" cy="35" r="3" fill="var(--color-secondary)" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.2 }} />
-      <motion.circle cx="50" cy="20" r="3" fill="var(--color-secondary)" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.8 }} />
-      <motion.circle cx="95" cy="5" r="3" fill="var(--color-secondary)" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 1.4 }} />
-    </svg>
-  </div>
-);
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -221,8 +166,8 @@ export const CourseDetails: React.FC = () => {
     );
   }
 
-  const { html, modules, testimonials } = parseContent(course.content);
-  const cleanHTML = html ? DOMPurify.sanitize(html) : '';
+  const { html, modules, testimonials } = useMemo(() => parseContent(course.content), [course.content]);
+  const cleanHTML = useMemo(() => (html ? DOMPurify.sanitize(html) : ''), [html]);
 
   return (
     <div className="min-h-screen bg-site-bg font-sans selection:bg-secondary/30 selection:text-site-text flex flex-col">
