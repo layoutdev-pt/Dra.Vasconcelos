@@ -147,6 +147,10 @@ export const CourseDetails: React.FC = () => {
     };
   }, [id, handleSetCourse, handleSetLoading]);
 
+  const courseContent = course?.content || '';
+  const { html, modules, testimonials } = useMemo(() => parseContent(courseContent), [courseContent]);
+  const cleanHTML = useMemo(() => (html ? DOMPurify.sanitize(html) : ''), [html]);
+
   if (loading) {
     return (
       <div className="pt-32 pb-24 min-h-screen flex items-center justify-center bg-site-bg">
@@ -165,9 +169,6 @@ export const CourseDetails: React.FC = () => {
       </div>
     );
   }
-
-  const { html, modules, testimonials } = useMemo(() => parseContent(course.content), [course.content]);
-  const cleanHTML = useMemo(() => (html ? DOMPurify.sanitize(html) : ''), [html]);
 
   return (
     <div className="min-h-screen bg-site-bg font-sans selection:bg-secondary/30 selection:text-site-text flex flex-col">
