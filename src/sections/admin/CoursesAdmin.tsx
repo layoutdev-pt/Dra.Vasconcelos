@@ -310,7 +310,7 @@ const CourseModal: React.FC<{ course: Course | null; maxPosition: number; onClos
                   )}
                 </div>
                 <div>
-                  <label className={labelCls}>Segunda Foto (1:1)</label>
+                  <label className={labelCls}>Segunda Foto (Detalhes do Programa)</label>
                   <input 
                     type="file" 
                     accept="image/*"

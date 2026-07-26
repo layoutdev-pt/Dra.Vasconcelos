@@ -24,8 +24,19 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  // Use the provided wrapperClassName or fallback to the image className
-  const containerClass = wrapperClassName !== undefined ? wrapperClassName : className;
+  // If wrapperClassName is provided, use it. Otherwise, filter out image-specific hover/scale/fit classes from className for the container div
+  const containerClass = wrapperClassName !== undefined 
+    ? wrapperClassName 
+    : className
+        .split(' ')
+        .filter(c => !c.includes('scale-') && !c.includes('hover:') && !c.startsWith('object-') && !c.includes('transform'))
+        .join(' ');
+
+  // Determine height and object fit for the actual img tag
+  const isAutoHeight = className.includes('h-auto');
+  const hasCustomFit = className.includes('object-');
+  const imgFit = hasCustomFit ? '' : objectFit;
+  const imgHeight = isAutoHeight ? 'h-auto block' : 'h-full';
 
   if (!src) {
     return (
@@ -59,7 +70,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
           setIsLoaded(true);
           setHasError(true);
         }}
-        className={`w-full h-full ${objectFit} transition-opacity duration-300 ${isLoaded && !hasError ? 'opacity-100' : 'opacity-0'} ${wrapperClassName !== undefined ? className : ''}`}
+        className={`w-full ${imgHeight} ${imgFit} transition-opacity duration-300 ${isLoaded && !hasError ? 'opacity-100' : 'opacity-0'} ${className}`}
         {...props}
       />
     </div>

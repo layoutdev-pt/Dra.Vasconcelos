@@ -274,8 +274,8 @@ export const CourseDetails: React.FC = () => {
               {/* Left Side: Secondary Image */}
               {course.secondary_image_url && (
                 <div className="w-full lg:w-5/12 lg:sticky lg:top-32 relative">
-                  <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative rounded-3xl overflow-hidden shadow-xl shadow-secondary/10 aspect-square max-w-md mx-auto lg:mx-0 border-8 border-surface bg-surface">
-                    <OptimizedImage src={course.secondary_image_url} alt="Detalhes do curso" className="w-full h-full object-contain" />
+                  <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative rounded-3xl overflow-hidden shadow-xl shadow-secondary/10 max-w-md mx-auto lg:mx-0 border-8 border-surface bg-surface w-full">
+                    <OptimizedImage src={course.secondary_image_url} alt="Detalhes do curso" className="w-full h-auto block" />
                   </motion.div>
                 </div>
               )}
