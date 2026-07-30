@@ -108,26 +108,25 @@ export const Locations: React.FC = () => {
 
               {/* Card body */}
               <div className="p-5 flex flex-col grow">
-                {/* City heading */}
-                <div className="flex items-center gap-2 mb-3">
-                  <MapPin className="w-4 h-4 text-secondary shrink-0" />
-                  <h3 className="font-bold text-base text-site-text leading-tight">{loc.city}</h3>
+                {/* City heading & Extra Info */}
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-secondary shrink-0" />
+                    <h3 className="font-bold text-base text-site-text leading-tight">{loc.city}</h3>
+                  </div>
+                  
+                  {/* Extra info badge */}
+                  {loc.extraInfo && (
+                    <span className="inline-flex items-center px-2.5 py-1 bg-surface-muted text-site-text-muted border border-surface-border rounded-md text-xs font-semibold mt-0.5 ml-auto">
+                      {loc.extraInfo}
+                    </span>
+                  )}
                 </div>
 
                 {/* Address */}
                 <p className="text-secondary text-sm font-medium leading-relaxed whitespace-pre-line mb-4">
                   {loc.address}
                 </p>
-
-                {/* Extra info badge */}
-                {loc.extraInfo && (
-                  <div className="mb-6">
-                    <span className="inline-flex items-center px-3 py-1.5 bg-surface-muted text-site-text-muted border border-surface-border rounded-lg text-xs font-semibold">
-                      {loc.extraInfo}
-                    </span>
-                  </div>
-                )}
-
                 {/* Open Maps button */}
                 <div className="mt-auto">
                   <a
