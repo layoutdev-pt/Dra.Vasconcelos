@@ -9,6 +9,7 @@ const LOCATIONS = [
     address: 'Avenida Sérgio Vieira de Mello, 17A\n1750-344 Lisboa',
     embedQuery: 'Avenida+Sérgio+Vieira+de+Mello+17A+Lisboa',
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Avenida+S%C3%A9rgio+Vieira+de+Mello+17A+Lisboa',
+    extraInfo: 'ERS 26476/2025',
   },
   {
     id: 'braga',
@@ -16,6 +17,7 @@ const LOCATIONS = [
     address: 'Avenida do Cávado, 235 Palmeira\n4700-690 Braga',
     embedQuery: 'Avenida+do+Cávado+235+Palmeira+Braga',
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Avenida+do+C%C3%A1vado+235+Palmeira+Braga',
+    extraInfo: 'Apenas testes de intolerância alimentar',
   },
   {
     id: 'gaia',
@@ -23,14 +25,15 @@ const LOCATIONS = [
     address: 'Rua António Luís Gomes, 168 R/C Dtº Frente\n4400-125 Vila Nova de Gaia',
     embedQuery: 'Rua+António+Luís+Gomes+168+Vila+Nova+de+Gaia',
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Rua+Ant%C3%B3nio+Lu%C3%ADs+Gomes+168+Vila+Nova+de+Gaia',
+    extraInfo: 'ERS 23480/2023',
   },
-  {
-    id: 'vilamoura',
-    city: 'Vilamoura',
-    address: 'Avenida Tivoli Edifício Alcharb\nFração e R/C, 8125-410 Vilamoura',
-    embedQuery: 'Avenida+Tivoli+Edifício+Alcharb+Vilamoura',
-    mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Avenida+Tivoli+Edif%C3%ADcio+Alcharb+Vilamoura',
-  },
+  // {
+  //   id: 'vilamoura',
+  //   city: 'Vilamoura',
+  //   address: 'Avenida Tivoli Edifício Alcharb\nFração e R/C, 8125-410 Vilamoura',
+  //   embedQuery: 'Avenida+Tivoli+Edifício+Alcharb+Vilamoura',
+  //   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Avenida+Tivoli+Edif%C3%ADcio+Alcharb+Vilamoura',
+  // },
 ];
 
 const EMBED_BASE = 'https://maps.google.com/maps?q=';
@@ -75,12 +78,12 @@ export const Locations: React.FC = () => {
             As Nossas Localizações
           </motion.h2>
           <motion.p variants={fadeInUp} custom={2} className="text-site-text-muted font-light text-lg">
-            Consultas presenciais em 4 locais em Portugal, com primeira consulta exclusivamente online.
+            Consultas presenciais em 3 locais em Portugal, com primeira consulta exclusivamente online.
           </motion.p>
         </motion.div>
 
-        {/* 4-col grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* 3-col grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {LOCATIONS.map((loc, i) => (
             <motion.div
               key={loc.id}
@@ -115,6 +118,15 @@ export const Locations: React.FC = () => {
                 <p className="text-secondary text-sm font-medium leading-relaxed whitespace-pre-line mb-4">
                   {loc.address}
                 </p>
+
+                {/* Extra info badge */}
+                {loc.extraInfo && (
+                  <div className="mb-6">
+                    <span className="inline-flex items-center px-3 py-1.5 bg-surface-muted text-site-text-muted border border-surface-border rounded-lg text-xs font-semibold">
+                      {loc.extraInfo}
+                    </span>
+                  </div>
+                )}
 
                 {/* Open Maps button */}
                 <div className="mt-auto">

@@ -53,7 +53,7 @@ export const AuthorityMetrics: React.FC = () => {
 
             {/* +20 Anos Card - Ocupação Parcial (50%) */}
             <div className="bg-surface border border-surface-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row items-center justify-center text-center sm:text-left gap-6">
-              <h4 className="text-5xl lg:text-6xl font-black text-primary">
+              <h4 className="text-5xl lg:text-6xl font-black text-site-text">
                 +20
               </h4>
               <div className="flex flex-col">
