@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, MapPin } from 'lucide-react';
+import { ExternalLink, MapPin, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const LOCATIONS = [
@@ -10,6 +10,7 @@ const LOCATIONS = [
     embedQuery: 'Avenida+Sérgio+Vieira+de+Mello+17A+Lisboa',
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Avenida+S%C3%A9rgio+Vieira+de+Mello+17A+Lisboa',
     extraInfo: 'ERS 26476/2025',
+    pdfUrl: '/docs/clinica lisboa.pdf',
   },
   {
     id: 'braga',
@@ -18,6 +19,7 @@ const LOCATIONS = [
     embedQuery: 'Avenida+do+Cávado+235+Palmeira+Braga',
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Avenida+do+C%C3%A1vado+235+Palmeira+Braga',
     extraInfo: 'Apenas testes de intolerância alimentar',
+    pdfUrl: '/docs/clinica Braga.pdf',
   },
   {
     id: 'gaia',
@@ -26,6 +28,7 @@ const LOCATIONS = [
     embedQuery: 'Rua+António+Luís+Gomes+168+Vila+Nova+de+Gaia',
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Rua+Ant%C3%B3nio+Lu%C3%ADs+Gomes+168+Vila+Nova+de+Gaia',
     extraInfo: 'ERS 23480/2023',
+    pdfUrl: '/docs/clinica Vila nova de Gaia.pdf',
   },
   // {
   //   id: 'vilamoura',
@@ -109,25 +112,39 @@ export const Locations: React.FC = () => {
               {/* Card body */}
               <div className="p-5 flex flex-col grow">
                 {/* City heading & Extra Info */}
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-2 mt-1">
                     <MapPin className="w-4 h-4 text-secondary shrink-0" />
                     <h3 className="font-bold text-base text-site-text leading-tight">{loc.city}</h3>
                   </div>
                   
-                  {/* Extra info badge */}
-                  {loc.extraInfo && (
-                    <span className="inline-flex items-center px-2.5 py-1 bg-surface-muted text-site-text-muted border border-surface-border rounded-md text-xs font-semibold mt-0.5 ml-auto">
-                      {loc.extraInfo}
-                    </span>
-                  )}
+                  <div className="flex flex-col items-end gap-2 shrink-0">
+                    {/* Extra info badge */}
+                    {loc.extraInfo && (
+                      <span className="inline-flex items-center px-2.5 py-1 bg-surface-muted text-site-text-muted border border-surface-border rounded-md text-xs font-semibold">
+                        {loc.extraInfo}
+                      </span>
+                    )}
+                    {/* Informações button */}
+                    {loc.pdfUrl && (
+                      <a
+                        href={loc.pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-surface-border text-site-text text-[11px] font-semibold hover:border-secondary hover:text-secondary transition-colors duration-200 shadow-sm"
+                      >
+                        Informações
+                        <Info className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
                 </div>
 
                 {/* Address */}
                 <p className="text-secondary text-sm font-medium leading-relaxed whitespace-pre-line mb-4">
                   {loc.address}
                 </p>
-                {/* Open Maps button */}
+                {/* Action buttons */}
                 <div className="mt-auto">
                   <a
                     href={loc.mapsUrl}
