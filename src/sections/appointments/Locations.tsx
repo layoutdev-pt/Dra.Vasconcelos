@@ -112,16 +112,16 @@ export const Locations: React.FC = () => {
               {/* Card body */}
               <div className="p-5 flex flex-col grow">
                 {/* City heading & Extra Info */}
-                <div className="flex items-start justify-between gap-2 mb-3">
+                <div className="flex flex-wrap items-start justify-between gap-x-2 gap-y-3 mb-3">
                   <div className="flex items-center gap-2 mt-1">
                     <MapPin className="w-4 h-4 text-secondary shrink-0" />
                     <h3 className="font-bold text-base text-site-text leading-tight">{loc.city}</h3>
                   </div>
                   
-                  <div className="flex flex-col items-end gap-2 shrink-0">
+                  <div className="flex flex-col items-end gap-2 shrink-0 max-w-full">
                     {/* Extra info badge */}
                     {loc.extraInfo && (
-                      <span className="inline-flex items-center px-2.5 py-1 bg-surface-muted text-site-text-muted border border-surface-border rounded-md text-xs font-semibold">
+                      <span className="inline-flex items-center px-2.5 py-1 bg-surface-muted text-site-text-muted border border-surface-border rounded-md text-xs font-semibold text-right sm:text-left text-balance">
                         {loc.extraInfo}
                       </span>
                     )}
@@ -134,7 +134,7 @@ export const Locations: React.FC = () => {
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-surface-border text-site-text text-[11px] font-semibold hover:border-secondary hover:text-secondary transition-colors duration-200 shadow-sm"
                       >
                         Informações
-                        <Info className="w-3 h-3" />
+                        <Info className="w-3 h-3 shrink-0" />
                       </a>
                     )}
                   </div>
