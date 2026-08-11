@@ -81,7 +81,7 @@ export const Locations: React.FC = () => {
             As Nossas Localizações
           </motion.h2>
           <motion.p variants={fadeInUp} custom={2} className="text-site-text-muted font-light text-lg">
-            Consultas presenciais em 3 locais em Portugal, com primeira consulta exclusivamente online.
+            Consultas presenciais em 2 locais em Portugal (Lisboa e Vila Nova de Gaia) e espaço dedicado a testes em Braga, com primeira consulta exclusivamente online.
           </motion.p>
         </motion.div>
 
