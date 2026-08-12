@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import whiteLogo from '../../assets/logo/Horizontal-Secundário.png';
+import whiteLogo from '../../assets/logo/IMG_20260624_001917.png';
 import { supabase } from '../../config/supabase';
 import { Mail, Phone } from 'lucide-react';
 import { OptimizedImage } from '../OptimizedImage';
@@ -46,7 +46,12 @@ export const Footer: React.FC = () => {
           <div className="lg:col-span-4 space-y-6">
             <div className="flex items-center">
               <Link to="/">
-                <OptimizedImage src={whiteLogo} alt="Dra. Alexandra Vasconcelos" objectFit="object-contain" wrapperClassName="h-20 md:h-28 w-auto transition-all duration-500" className="object-left" />
+                <img 
+                  src={whiteLogo} 
+                  alt="Dra. Alexandra Vasconcelos" 
+                  className="h-16 md:h-24 w-auto object-contain object-left transition-all duration-500" 
+                  loading="lazy"
+                />
               </Link>
             </div>
             {/* O Disclaimer Legal atualizado e com texto reduzido (text-xs) */}
