@@ -90,12 +90,6 @@ export const Footer: React.FC = () => {
               <li><Link to="/termos" className="hover:text-secondary transition-colors">Termos e Condições</Link></li>
               <li><Link to="/termos-envio" className="hover:text-secondary transition-colors">Condições de Envio</Link></li>
               <li><Link to="/resolucao-litigios" className="hover:text-secondary transition-colors">Resolução de Litígios</Link></li>
-              <li className="pt-1">
-                <a href="/docs/DocLicenciamento_86331.pdf" target="_blank" className="hover:text-secondary transition-colors">Licença de Funcionamento (PDF)</a>
-              </li>
-              <li>
-                <a href="/docs/Certificado20234015012631630.pdf" target="_blank" className="hover:text-secondary transition-colors">Certidão de Registo (PDF)</a>
-              </li>
               <li>
                 <a 
                   href="https://www.livroreclamacoes.pt/Inicio/" 
