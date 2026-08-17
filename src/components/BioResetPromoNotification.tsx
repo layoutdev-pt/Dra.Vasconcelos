@@ -90,6 +90,37 @@ export const BioResetPromoNotification: React.FC = () => {
     return () => clearTimeout(reappearTimer);
   }, [displayMode, isMobile]);
 
+  // Monitorização da Page Visibility API (Paradigma Declarativo)
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        // Se a aba voltar a ficar visível e o modal estiver ativo, despachamos
+        // uma alteração de estado para garantir a sincronização com o Virtual DOM
+        // e evitar que as transições do Framer Motion congelem a interface.
+        setDisplayMode((current) => {
+          if (current === "modal") {
+            return isMobile ? "sticky-footer" : "minimized";
+          }
+          return current;
+        });
+      }
+    };
+
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        handleVisibility();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("pageshow", handlePageShow);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("pageshow", handlePageShow);
+    };
+  }, [isMobile]);
+
   const handleCloseModal = () => {
     setDisplayMode(isMobile ? "sticky-footer" : "minimized");
   };
