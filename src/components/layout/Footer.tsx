@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import whiteLogo from '../../assets/logo/IMG_20260624_001917.png';
 import { supabase } from '../../config/supabase';
 import { Mail, Phone } from 'lucide-react';
+import { OptimizedImage } from '../OptimizedImage';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();

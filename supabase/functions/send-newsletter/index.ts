@@ -56,7 +56,7 @@ serve(async (req: Request) => {
       if (jsonResponse.success === false) {
         throw new Error(`O Closum rejeitou: ${rawResponseText}`);
       }
-    } catch (error) {
+    } catch (e) {
       // Ignora erro de parse caso a resposta não seja um JSON puro
     }
 
