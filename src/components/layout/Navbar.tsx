@@ -268,10 +268,10 @@ export const Navbar: React.FC = () => {
 
         {/* Painel do Menu Mobile */}
         <div
-          className={`md:hidden absolute left-0 w-full shadow-2xl transition-all duration-300 ease-in-out origin-top transform-gpu ${
+          className={`md:hidden absolute left-0 w-full shadow-2xl transition-all duration-300 ease-in-out transform-gpu ${
             isMobileMenuOpen
-              ? "opacity-100 scale-y-100"
-              : "opacity-0 scale-y-0 pointer-events-none"
+              ? "opacity-100 translate-y-0 visible"
+              : "opacity-0 -translate-y-4 invisible pointer-events-none"
           } ${isScrolled ? "top-[calc(100%+0.5rem)]" : "top-full"}`}
         >
           <div

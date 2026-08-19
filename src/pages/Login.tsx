@@ -469,7 +469,7 @@ export const Login: React.FC = () => {
 
                         <label className="flex items-start gap-3 cursor-pointer group">
                           <input type="checkbox" checked={acceptTerms} onChange={e => setAcceptTerms(e.target.checked)} className="mt-1 w-4 h-4 rounded border-surface-border text-secondary" required />
-                          <span className="text-xs text-site-text-muted leading-relaxed group-hover:text-site-text">Li e aceito os <Link to="/termos" className="text-secondary font-bold hover:underline">Termos</Link> e a <Link to="/privacidade" className="text-secondary font-bold hover:underline">Privacidade</Link>.*</span>
+                          <span className="text-xs text-site-text-muted leading-relaxed group-hover:text-site-text">Li e aceito os <Link to="/termos" className="text-secondary font-bold hover:underline">Termos e Condições</Link> e as <Link to="/privacidade" className="text-secondary font-bold hover:underline">Politicas de Privacidade</Link>.*</span>
                         </label>
                       </div>
                     )}
