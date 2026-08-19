@@ -121,6 +121,18 @@ export const BioResetPromoNotification: React.FC = () => {
     };
   }, [isMobile]);
 
+  // Block body scroll when modal is open
+  useEffect(() => {
+    if (displayMode === "modal") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [displayMode]);
+
   const handleCloseModal = () => {
     setDisplayMode(isMobile ? "sticky-footer" : "minimized");
   };
@@ -156,7 +168,7 @@ export const BioResetPromoNotification: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-2xl bg-surface border border-surface-border rounded-3xl shadow-2xl overflow-hidden z-10 my-auto"
+            className="relative w-full max-w-2xl bg-surface border border-surface-border rounded-3xl shadow-2xl overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col"
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-promo-title"
@@ -172,7 +184,7 @@ export const BioResetPromoNotification: React.FC = () => {
             </button>
 
             {/* Banner Image Header */}
-            <div className="relative h-48 sm:h-56 w-full overflow-hidden bg-primary">
+            <div className="relative h-48 sm:h-56 w-full shrink-0 overflow-hidden bg-primary">
               <img
                 src={bioResetCapa}
                 alt="BioReset 14 Dias"
@@ -188,7 +200,7 @@ export const BioResetPromoNotification: React.FC = () => {
             </div>
 
             {/* Content Body */}
-            <div className="p-6 sm:p-8 space-y-5">
+            <div className="p-6 sm:p-8 space-y-5 overflow-y-auto">
               <div className="space-y-2">
                 <h2
                   id="modal-promo-title"
