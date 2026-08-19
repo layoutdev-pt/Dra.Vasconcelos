@@ -78,7 +78,7 @@ export const CoursesHero: React.FC = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-            className="flex-1 relative flex items-center justify-center min-h-[500px] md:min-h-[650px] lg:min-h-[750px]"
+            className="flex-1 relative flex items-center justify-center mt-8 lg:mt-0 py-8 lg:py-0 lg:min-h-[750px]"
           >
             <motion.div
               animate={{ y: [0, -14, 0] }}
