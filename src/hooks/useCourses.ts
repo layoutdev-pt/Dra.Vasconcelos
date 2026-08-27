@@ -6,7 +6,6 @@ export const useCourses = (onlyPublished = true, page = 0, itemsPerPage = 20) =>
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [count, setCount] = useState<number | null>(null);
 
   const fetchCourses = useCallback(async () => {
     setLoading(true);
@@ -17,9 +16,8 @@ export const useCourses = (onlyPublished = true, page = 0, itemsPerPage = 20) =>
 
     let query = supabase
       .from('courses')
-      .select('id, title, subtitle, slug, description, image_url, secondary_image_url, type, level, modules, price, buy_url, is_featured, is_published, published_at, enrollment_closes_at, position, created_at', { count: 'estimated' })
-      .order('position', { ascending: true })
-      .order('published_at', { ascending: false })
+      .select('*') // Simplificado para evitar estouro de parsing na API
+      .order('position', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: false })
       .range(from, to);
 
@@ -27,13 +25,12 @@ export const useCourses = (onlyPublished = true, page = 0, itemsPerPage = 20) =>
       query = query.eq('is_published', true);
     }
 
-    const { data, error: fetchError, count: rowCount } = await query;
+    const { data, error: fetchError } = await query;
 
     if (fetchError) {
       setError(fetchError.message);
     } else {
       setCourses((data as Course[]) ?? []);
-      setCount(rowCount);
     }
 
     setLoading(false);
@@ -43,8 +40,6 @@ export const useCourses = (onlyPublished = true, page = 0, itemsPerPage = 20) =>
     let isMounted = true;
 
     const initFetch = async () => {
-      // Isolar a execução assegura que as mutações de estado ocorrem 
-      // num ciclo assíncrono, resolvendo o 'set-state-in-effect'
       if (isMounted) {
         await fetchCourses();
       }
@@ -57,5 +52,5 @@ export const useCourses = (onlyPublished = true, page = 0, itemsPerPage = 20) =>
     };
   }, [fetchCourses]);
 
-  return { courses, loading, error, count, refetch: fetchCourses };
+  return { courses, loading, error, count: null, refetch: fetchCourses };
 };
