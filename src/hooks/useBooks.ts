@@ -6,7 +6,6 @@ export function useBooks(page = 0, itemsPerPage = 20) {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -18,11 +17,12 @@ export function useBooks(page = 0, itemsPerPage = 20) {
       const from = page * itemsPerPage;
       const to = from + itemsPerPage - 1;
 
-      const { data, error: err, count: rowCount } = await supabase
+      // Removido o { count: 'estimated' } que sobrecarrega a API e causa o 503
+      const { data, error: err } = await supabase
         .from('books')
-        .select('id, title, subtitle, author, description, cover_url, type, price, currency, buy_url, is_featured, is_published, position, published_at, created_at', { count: 'estimated' })
+        .select('*')
         .eq('is_published', true)
-        .order('position', { ascending: true })
+        .order('position', { ascending: true, nullsFirst: false })
         .order('created_at', { ascending: false })
         .range(from, to);
 
@@ -35,7 +35,6 @@ export function useBooks(page = 0, itemsPerPage = 20) {
       }
 
       setBooks((data as Book[]) ?? []);
-      setCount(rowCount);
       setLoading(false);
     }
 
@@ -46,5 +45,5 @@ export function useBooks(page = 0, itemsPerPage = 20) {
     };
   }, [page, itemsPerPage]);
 
-  return { books, loading, error, count };
+  return { books, loading, error, count: null };
 }
