@@ -16,8 +16,8 @@ export const useCourses = (onlyPublished = true, page = 0, itemsPerPage = 20) =>
 
     let query = supabase
       .from('courses')
-      .select('*') // Simplificado para evitar estouro de parsing na API
-      .order('position', { ascending: true, nullsFirst: false })
+      .select('*')
+      .order('position', { ascending: true })
       .order('created_at', { ascending: false })
       .range(from, to);
 

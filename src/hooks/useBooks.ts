@@ -17,12 +17,11 @@ export function useBooks(page = 0, itemsPerPage = 20) {
       const from = page * itemsPerPage;
       const to = from + itemsPerPage - 1;
 
-      // Removido o { count: 'estimated' } que sobrecarrega a API e causa o 503
       const { data, error: err } = await supabase
         .from('books')
         .select('*')
         .eq('is_published', true)
-        .order('position', { ascending: true, nullsFirst: false })
+        .order('position', { ascending: true })
         .order('created_at', { ascending: false })
         .range(from, to);
 
