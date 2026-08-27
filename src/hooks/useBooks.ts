@@ -21,7 +21,6 @@ export function useBooks(page = 0, itemsPerPage = 20) {
         .from('books')
         .select('*')
         .eq('is_published', true)
-        .order('position', { ascending: true })
         .order('created_at', { ascending: false })
         .range(from, to);
 
@@ -45,4 +44,5 @@ export function useBooks(page = 0, itemsPerPage = 20) {
   }, [page, itemsPerPage]);
 
   return { books, loading, error, count: null };
-}
+  }
+  

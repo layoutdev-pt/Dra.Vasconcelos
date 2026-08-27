@@ -17,7 +17,6 @@ export const useCourses = (onlyPublished = true, page = 0, itemsPerPage = 20) =>
     let query = supabase
       .from('courses')
       .select('*')
-      .order('position', { ascending: true })
       .order('created_at', { ascending: false })
       .range(from, to);
 
