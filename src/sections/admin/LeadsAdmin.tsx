@@ -3,6 +3,7 @@ import { supabase } from '../../config/supabase';
 import { Trash2, Loader2, Download, Filter } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import type { Lead } from '../../types/lead';
+import { Pagination } from '../../components/Pagination';
 
 type SourceFilter = 'all' | 'ebook' | 'blog' | 'footer' | 'palestra';
 
@@ -11,35 +12,43 @@ export const LeadsAdmin: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>('all');
 
-  const handleSetLoading = useCallback((l: boolean) => setLoading(l), []);
-  const handleSetLeads = useCallback((d: Lead[]) => setLeads(d), []);
+  const ITEMS_PER_PAGE = 20;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   const fetchLeads = useCallback(async () => {
-    handleSetLoading(true);
-    const { data } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
-    handleSetLeads(data || []);
-    handleSetLoading(false);
-  }, [handleSetLoading, handleSetLeads]);
+    setLoading(true);
+    const from = (currentPage - 1) * ITEMS_PER_PAGE;
+    const to = from + ITEMS_PER_PAGE - 1;
+
+    let query = supabase.from('leads').select('id, name, email, phone, source, subscribed, created_at', { count: 'estimated' });
+    
+    if (sourceFilter !== 'all') {
+      query = query.eq('source', sourceFilter);
+    }
+
+    const { data, count } = await query
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (data) {
+      setLeads(data as Lead[]);
+      if (count !== null) setTotalCount(count);
+    }
+    setLoading(false);
+  }, [currentPage, sourceFilter]);
 
   useEffect(() => {
     let isMounted = true;
     const init = async () => {
       if (!isMounted) return;
-      handleSetLoading(true);
-      const { data } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
-      if (isMounted) {
-        handleSetLeads(data || []);
-        handleSetLoading(false);
-      }
+      await fetchLeads();
     };
     init();
     return () => { isMounted = false; };
-  }, [handleSetLoading, handleSetLeads]);
+  }, [fetchLeads]);
 
-  const filteredLeads = useMemo(() => {
-    if (sourceFilter === 'all') return leads;
-    return leads.filter(l => l.source === sourceFilter);
-  }, [leads, sourceFilter]);
+
 
   const deleteLead = async (id: string, email: string) => {
     if(!window.confirm(`Tem a certeza que deseja remover ${email} da lista de subscritores?`)) return;
@@ -162,7 +171,7 @@ export const LeadsAdmin: React.FC = () => {
             {f === 'all' ? 'Todos' : sourceLabels[f] || f}
           </button>
         ))}
-        <span className="ml-auto text-xs text-gray-400">{filteredLeads.length} resultado{filteredLeads.length !== 1 ? 's' : ''}</span>
+        <span className="ml-auto text-xs text-gray-400">{totalCount} resultado{totalCount !== 1 ? 's' : ''}</span>
       </div>
       
       {loading ? (
@@ -182,8 +191,8 @@ export const LeadsAdmin: React.FC = () => {
                 <th className="px-6 py-4 text-right">Ações</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
-              {filteredLeads.map(l => (
+              <tbody className="divide-y divide-gray-100">
+                {leads.map(l => (
                 <tr key={l.id} className="hover:bg-gray-50/50">
                   <td className="px-6 py-4 font-medium text-gray-800">{l.name || '-'}</td>
                   <td className="px-6 py-4 text-gray-600">{l.phone || '-'}</td>
@@ -211,12 +220,26 @@ export const LeadsAdmin: React.FC = () => {
                   </td>
                 </tr>
               ))}
-              {filteredLeads.length === 0 && (
-                <tr><td colSpan={7} className="px-6 py-12 text-center text-gray-500">Nenhum email capturado ainda.</td></tr>
-              )}
-            </tbody>
+                {leads.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                      Nenhuma subscrição encontrada.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {!loading && totalCount > ITEMS_PER_PAGE && (
+        <div className="mt-8">
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={Math.ceil(totalCount / ITEMS_PER_PAGE)}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
     </div>

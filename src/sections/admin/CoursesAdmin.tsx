@@ -10,6 +10,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSo
 import { CSS } from '@dnd-kit/utilities';
 import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import { OptimizedImage } from '../../components/OptimizedImage';
+import { Pagination } from '../../components/Pagination';
 
 /* ─── ESTILOS REUTILIZÁVEIS ────────────────────────────────────────────── */
 
@@ -49,18 +50,8 @@ type CourseDraft = Omit<Course, 'id' | 'created_at'> & {
 
 const notifyAllUsers = async (title: string, message: string, link: string) => {
   try {
-    const { data: profiles } = await supabase.from('profiles').select('id');
-    if (!profiles || profiles.length === 0) return;
-
-    const notifications = profiles.map(profile => ({
-      user_id: profile.id,
-      title,
-      message,
-      link,
-      is_read: false
-    }));
-
-    await supabase.from('notifications').insert(notifications);
+    const payload = { title, message, link };
+    await supabase.rpc('notify_users_of_new_content', { payload });
   } catch (err) {
     console.error('Erro ao processar notificações globais:', err);
   }
@@ -511,14 +502,42 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
   const [editing, setEditing] = useState<Course | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  const ITEMS_PER_PAGE = 20;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
   const fetch = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.from('courses').select('*').order('position', { ascending: true }).order('created_at', { ascending: false });
-    setCourses((data as Course[]) ?? []);
+    const from = (currentPage - 1) * ITEMS_PER_PAGE;
+    const to = from + ITEMS_PER_PAGE - 1;
+
+    const { data, count } = await supabase.from('courses')
+      .select('id, title, subtitle, is_featured, type, price, is_published, position, image_url, created_at', { count: 'estimated' })
+      .order('position', { ascending: true })
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (data) {
+      setCourses(data as Course[]);
+      if (count !== null) setTotalCount(count);
+    }
     setLoading(false);
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => { fetch(); }, [fetch]);
+
+  const handleEdit = async (c: Course) => {
+    setLoading(true);
+    const { data, error } = await supabase.from('courses').select('*').eq('id', c.id).single();
+    setLoading(false);
+    
+    if (error || !data) {
+      showToast('Erro ao carregar dados do curso.');
+    } else {
+      setEditing(data as Course);
+      setModalOpen(true);
+    }
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -534,7 +553,8 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
       
       setCourses(newCourses);
 
-      const payload = newCourses.map((c, index) => ({ id: c.id, position: index }));
+      const from = (currentPage - 1) * ITEMS_PER_PAGE;
+      const payload = newCourses.map((c, index) => ({ id: c.id, position: from + index }));
       try {
         const { error } = await supabase.rpc('update_courses_order', { payload });
         if (error) throw error;
@@ -608,7 +628,7 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={courses.map(c => c.id)} strategy={verticalListSortingStrategy}>
                     {courses.map(course => (
-                      <SortableCourseRow key={course.id} course={course} onToggle={handleToggle} onEdit={(c) => { setEditing(c); setModalOpen(true); }} onDelete={handleDelete} deletingId={deletingId} />
+                      <SortableCourseRow key={course.id} course={course} onToggle={handleToggle} onEdit={handleEdit} onDelete={handleDelete} deletingId={deletingId} />
                     ))}
                   </SortableContext>
                 </DndContext>
@@ -617,6 +637,16 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
           </div>
         )}
       </div>
+
+      {!loading && totalCount > ITEMS_PER_PAGE && (
+        <div className="mt-8">
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={Math.ceil(totalCount / ITEMS_PER_PAGE)}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
 
       <AnimatePresence>
         {modalOpen && (

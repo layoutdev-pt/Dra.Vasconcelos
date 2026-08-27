@@ -5,6 +5,7 @@ import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle } from 'lucide-reac
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Testimonial } from '../../types/testimonial';
 import { OptimizedImage } from '../../components/OptimizedImage';
+import { Pagination } from '../../components/Pagination';
 
 const inputCls = 'w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all';
 const labelCls = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
@@ -90,13 +91,27 @@ export const TestimonialsAdmin: React.FC = () => {
   const [editing, setEditing] = useState<Testimonial | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const ITEMS_PER_PAGE = 20;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
   const handleSetLoading = useCallback((l: boolean) => setLoading(l), []);
   const handleSetList = useCallback((d: Testimonial[]) => setList(d), []);
 
   const fetchItems = useCallback(async () => {
     handleSetLoading(true);
-    const { data } = await supabase.from('testimonials').select('*').order('created_at', { ascending: false });
-    handleSetList(data || []);
+    const from = (currentPage - 1) * ITEMS_PER_PAGE;
+    const to = from + ITEMS_PER_PAGE - 1;
+
+    const { data, count } = await supabase.from('testimonials')
+      .select('id, student_name, feedback, avatar_url, created_at', { count: 'estimated' })
+      .order('created_at', { ascending: false })
+      .range(from, to);
+      
+    if (data) {
+      handleSetList(data as Testimonial[]);
+      if (count !== null) setTotalCount(count);
+    }
     handleSetLoading(false);
   }, [handleSetLoading, handleSetList]);
 
@@ -104,16 +119,11 @@ export const TestimonialsAdmin: React.FC = () => {
     let isMounted = true;
     const init = async () => {
       if (!isMounted) return;
-      handleSetLoading(true);
-      const { data } = await supabase.from('testimonials').select('*').order('created_at', { ascending: false });
-      if (isMounted) {
-        handleSetList(data || []);
-        handleSetLoading(false);
-      }
+      await fetchItems();
     };
     init();
     return () => { isMounted = false; };
-  }, [handleSetLoading, handleSetList]);
+  }, [fetchItems]);
 
   const deleteItem = async (id: string) => {
     if(!window.confirm('Apagar permanentemente este Testemunho?')) return;
@@ -165,6 +175,16 @@ export const TestimonialsAdmin: React.FC = () => {
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {!loading && totalCount > ITEMS_PER_PAGE && (
+        <div className="mt-8">
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={Math.ceil(totalCount / ITEMS_PER_PAGE)}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
       

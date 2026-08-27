@@ -36,7 +36,7 @@ export const UserFavorites: React.FC = () => {
           const uuids = courseIds.filter(isUuid);
           const titles = courseIds.filter(id => !isUuid(id));
 
-          let query = supabase.from('courses').select('*');
+          let query = supabase.from('courses').select('id, title, subtitle, slug, description, image_url, secondary_image_url, type, level, modules, price, buy_url, is_featured, is_published, published_at, enrollment_closes_at, position, created_at');
           
           if (uuids.length > 0 && titles.length > 0) {
             // Se tiver ambos, usa OR
@@ -59,7 +59,7 @@ export const UserFavorites: React.FC = () => {
       const bookIds = favorites.filter(f => f.item_type === 'book').map(f => f.item_id);
       if (bookIds.length > 0) {
         try {
-          const { data, error } = await supabase.from('books').select('*').in('id', bookIds);
+          const { data, error } = await supabase.from('books').select('id, title, subtitle, author, description, cover_url, type, price, currency, buy_url, is_featured, is_published, position, published_at, created_at').in('id', bookIds);
           if (error) throw error;
           if (data) details.push(...data.map(item => ({ ...item, type: 'book' })));
         } catch (err) {
@@ -71,7 +71,7 @@ export const UserFavorites: React.FC = () => {
       const blogIds = favorites.filter(f => f.item_type === 'blog').map(f => f.item_id);
       if (blogIds.length > 0) {
         try {
-          const { data, error } = await supabase.from('blog_posts').select('*').in('id', blogIds);
+          const { data, error } = await supabase.from('blog_posts').select('id, title, slug, summary, category, image_url, is_published, published_at, position, created_at').in('id', blogIds);
           if (error) throw error;
           if (data) details.push(...data.map(item => ({ ...item, type: 'blog' })));
         } catch (err) {

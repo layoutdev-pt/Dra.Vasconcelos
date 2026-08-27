@@ -18,18 +18,24 @@ export const useFavorites = () => {
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchFavorites = useCallback(async () => {
+  const fetchFavorites = useCallback(async (page = 0, itemsPerPage = 20) => {
     if (!user) return;
     setLoading(true);
-    const { data, error } = await supabase
+
+    const from = page * itemsPerPage;
+    const to = from + itemsPerPage - 1;
+
+    const { data, error, count } = await supabase
       .from('user_favorites')
-      .select('*')
-      .eq('user_id', user.id);
+      .select('id, user_id, item_id, item_type, created_at', { count: 'estimated' })
+      .eq('user_id', user.id)
+      .range(from, to);
     
     if (!error && data) {
       setFavorites(data);
     }
     setLoading(false);
+    return { count };
   }, [user]);
 
   useEffect(() => {

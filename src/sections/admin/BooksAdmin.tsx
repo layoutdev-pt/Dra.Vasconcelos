@@ -9,6 +9,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSo
 import { CSS } from '@dnd-kit/utilities';
 import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import { OptimizedImage } from '../../components/OptimizedImage';
+import { Pagination } from '../../components/Pagination';
 
 /* ─── ESTILOS REUTILIZÁVEIS ────────────────────────────────────────────── */
 
@@ -33,21 +34,8 @@ const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: 
 
 const notifyAllUsers = async (title: string, message: string, link: string) => {
   try {
-    // 1. Procurar todos os IDs de utilizadores registrados na tabela profiles
-    const { data: profiles } = await supabase.from('profiles').select('id');
-    if (!profiles || profiles.length === 0) return;
-
-    // 2. Preparar o array de notificações para todos
-    const notifications = profiles.map(profile => ({
-      user_id: profile.id,
-      title,
-      message,
-      link,
-      is_read: false
-    }));
-
-    // 3. Inserir na tabela 'notifications'
-    await supabase.from('notifications').insert(notifications);
+    const payload = { title, message, link };
+    await supabase.rpc('notify_users_of_new_content', { payload });
   } catch (err) {
     console.error('Erro ao disparar notificações de Livros:', err);
   }
@@ -277,12 +265,27 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
   const [editing, setEditing] = useState<Book | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  const ITEMS_PER_PAGE = 20;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
   const fetch = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.from('books').select('*').order('position', { ascending: true }).order('created_at', { ascending: false });
-    setBooks((data as Book[]) ?? []);
+    const from = (currentPage - 1) * ITEMS_PER_PAGE;
+    const to = from + ITEMS_PER_PAGE - 1;
+
+    const { data, count } = await supabase.from('books')
+      .select('id, title, subtitle, author, image_url, type, price, payment_link, is_published, is_featured, position, created_at', { count: 'estimated' })
+      .order('position', { ascending: true })
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (data) {
+      setBooks(data as unknown as Book[]);
+      if (count !== null) setTotalCount(count);
+    }
     setLoading(false);
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => { fetch(); }, [fetch]);
 
@@ -300,7 +303,8 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
       
       setBooks(newBooks);
 
-      const payload = newBooks.map((b, index) => ({ id: b.id, position: index }));
+      const from = (currentPage - 1) * ITEMS_PER_PAGE;
+      const payload = newBooks.map((b, index) => ({ id: b.id, position: from + index }));
       try {
         const { error } = await supabase.rpc('update_books_order', { payload });
         if (error) throw error;
@@ -313,7 +317,19 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
   };
 
   const openNew = () => { setEditing(null); setModalOpen(true); };
-  const openEdit = (b: Book) => { setEditing(b); setModalOpen(true); };
+
+  const handleEdit = async (b: Book) => {
+    setLoading(true);
+    const { data, error } = await supabase.from('books').select('*').eq('id', b.id).single();
+    setLoading(false);
+    
+    if (error || !data) {
+      showToast('Erro ao carregar dados do livro.');
+    } else {
+      setEditing(data as Book);
+      setModalOpen(true);
+    }
+  };
 
   const handleToggle = async (b: Book) => {
     const { error } = await supabase.from('books').update({ is_published: !b.is_published }).eq('id', b.id);
@@ -374,7 +390,7 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={books.map(b => b.id)} strategy={verticalListSortingStrategy}>
                   {books.map(book => (
-                    <SortableBookRow key={book.id} book={book} onToggle={handleToggle} onEdit={openEdit} onDelete={handleDelete} deletingId={deletingId} />
+                    <SortableBookRow key={book.id} book={book} onToggle={handleToggle} onEdit={handleEdit} onDelete={handleDelete} deletingId={deletingId} />
                   ))}
                 </SortableContext>
               </DndContext>
@@ -382,6 +398,16 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
           </div>
         )}
       </div>
+
+      {!loading && totalCount > ITEMS_PER_PAGE && (
+        <div className="mt-8">
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={Math.ceil(totalCount / ITEMS_PER_PAGE)}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
 
       <AnimatePresence>
         {modalOpen && (

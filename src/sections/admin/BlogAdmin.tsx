@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import { supabase } from '../../config/supabase';
 import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle } from 'lucide-react';
@@ -10,26 +10,14 @@ import type { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
+import { Pagination } from '../../components/Pagination';
 
 /* ─── FUNÇÃO DE NOTIFICAÇÃO GLOBAL ───────────────────────────────────────── */
 
 const notifyAllUsers = async (title: string, message: string, link: string) => {
   try {
-    // 1. Vai buscar todos os IDs de utilizadores da tabela profiles
-    const { data: profiles } = await supabase.from('profiles').select('id');
-    if (!profiles || profiles.length === 0) return;
-
-    // 2. Prepara as notificações para todos
-    const notifications = profiles.map(profile => ({
-      user_id: profile.id,
-      title,
-      message,
-      link,
-      is_read: false
-    }));
-
-    // 3. Insere na tabela 'notifications'
-    await supabase.from('notifications').insert(notifications);
+    const payload = { title, message, link };
+    await supabase.rpc('notify_users_of_new_content', { payload });
   } catch (err) {
     console.error('Erro ao disparar notificações do blog:', err);
   }
@@ -214,15 +202,31 @@ export const BlogAdmin: React.FC = () => {
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const fetchPosts = async () => {
-    setLoading(true);
-    const { data, error } = await supabase.from('blog_posts').select('*').order('position', { ascending: true }).order('created_at', { ascending: false });
-    if (error) console.error('Fetch posts error:', error);
-    setPosts(data || []);
-    setLoading(false);
-  };
+  const ITEMS_PER_PAGE = 20;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
-  useEffect(() => { fetchPosts(); }, []);
+  const fetchPosts = useCallback(async () => {
+    setLoading(true);
+    const from = (currentPage - 1) * ITEMS_PER_PAGE;
+    const to = from + ITEMS_PER_PAGE - 1;
+
+    const { data, count, error } = await supabase.from('blog_posts')
+      .select('id, title, slug, category, summary, image_url, published_at, is_published, position, created_at', { count: 'estimated' })
+      .order('position', { ascending: true })
+      .order('created_at', { ascending: false })
+      .range(from, to);
+      
+    if (error) console.error('Fetch posts error:', error);
+    
+    if (data) {
+      setPosts(data as BlogPost[]);
+      if (count !== null) setTotalCount(count);
+    }
+    setLoading(false);
+  }, [currentPage]);
+
+  useEffect(() => { fetchPosts(); }, [fetchPosts]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -238,7 +242,8 @@ export const BlogAdmin: React.FC = () => {
       
       setPosts(newPosts);
 
-      const payload = newPosts.map((p, index) => ({ id: p.id, position: index }));
+      const from = (currentPage - 1) * ITEMS_PER_PAGE;
+      const payload = newPosts.map((p, index) => ({ id: p.id, position: from + index }));
       try {
         const { error } = await supabase.rpc('update_posts_order', { payload });
         if (error) throw error;
@@ -254,6 +259,18 @@ export const BlogAdmin: React.FC = () => {
     if(!window.confirm('Quer mesmo apagar este artigo do blog?')) return;
     await supabase.from('blog_posts').delete().eq('id', id);
     fetchPosts();
+  };
+
+  const handleEdit = async (p: BlogPost) => {
+    setLoading(true);
+    const { data, error } = await supabase.from('blog_posts').select('*').eq('id', p.id).single();
+    setLoading(false);
+    if (error || !data) {
+      alert('Erro ao carregar os dados do artigo.');
+    } else {
+      setEditingPost(data as BlogPost);
+      setIsModalOpen(true);
+    }
   };
 
   return (
@@ -285,13 +302,23 @@ export const BlogAdmin: React.FC = () => {
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={posts.map(p => p.id)} strategy={verticalListSortingStrategy}>
                     {posts.map(p => (
-                      <SortablePostRow key={p.id} p={p} onEdit={(p) => { setEditingPost(p); setIsModalOpen(true); }} onDelete={deletePost} />
+                      <SortablePostRow key={p.id} p={p} onEdit={handleEdit} onDelete={deletePost} />
                     ))}
                   </SortableContext>
                 </DndContext>
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {!loading && totalCount > ITEMS_PER_PAGE && (
+        <div className="mt-8">
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={Math.ceil(totalCount / ITEMS_PER_PAGE)}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
       

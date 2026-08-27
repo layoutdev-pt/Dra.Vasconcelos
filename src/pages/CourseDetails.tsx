@@ -124,7 +124,7 @@ export const CourseDetails: React.FC = () => {
       }
       
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
-      let query = supabase.from('courses').select('*');
+      let query = supabase.from('courses').select('id, title, subtitle, slug, description, content, image_url, secondary_image_url, type, level, modules, price, buy_url, is_featured, is_published, published_at, enrollment_closes_at, position, created_at');
       
       if (isUuid) {
         query = query.eq('id', id);

@@ -16,11 +16,11 @@ export const BlogContent: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       const [postRes, allRes] = await Promise.all([
-        supabase.from('blog_posts').select('*').eq('slug', slug).single(),
-        supabase.from('blog_posts').select('*').eq('is_published', true).order('position', { ascending: true }).order('published_at', { ascending: false })
+        supabase.from('blog_posts').select('id, title, slug, summary, content, category, image_url, is_published, published_at, position, created_at').eq('slug', slug).single(),
+        supabase.from('blog_posts').select('id, title, slug, summary, category, image_url, is_published, published_at, position, created_at').eq('is_published', true).order('position', { ascending: true }).order('published_at', { ascending: false })
       ]);
       setPost(postRes.data);
-      setAllPosts(allRes.data || []);
+      setAllPosts((allRes.data as BlogPost[]) || []);
       setLoading(false);
     };
     fetchData();

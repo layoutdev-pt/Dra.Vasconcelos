@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import { supabase } from '../../config/supabase';
 import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle } from 'lucide-react';
@@ -10,23 +10,14 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSo
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
 import { OptimizedImage } from '../../components/OptimizedImage';
+import { Pagination } from '../../components/Pagination';
 
 /* ─── FUNÇÃO DE NOTIFICAÇÃO GLOBAL ───────────────────────────────────────── */
 
 const notifyAllUsers = async (title: string, message: string, link: string) => {
   try {
-    const { data: profiles } = await supabase.from('profiles').select('id');
-    if (!profiles || profiles.length === 0) return;
-
-    const notifications = profiles.map(profile => ({
-      user_id: profile.id,
-      title,
-      message,
-      link,
-      is_read: false
-    }));
-
-    await supabase.from('notifications').insert(notifications);
+    const payload = { title, message, link };
+    await supabase.rpc('notify_users_of_new_content', { payload });
   } catch (err) {
     console.error('Erro ao disparar notificações de Media:', err);
   }
@@ -203,19 +194,31 @@ export const MediaAdmin: React.FC = () => {
   const [editingMedia, setEditingMedia] = useState<MediaEntry | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const fetchMedia = async () => {
+  const ITEMS_PER_PAGE = 20;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const fetchMedia = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+    const from = (currentPage - 1) * ITEMS_PER_PAGE;
+    const to = from + ITEMS_PER_PAGE - 1;
+
+    const { data, count } = await supabase
       .from('media')
-      .select('*')
+      .select('id, title, url, type, published_at, is_published, is_featured, position, created_at', { count: 'estimated' })
       .order('position', { ascending: true })
       .order('published_at', { ascending: false })
-      .order('created_at', { ascending: false });
-    setMediaList(data || []);
+      .order('created_at', { ascending: false })
+      .range(from, to);
+      
+    if (data) {
+      setMediaList(data as unknown as MediaEntry[]);
+      if (count !== null) setTotalCount(count);
+    }
     setLoading(false);
-  };
+  }, [currentPage]);
 
-  useEffect(() => { fetchMedia(); }, []);
+  useEffect(() => { fetchMedia(); }, [fetchMedia]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -231,7 +234,8 @@ export const MediaAdmin: React.FC = () => {
       
       setMediaList(newMedia);
 
-      const payload = newMedia.map((m, index) => ({ id: m.id, position: index }));
+      const from = (currentPage - 1) * ITEMS_PER_PAGE;
+      const payload = newMedia.map((m, index) => ({ id: m.id, position: from + index }));
       try {
         const { error } = await supabase.rpc('update_media_order', { payload });
         if (error) throw error;
@@ -287,6 +291,16 @@ export const MediaAdmin: React.FC = () => {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+      
+      {!loading && totalCount > ITEMS_PER_PAGE && (
+        <div className="mt-8">
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={Math.ceil(totalCount / ITEMS_PER_PAGE)}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
       

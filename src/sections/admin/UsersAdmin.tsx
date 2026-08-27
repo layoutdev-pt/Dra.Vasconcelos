@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../../config/supabase';
 import { Loader2, Shield, ShieldAlert, ShieldCheck, Search } from 'lucide-react';
 import { useAuth } from '../../context/authUtils';
+import { Pagination } from '../../components/Pagination';
 
 interface Profile {
   id: string;
@@ -11,10 +12,14 @@ interface Profile {
   created_at: string;
 }
 
+const ITEMS_PER_PAGE = 20;
+
 export const UsersAdmin: React.FC = () => {
   const [users, setUsers] = useState<Profile[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const { user: currentUser } = useAuth(); // para não deixar remover o próprio admin facilmente
 
   const handleSetLoading = useCallback((l: boolean) => setLoading(l), []);
@@ -22,27 +27,35 @@ export const UsersAdmin: React.FC = () => {
 
   const fetchUsers = useCallback(async () => {
     handleSetLoading(true);
-    const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+    const from = (currentPage - 1) * ITEMS_PER_PAGE;
+    const to = from + ITEMS_PER_PAGE - 1;
+
+    let query = supabase.from('profiles').select('id, email, is_admin, banned, created_at', { count: 'estimated' });
+    
+    if (searchTerm) {
+      query = query.ilike('email', `%${searchTerm}%`);
+    }
+
+    const { data, count } = await query
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
     if (data) {
       handleSetUsers(data as Profile[]);
+      if (count !== null) setTotalCount(count);
     }
     handleSetLoading(false);
-  }, [handleSetLoading, handleSetUsers]);
+  }, [handleSetLoading, handleSetUsers, currentPage, searchTerm]);
 
   useEffect(() => {
     let isMounted = true;
     const init = async () => {
       if (!isMounted) return;
-      handleSetLoading(true);
-      const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
-      if (isMounted) {
-        if (data) handleSetUsers(data as Profile[]);
-        handleSetLoading(false);
-      }
+      await fetchUsers();
     };
     init();
     return () => { isMounted = false; };
-  }, [handleSetLoading, handleSetUsers]);
+  }, [fetchUsers]);
 
   const toggleAdminStatus = async (id: string, currentStatus: boolean, email: string | null) => {
     if (id === currentUser?.id) {
@@ -78,9 +91,7 @@ export const UsersAdmin: React.FC = () => {
     fetchUsers();
   };
 
-  const filteredUsers = users.filter(u => 
-    (u.email || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
+
 
   return (
     <div className="space-y-6">
@@ -121,7 +132,7 @@ export const UsersAdmin: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filteredUsers.map(u => (
+              {users.map(u => (
                 <tr key={u.id} className="hover:bg-gray-50/50">
                   <td className="px-6 py-4">
                     <p className="font-semibold text-primary">{u.email || '—'}</p>
@@ -174,11 +185,21 @@ export const UsersAdmin: React.FC = () => {
                   </td>
                 </tr>
               ))}
-              {filteredUsers.length === 0 && (
+              {users.length === 0 && (
                 <tr><td colSpan={4} className="px-6 py-12 text-center text-gray-500">Nenhum utilizador encontrado.</td></tr>
               )}
             </tbody>
           </table>
+        </div>
+      )}
+      
+      {!loading && totalCount > ITEMS_PER_PAGE && (
+        <div className="mt-8">
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={Math.ceil(totalCount / ITEMS_PER_PAGE)}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
     </div>
