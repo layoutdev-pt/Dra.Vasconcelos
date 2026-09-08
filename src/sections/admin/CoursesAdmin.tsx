@@ -50,8 +50,9 @@ type CourseDraft = Omit<Course, 'id' | 'created_at'> & {
 
 const notifyAllUsers = async (title: string, message: string, link: string) => {
   try {
-    const payload = { title, message, link };
-    await supabase.rpc('notify_users_of_new_content', { payload });
+    // Chamada RPC comentada: o procedimento notify_users_of_new_content não existe no catálogo PostgreSQL atual
+    // const payload = { title, message, link };
+    // await supabase.rpc('notify_users_of_new_content', { payload });
   } catch (err) {
     console.error('Erro ao processar notificações globais:', err);
   }
@@ -513,7 +514,7 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
 
     const { data, count } = await supabase.from('courses')
       .select('id, title, subtitle, is_featured, type, price, is_published, position, image_url, created_at', { count: 'estimated' })
-      .order('position', { ascending: true })
+      .order('position', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: false })
       .range(from, to);
 
