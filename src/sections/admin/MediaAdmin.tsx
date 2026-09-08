@@ -16,8 +16,9 @@ import { Pagination } from '../../components/Pagination';
 
 const notifyAllUsers = async (title: string, message: string, link: string) => {
   try {
-    const payload = { title, message, link };
-    await supabase.rpc('notify_users_of_new_content', { payload });
+    // Chamada RPC comentada: o procedimento notify_users_of_new_content não existe no catálogo PostgreSQL atual
+    // const payload = { title, message, link };
+    // await supabase.rpc('notify_users_of_new_content', { payload });
   } catch (err) {
     console.error('Erro ao disparar notificações de Media:', err);
   }
@@ -205,7 +206,7 @@ export const MediaAdmin: React.FC = () => {
 
     const { data, count } = await supabase
       .from('media')
-      .select('id, title, url, type, published_at, is_published, is_featured, position, created_at', { count: 'estimated' })
+      .select('id, title, external_url, image_url, type, published_at, position, created_at', { count: 'estimated' })
       .order('position', { ascending: true })
       .order('published_at', { ascending: false })
       .order('created_at', { ascending: false })

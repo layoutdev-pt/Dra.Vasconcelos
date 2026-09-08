@@ -34,8 +34,9 @@ const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: 
 
 const notifyAllUsers = async (title: string, message: string, link: string) => {
   try {
-    const payload = { title, message, link };
-    await supabase.rpc('notify_users_of_new_content', { payload });
+    // Chamada RPC comentada: o procedimento notify_users_of_new_content não existe no catálogo PostgreSQL atual
+    // const payload = { title, message, link };
+    // await supabase.rpc('notify_users_of_new_content', { payload });
   } catch (err) {
     console.error('Erro ao disparar notificações de Livros:', err);
   }
@@ -275,7 +276,7 @@ export const BooksAdmin: React.FC<{ showToast: (m: string) => void }> = ({ showT
     const to = from + ITEMS_PER_PAGE - 1;
 
     const { data, count } = await supabase.from('books')
-      .select('id, title, subtitle, author, image_url, type, price, payment_link, is_published, is_featured, position, created_at', { count: 'estimated' })
+      .select('id, title, subtitle, author, cover_url, type, price, buy_url, is_published, is_featured, position, created_at', { count: 'estimated' })
       .order('position', { ascending: true })
       .order('created_at', { ascending: false })
       .range(from, to);
