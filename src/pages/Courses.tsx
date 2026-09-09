@@ -1,5 +1,5 @@
 import React from "react";
-import { CoursesHero } from "../sections/academy/CoursesHero";
+// import { CoursesHero } from "../sections/academy/CoursesHero";
 import { BioReset } from "../components/BioReset";
 import { AcademyCourses } from "../sections/academy/AcademyCourses";
 import { motion } from "framer-motion";
@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 export const Courses: React.FC = () => {
   return (
     <div className="w-full">
-      <CoursesHero />
+      {/* <CoursesHero />
       {/* <AcademyMetrics /> */}
 
       <section className="py-24 bg-site-bg" id="catalogo">
