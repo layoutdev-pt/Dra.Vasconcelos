@@ -43,7 +43,7 @@
     "react-router-dom": "^7.13.2",
     "recharts": "^3.8.1",
     "rehype-raw": "^7.0.0",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
