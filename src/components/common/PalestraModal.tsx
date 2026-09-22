@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, MonitorPlay, User, Phone, Mail, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../../config/supabase';
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
+import { useViewportAnchor } from '../../hooks/useViewportAnchor';
 
 interface PalestraModalProps {
   isOpen: boolean;
@@ -15,16 +17,12 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  // Bloqueia o scroll da página (fiável também no Safari iOS)
+  useBodyScrollLock(isOpen);
+
+  // Mantém o modal colado ao ecrã mesmo se uma extensão de modo escuro
+  // aplicar um filtro no <html> e partir o `position: fixed`
+  const layerRef = useViewportAnchor<HTMLDivElement>(isOpen);
 
   if (!isOpen) return null;
 
@@ -78,13 +76,13 @@ export const PalestraModal: React.FC<PalestraModalProps> = ({ isOpen, onClose })
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div ref={layerRef} className="viewport-layer z-[100] flex items-center justify-center p-4 overflow-y-auto">
       <div 
         className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
       
-      <div className="bg-surface rounded-[2rem] w-full max-w-lg relative z-10 overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-surface-border">
+      <div className="bg-surface rounded-[2rem] w-full max-w-lg relative z-10 overflow-hidden shadow-2xl flex flex-col max-h-[85dvh] my-auto border border-surface-border">
         
         <div className="p-6 border-b border-surface-border flex-shrink-0">
           <button 

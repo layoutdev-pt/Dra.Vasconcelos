@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { X, Calendar, Sparkles, ArrowRight, ShieldCheck, Maximize2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+
+import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
+import { useViewportAnchor } from "../hooks/useViewportAnchor";
 
 import bioResetCapa from "../assets/images/BioReset_setembro/Capa.png";
 import bioResetPost from "../assets/images/BioReset_setembro/Post.png";
@@ -121,17 +125,13 @@ export const BioResetPromoNotification: React.FC = () => {
     };
   }, [isMobile]);
 
-  // Block body scroll when modal is open
-  useEffect(() => {
-    if (displayMode === "modal") {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [displayMode]);
+  // Bloqueia o scroll da página (fiável também no Safari iOS)
+  const isModalOpen = displayMode === "modal";
+  useBodyScrollLock(isModalOpen);
+
+  // Mantém o modal centrado no ecrã do utilizador mesmo quando uma extensão
+  // de modo escuro aplica um filtro no <html> e parte o `position: fixed`
+  const modalLayerRef = useViewportAnchor<HTMLDivElement>(isModalOpen);
 
   const handleCloseModal = () => {
     setDisplayMode(isMobile ? "sticky-footer" : "minimized");
@@ -147,18 +147,21 @@ export const BioResetPromoNotification: React.FC = () => {
 
   if (displayMode === "hidden") return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {/* ─── MODAL CENTRAL (DESKTOP E MOBILE) ─── */}
-      {displayMode === "modal" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+      {isModalOpen && (
+        <div
+          ref={modalLayerRef}
+          className="viewport-layer z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+        >
           {/* Backdrop Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleCloseModal}
-            className="fixed inset-0 bg-primary/70 backdrop-blur-md transition-opacity"
+            className="absolute inset-0 bg-primary/70 backdrop-blur-md transition-opacity"
             aria-hidden="true"
           />
 
@@ -168,7 +171,7 @@ export const BioResetPromoNotification: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-2xl bg-surface border border-surface-border rounded-3xl shadow-2xl overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col"
+            className="relative w-full max-w-2xl bg-surface border border-surface-border rounded-3xl shadow-2xl overflow-hidden z-10 my-auto max-h-[85dvh] flex flex-col"
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-promo-title"
@@ -358,6 +361,7 @@ export const BioResetPromoNotification: React.FC = () => {
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };

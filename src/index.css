@@ -39,6 +39,23 @@
 
 /* 3. REORGANIZAÇÃO DO MODO ESCURO */
 @layer base {
+  /* Declara suporte nativo aos dois esquemas de cor.
+     Sem isto, apps/extensões de modo escuro (Dark Reader, Noir, etc.)
+     assumem que o site só tem tema claro e aplicam um filtro por cima,
+     o que desconfigura o layout e parte o `position: fixed`. */
+  :root {
+    color-scheme: light;
+  }
+
+  /* Enquanto o React ainda não aplicou a classe do tema, seguimos o sistema.
+     Serve também como sinal de suporte nativo a modo escuro. */
+  @media (prefers-color-scheme: dark) {
+    :root:not(.light) {
+      color-scheme: dark;
+      background-color: #030712;
+    }
+  }
+
   .dark {
     --color-site-bg: #030712; /* Neutral 950 */
     --color-site-text: #f8fafc; /* Neutral 50 */
@@ -67,6 +84,24 @@
     transition: background-color 0.3s ease, color 0.3s ease;
     @apply antialiased font-sans;
   }
+}
+
+/* 3.1. CAMADA DE ECRÃ PARA MODAIS
+   Não usar `inset: 0` aqui: se algum antepassado (ou uma extensão de modo
+   escuro) criar um containing block com a altura da página, `bottom: 0`
+   esticaria o modal ao documento inteiro em vez do ecrã. Fixamos só o topo
+   e damos altura explícita do viewport (dvh cobre a barra do Safari iOS). */
+.viewport-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
+  overscroll-behavior: contain;
 }
 
 /* 4. UTILITÁRIOS CUSTOMIZADOS */

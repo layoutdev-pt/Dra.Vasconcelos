@@ -3,8 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/simple.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- O site tem tema claro e escuro próprios. Estas metas dizem-no ao
+         browser e às extensões/apps de modo escuro (Dark Reader, Noir, ...)
+         para que não apliquem um filtro por cima, que desconfigura o layout
+         e parte os elementos `position: fixed` (modais, WhatsApp, navbar). -->
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
+    <meta name="darkreader-lock" />
+    <meta name="theme-color" content="#f9fafa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)" />
+
+    <!-- Aplica o tema antes do primeiro paint: evita o flash de tema claro e
+         garante que as extensões vêem logo o modo escuro nativo do site. -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var theme = saved === 'dark' || saved === 'light'
+            ? saved
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.classList.add(theme);
+        } catch (e) {
+          document.documentElement.classList.add('light');
+        }
+      })();
+    </script>
+
     <meta name="google-site-verification" content="AmtdYaeBYHGnq0B0Tu8PGyfjdZIUkhvaDrEjUq1pkqM" />
 
     <title>Dra. Vasconcelos</title>
