@@ -93,7 +93,7 @@ const AppShell: React.FC = () => {
 
       {!isStandalone && <Footer />}
       {!isStandalone && <WhatsAppButton />}
-      {!isStandalone && <BioResetPromoNotification />}
+      {/* {!isStandalone && <BioResetPromoNotification />} */}
       <CookieBanner />
     </div>
   );
