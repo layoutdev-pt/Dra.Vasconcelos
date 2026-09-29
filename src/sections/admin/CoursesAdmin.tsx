@@ -63,7 +63,7 @@ const notifyAllUsers = async (title: string, message: string, link: string) => {
 const emptyCourse = (): CourseDraft => ({
   title: '', subtitle: null, slug: null, description: '', content: '', image_url: '', secondary_image_url: '',
   type: 'curso', level: null, modules: null, price: null, buy_url: null, 
-  is_featured: false, is_published: true,
+  is_featured: false, is_published: true, is_sold_out: false,
   published_at: new Date().toISOString(),
   enrollment_closes_at: null,
   parsedContent: { html: '', modules: [], testimonials: [] }
@@ -83,7 +83,14 @@ const parseContent = (contentStr: string): CourseContentData => {
   return { html: contentStr, modules: [], testimonials: [] };
 };
 
-const SortableCourseRow: React.FC<{ course: Course; onToggle: (c: Course) => void; onEdit: (c: Course) => void; onDelete: (id: string) => void; deletingId: string | null }> = ({ course, onToggle, onEdit, onDelete, deletingId }) => {
+const SortableCourseRow: React.FC<{ 
+  course: Course; 
+  onToggle: (c: Course) => void; 
+  onToggleSoldOut: (c: Course) => void;
+  onEdit: (c: Course) => void; 
+  onDelete: (id: string) => void; 
+  deletingId: string | null 
+}> = ({ course, onToggle, onToggleSoldOut, onEdit, onDelete, deletingId }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: course.id });
   const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 1 };
 
@@ -102,7 +109,10 @@ const SortableCourseRow: React.FC<{ course: Course; onToggle: (c: Course) => voi
       <td className="px-6 py-4 max-w-[240px]">
         <p className="font-semibold text-primary truncate">{course.title}</p>
         {course.subtitle && <p className="text-xs text-gray-400 truncate mt-0.5">{course.subtitle}</p>}
-        {course.is_featured && <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold uppercase tracking-wider">Destaque</span>}
+        <div className="flex flex-wrap gap-1 mt-1">
+          {course.is_featured && <span className="inline-block px-2 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold uppercase tracking-wider">Destaque</span>}
+          {course.is_sold_out && <span className="inline-block px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-[10px] font-bold uppercase tracking-wider">Esgotado</span>}
+        </div>
       </td>
       <td className="px-4 py-4">
         <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${course.type === 'programa' ? 'bg-purple-50 text-purple-600' : course.type === 'presencial' ? 'bg-amber-50 text-amber-600' : 'bg-primary/10 text-primary'}`}>
@@ -111,9 +121,26 @@ const SortableCourseRow: React.FC<{ course: Course; onToggle: (c: Course) => voi
       </td>
       <td className="px-4 py-4 font-semibold text-primary">{course.price != null ? `${course.price.toFixed(2).replace('.', ',')}€` : '—'}</td>
       <td className="px-4 py-4">
-        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${course.is_published ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
-          {course.is_published ? 'Publicado' : 'Oculto'}
-        </span>
+        <div className="flex flex-col gap-1.5 items-start">
+          <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${course.is_published ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+            {course.is_published ? 'Publicado' : 'Oculto'}
+          </span>
+          <button
+            type="button"
+            onClick={() => onToggleSoldOut(course)}
+            title="Alternar disponibilidade"
+            className={`group flex items-center justify-between w-28 px-2 py-1.5 border rounded-lg transition-all cursor-pointer ${
+              course.is_sold_out ? 'bg-red-50 border-red-200' : 'bg-white border-gray-200 hover:border-gray-300'
+            }`}
+          >
+            <span className={`text-[10px] font-bold uppercase tracking-wider ${course.is_sold_out ? 'text-red-600' : 'text-gray-400 group-hover:text-gray-600'}`}>
+              {course.is_sold_out ? 'Esgotado' : 'Disponível'}
+            </span>
+            <div className={`w-7 h-4 rounded-full relative transition-colors ${course.is_sold_out ? 'bg-red-500' : 'bg-gray-200 group-hover:bg-gray-300'}`}>
+              <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-all ${course.is_sold_out ? 'left-3.5' : 'left-0.5'}`} />
+            </div>
+          </button>
+        </div>
       </td>
       <td className="px-6 py-4 text-right">
         <div className="flex items-center justify-end gap-2">
@@ -135,7 +162,11 @@ const SortableCourseRow: React.FC<{ course: Course; onToggle: (c: Course) => voi
 const CourseModal: React.FC<{ course: Course | null; maxPosition: number; onClose: () => void; onSaved: () => void }> = ({ course, maxPosition, onClose, onSaved }) => {
   const [draft, setDraft] = useState<CourseDraft>(() => {
     if (course) {
-      return { ...course, parsedContent: parseContent(course.content) };
+      return { 
+        ...course, 
+        is_sold_out: course.is_sold_out ?? false,
+        parsedContent: parseContent(course.content) 
+      };
     }
     return emptyCourse();
   });
@@ -198,6 +229,7 @@ const CourseModal: React.FC<{ course: Course | null; maxPosition: number; onClos
         type: draft.type,
         is_featured: draft.is_featured,
         is_published: draft.is_published,
+        is_sold_out: draft.is_sold_out ?? false,
         published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null,
         enrollment_closes_at: draft.enrollment_closes_at ? new Date(draft.enrollment_closes_at).toISOString() : null,
         ...(isNew ? { position: maxPosition + 1 } : {})
@@ -345,6 +377,7 @@ const CourseModal: React.FC<{ course: Course | null; maxPosition: number; onClos
               <div className="flex flex-wrap gap-6 pt-4 border-t border-gray-100">
                 <Toggle value={draft.is_featured} onChange={v => set('is_featured', v)} label="Em Destaque" />
                 <Toggle value={draft.is_published} onChange={v => set('is_published', v)} label="Publicado" />
+                <Toggle value={draft.is_sold_out ?? false} onChange={v => set('is_sold_out', v)} label="Esgotado" />
               </div>
             </div>
           )}
@@ -513,7 +546,7 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
     const to = from + ITEMS_PER_PAGE - 1;
 
     const { data, count } = await supabase.from('courses')
-      .select('id, title, subtitle, is_featured, type, price, is_published, position, image_url, created_at', { count: 'estimated' })
+      .select('id, title, subtitle, is_featured, type, price, is_published, is_sold_out, position, image_url, created_at', { count: 'estimated' })
       .order('position', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: false })
       .range(from, to);
@@ -575,6 +608,17 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
     }
   };
 
+  const handleToggleSoldOut = async (c: Course) => {
+    const nextVal = !c.is_sold_out;
+    const { error } = await supabase.from('courses').update({ is_sold_out: nextVal }).eq('id', c.id);
+    if (!error) {
+      showToast(nextVal ? 'Curso marcado como esgotado.' : 'Curso disponível para inscrição.');
+      fetch();
+    } else {
+      showToast('Erro ao atualizar estado de esgotado.');
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!window.confirm('Eliminar este curso?')) return;
     setDeletingId(id);
@@ -629,7 +673,15 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={courses.map(c => c.id)} strategy={verticalListSortingStrategy}>
                     {courses.map(course => (
-                      <SortableCourseRow key={course.id} course={course} onToggle={handleToggle} onEdit={handleEdit} onDelete={handleDelete} deletingId={deletingId} />
+                      <SortableCourseRow 
+                        key={course.id} 
+                        course={course} 
+                        onToggle={handleToggle} 
+                        onToggleSoldOut={handleToggleSoldOut}
+                        onEdit={handleEdit} 
+                        onDelete={handleDelete} 
+                        deletingId={deletingId} 
+                      />
                     ))}
                   </SortableContext>
                 </DndContext>

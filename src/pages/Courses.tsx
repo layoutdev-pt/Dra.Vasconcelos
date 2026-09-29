@@ -1,6 +1,6 @@
 import React from "react";
 // import { CoursesHero } from "../sections/academy/CoursesHero";
-import { BioReset } from "../components/BioReset";
+import { FeaturedCourseBanner } from "../components/FeaturedCourseBanner";
 import { AcademyCourses } from "../sections/academy/AcademyCourses";
 import { motion } from "framer-motion";
 
@@ -34,7 +34,7 @@ export const Courses: React.FC = () => {
         </div>
       </section>
 
-      <BioReset />
+      <FeaturedCourseBanner />
     </div>
   );
 };

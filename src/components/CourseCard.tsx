@@ -12,6 +12,7 @@ export interface CourseCardProps {
   id?: string | number;
   image: string;
   isPopular?: boolean;
+  isSoldOut?: boolean;
 }
 
 export const CourseCard: React.FC<CourseCardProps> = ({ 
@@ -22,29 +23,41 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   price, 
   image, 
   isPopular,
+  isSoldOut,
   id
 }) => {
   const itemId = id?.toString() || title;
   return (
-    <div className={`group bg-surface rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-surface-border flex flex-col h-full relative ${isPopular ? 'shadow-md shadow-accent/10' : ''}`}>
+    <div className={`group bg-surface rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-surface-border flex flex-col h-full relative ${isSoldOut ? 'border-red-500/30' : isPopular ? 'shadow-md shadow-accent/10' : ''}`}>
       
-      {/* Etiqueta Flutuante de Popularidade */}
-      {isPopular && (
+      {/* Etiqueta Flutuante de Esgotado / Popularidade */}
+      {isSoldOut ? (
+        <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-extrabold px-3.5 py-1.5 rounded-bl-xl z-20 uppercase tracking-widest shadow-md">
+          Esgotado
+        </div>
+      ) : isPopular ? (
         <div className="absolute top-0 right-0 bg-accent text-white text-[10px] font-bold px-3 py-1.5 rounded-bl-xl z-20 uppercase tracking-widest">
           Em Destaque
         </div>
-      )}
+      ) : null}
       
       {/* Imagem e Nível */}
       <div className="relative bg-surface-muted overflow-hidden">
         <OptimizedImage 
           src={image} 
           alt={title} 
-          className="w-full h-auto block transition-transform duration-500 group-hover:scale-105" 
+          className={`w-full h-auto block transition-transform duration-500 group-hover:scale-105 ${isSoldOut ? 'opacity-85' : ''}`} 
         />
         {level && (
           <div className="absolute top-4 left-4 bg-surface/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-site-text shadow-sm border border-surface-border z-20">
             {level}
+          </div>
+        )}
+
+        {/* Banner Vermelho de Esgotado */}
+        {isSoldOut && (
+          <div className="absolute inset-x-0 bottom-0 bg-red-600/95 backdrop-blur-xs text-white text-center py-2 px-3 z-20 shadow-md">
+            <span className="text-xs font-black tracking-widest uppercase">Esgotado</span>
           </div>
         )}
       </div>
@@ -71,7 +84,11 @@ export const CourseCard: React.FC<CourseCardProps> = ({
             <span className="text-sm font-medium text-site-text-muted">1 Programa Completo</span>
           )}
           
-          {price != null && price > 0 ? (
+          {isSoldOut ? (
+            <span className="text-red-500 font-bold text-sm bg-red-500/10 px-2.5 py-1 rounded-lg">
+              Esgotado
+            </span>
+          ) : price != null && price > 0 ? (
             <span className="text-secondary font-bold text-lg">{price.toFixed(2).replace('.', ',')}€</span>
           ) : (
             <span className="text-secondary font-bold text-lg">Gratuito</span>

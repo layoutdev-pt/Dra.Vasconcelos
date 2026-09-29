@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Hero } from "../sections/home/Hero";
 import { BooksSection } from "../sections/home/BooksSection";
 import { AcademyCourses } from "../sections/academy/AcademyCourses";
-import { BioReset } from "../components/BioReset";
+import { FeaturedCourseBanner } from "../components/FeaturedCourseBanner";
 import { LeadMagnet } from "../sections/home/LeadMagnet";
 
 export const Home: React.FC = () => {
@@ -22,7 +22,7 @@ export const Home: React.FC = () => {
     <div className="w-full">
       <Hero />
       <BooksSection />
-      <BioReset />
+      <FeaturedCourseBanner />
       <LeadMagnet />
       <AcademyCourses
         featuredOnly={true}

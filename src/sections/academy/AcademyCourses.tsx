@@ -99,6 +99,7 @@ export const AcademyCourses: React.FC<AcademyCoursesProps> = ({
                     price={course.price}
                     image={course.image_url}
                     isPopular={course.is_featured}
+                    isSoldOut={course.is_sold_out}
                   />
                 </Link>
               </div>

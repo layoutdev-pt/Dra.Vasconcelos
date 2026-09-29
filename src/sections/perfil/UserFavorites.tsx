@@ -36,7 +36,7 @@ export const UserFavorites: React.FC = () => {
           const uuids = courseIds.filter(isUuid);
           const titles = courseIds.filter(id => !isUuid(id));
 
-          let query = supabase.from('courses').select('id, title, subtitle, slug, description, image_url, secondary_image_url, type, level, modules, price, buy_url, is_featured, is_published, published_at, enrollment_closes_at, position, created_at');
+          let query = supabase.from('courses').select('id, title, subtitle, slug, description, image_url, secondary_image_url, type, level, modules, price, buy_url, is_featured, is_published, published_at, enrollment_closes_at, position, created_at, is_sold_out');
           
           if (uuids.length > 0 && titles.length > 0) {
             // Se tiver ambos, usa OR
@@ -134,6 +134,7 @@ export const UserFavorites: React.FC = () => {
                 price={item.price as number}
                 image={item.image_url as string}
                 isPopular={item.is_featured as boolean}
+                isSoldOut={item.is_sold_out as boolean}
               />
             </Link>
           )}

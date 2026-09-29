@@ -14,6 +14,7 @@ export interface Course {
   buy_url: string | null;
   is_featured: boolean;
   is_published: boolean;
+  is_sold_out?: boolean;
   published_at: string | null;
   enrollment_closes_at: string | null;
   position?: number;

@@ -124,7 +124,7 @@ export const CourseDetails: React.FC = () => {
       }
       
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
-      let query = supabase.from('courses').select('id, title, subtitle, slug, description, content, image_url, secondary_image_url, type, level, modules, price, buy_url, is_featured, is_published, published_at, enrollment_closes_at, position, created_at');
+      let query = supabase.from('courses').select('id, title, subtitle, slug, description, content, image_url, secondary_image_url, type, level, modules, price, buy_url, is_featured, is_published, published_at, enrollment_closes_at, position, created_at, is_sold_out');
       
       if (isUuid) {
         query = query.eq('id', id);
@@ -210,9 +210,15 @@ export const CourseDetails: React.FC = () => {
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
               <div className="flex items-center justify-center gap-4 mb-6">
-                <span className="inline-block px-3 py-1 bg-accent/20 text-accent text-xs font-bold uppercase tracking-wider rounded-md">
-                  ★ MAIS VENDIDO
-                </span>
+                {course.is_sold_out ? (
+                  <span className="inline-block px-3 py-1 bg-red-500/20 text-red-500 text-xs font-bold uppercase tracking-wider rounded-md border border-red-500/30">
+                    INSCRIÇÕES ESGOTADAS
+                  </span>
+                ) : (
+                  <span className="inline-block px-3 py-1 bg-accent/20 text-accent text-xs font-bold uppercase tracking-wider rounded-md">
+                    ★ MAIS VENDIDO
+                  </span>
+                )}
                 <FavoriteButton itemId={course.id} type="course" />
               </div>
               <h1 className="text-4xl lg:text-6xl font-extrabold text-site-text leading-tight tracking-tight mb-6 break-words">
@@ -224,14 +230,23 @@ export const CourseDetails: React.FC = () => {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-8">
-              <a href={course.buy_url || '#'} target="_blank" rel="noopener noreferrer" className="bg-secondary hover:bg-secondary-light text-white px-10 py-5 rounded-2xl font-bold transition-all shadow-xl shadow-secondary/30 hover:shadow-secondary/50 hover:-translate-y-1 flex items-center justify-center gap-3 group text-xl w-full sm:w-auto">
-                Comprar Agora
-                <ArrowLeft className="w-6 h-6 rotate-135 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-              </a>
+              {course.is_sold_out ? (
+                <button 
+                  type="button" 
+                  disabled 
+                  className="bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-10 py-5 rounded-2xl font-bold cursor-not-allowed flex items-center justify-center gap-3 text-xl w-full sm:w-auto shadow-none border border-gray-300/50 dark:border-gray-600/50"
+                >
+                  Esgotado
+                </button>
+              ) : (
+                <a href={course.buy_url || '#'} target="_blank" rel="noopener noreferrer" className="bg-secondary hover:bg-secondary-light text-white px-10 py-5 rounded-2xl font-bold transition-all shadow-xl shadow-secondary/30 hover:shadow-secondary/50 hover:-translate-y-1 flex items-center justify-center gap-3 group text-xl w-full sm:w-auto">
+                  Comprar Agora
+                  <ArrowLeft className="w-6 h-6 rotate-135 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                </a>
+              )}
               
               {course.price != null && (
-                <div className="text-left bg-surface px-6 py-4 rounded-2xl border border-surface-border">
-                  <p className="text-sm text-site-text-muted font-medium line-through mb-0.5">{(course.price * 2.5).toFixed(2).replace('.', ',')}€</p>
+                <div className="text-left bg-surface px-6 py-4 rounded-2xl border border-surface-border flex items-center">
                   <p className="text-4xl font-extrabold text-site-text">{course.price.toFixed(2).replace('.', ',')}€</p>
                 </div>
               )}
@@ -251,7 +266,7 @@ export const CourseDetails: React.FC = () => {
       </section>
 
       {/* 2. OFFER BAR (STICKY OR STATIC) */}
-      <div className="bg-accent text-white py-4 shadow-md sticky top-0 z-40">
+      {/* <div className="bg-accent text-white py-4 shadow-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-6 text-sm font-medium">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
@@ -260,7 +275,7 @@ export const CourseDetails: React.FC = () => {
           <Countdown courseId={course.id} />
           <p>Garanta a sua inscrição antes que esgote.</p>
         </div>
-      </div>
+      </div> */}
 
       {/* 3. RICH TEXT DETAILS (Detalhes do Programa movidos para aqui) */}
       {(cleanHTML || course.secondary_image_url) && (
@@ -362,15 +377,25 @@ export const CourseDetails: React.FC = () => {
               Junte-se a centenas de pessoas que já transformaram a sua saúde com o {course.title}. Não deixe para amanhã a vitalidade que pode conquistar hoje.
             </p>
             
-            <a 
-              href={course.buy_url || '#'} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="bg-secondary hover:bg-secondary-light text-white px-10 py-5 rounded-2xl font-bold transition-all shadow-xl shadow-secondary/20 hover:shadow-secondary/40 hover:-translate-y-1 inline-flex items-center justify-center gap-3 group text-xl w-full sm:w-auto"
-            >
-              Inscrever-me Agora
-              <ArrowLeft className="w-6 h-6 rotate-135 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-            </a>
+            {course.is_sold_out ? (
+              <button 
+                type="button" 
+                disabled 
+                className="bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-10 py-5 rounded-2xl font-bold cursor-not-allowed inline-flex items-center justify-center gap-3 text-xl w-full sm:w-auto shadow-none border border-gray-300/50 dark:border-gray-600/50"
+              >
+                Esgotado
+              </button>
+            ) : (
+              <a 
+                href={course.buy_url || '#'} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="bg-secondary hover:bg-secondary-light text-white px-10 py-5 rounded-2xl font-bold transition-all shadow-xl shadow-secondary/20 hover:shadow-secondary/40 hover:-translate-y-1 inline-flex items-center justify-center gap-3 group text-xl w-full sm:w-auto"
+              >
+                Inscrever-me Agora
+                <ArrowLeft className="w-6 h-6 rotate-135 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </a>
+            )}
             
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-site-text-muted font-medium">
               <span className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-secondary" /> Acesso Imediato</span>
@@ -438,9 +463,19 @@ export const CourseDetails: React.FC = () => {
           <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-600 font-medium rounded-full text-sm">
             <CheckCircle2 className="w-4 h-4" /> Compra Segura e Protegida
           </span>
-          <a href={course.buy_url || '#'} target="_blank" rel="noopener noreferrer" className="bg-secondary hover:bg-secondary-light text-white px-10 py-5 rounded-2xl font-bold transition-all shadow-lg hover:-translate-y-1 mt-10 text-xl w-full sm:w-auto">
-            Quero Começar Agora
-          </a>
+          {course.is_sold_out ? (
+            <button 
+              type="button" 
+              disabled 
+              className="bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-10 py-5 rounded-2xl font-bold cursor-not-allowed mt-10 text-xl w-full sm:w-auto shadow-none border border-gray-300/50 dark:border-gray-600/50"
+            >
+              Esgotado
+            </button>
+          ) : (
+            <a href={course.buy_url || '#'} target="_blank" rel="noopener noreferrer" className="bg-secondary hover:bg-secondary-light text-white px-10 py-5 rounded-2xl font-bold transition-all shadow-lg hover:-translate-y-1 mt-10 text-xl w-full sm:w-auto">
+              Quero Começar Agora
+            </a>
+          )}
         </div>
       </section>
 
