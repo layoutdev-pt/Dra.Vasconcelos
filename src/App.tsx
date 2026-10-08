@@ -29,6 +29,7 @@ const CookiePolicy = lazy(() => import('./pages/LegalDocs/CookiePolicy').then(mo
 const ShippingTerms = lazy(() => import('./pages/LegalDocs/ShippingTerms').then(module => ({ default: module.ShippingTerms })));
 const DisputeResolution = lazy(() => import('./pages/LegalDocs/DisputeResolution').then(module => ({ default: module.DisputeResolution })));
 const Terms = lazy(() => import('./pages/LegalDocs/Terms').then(module => ({ default: module.Terms })));
+const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
 
 const ScrollToTop = () => {
   const { pathname, hash } = useLocation();
@@ -87,9 +88,12 @@ const AppShell: React.FC = () => {
             <Route path="/termos-envio" element={<ShippingTerms />} />
             <Route path="/resolucao-litigios" element={<DisputeResolution />} />
             <Route path="/termos" element={<Terms />} />
+            
+            {/* Fallback 404 Route */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
-      </main>
+      </main> 
 
       {!isStandalone && <Footer />}
       {!isStandalone && <WhatsAppButton />}
