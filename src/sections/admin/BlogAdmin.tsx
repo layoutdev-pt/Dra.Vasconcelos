@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { optimizeImageForUpload } from '../../utils/imageOptimizer';
 import { supabase } from '../../config/supabase';
+import { toast } from 'react-hot-toast';
 import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle } from 'lucide-react';
 import RichTextEditor from '../../components/RichTextEditor';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,11 +16,11 @@ import { Pagination } from '../../components/Pagination';
 /* ─── FUNÇÃO DE NOTIFICAÇÃO GLOBAL ───────────────────────────────────────── */
 
 const notifyAllUsers = async (title: string, message: string, link: string) => {
-  try {
-    const payload = { title, message, link };
-    await supabase.rpc('notify_users_of_new_content', { payload });
-  } catch (err) {
-    console.error('Erro ao disparar notificações do blog:', err);
+  const payload = { title, message, link };
+  const { error } = await supabase.rpc('notify_users_of_new_content', { payload });
+  if (error) {
+    console.error('Erro ao disparar notificações do blog:', error);
+    toast.error('Publicado, mas as notificações não foram enviadas.');
   }
 };
 

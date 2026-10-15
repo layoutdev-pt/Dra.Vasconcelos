@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Plus, Pencil, Trash2, Eye, EyeOff, X, Save, AlertCircle, Loader2, GripVertical } from 'lucide-react';
 import { supabase } from '../../config/supabase';
+import { toast } from 'react-hot-toast';
 import type { Book } from '../../types/book';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
@@ -33,12 +34,11 @@ const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: 
 /* ─── FUNÇÃO DE NOTIFICAÇÃO GLOBAL ───────────────────────────────────────── */
 
 const notifyAllUsers = async (title: string, message: string, link: string) => {
-  try {
-    // Chamada RPC comentada: o procedimento notify_users_of_new_content não existe no catálogo PostgreSQL atual
-    // const payload = { title, message, link };
-    // await supabase.rpc('notify_users_of_new_content', { payload });
-  } catch (err) {
-    console.error('Erro ao disparar notificações de Livros:', err);
+  const payload = { title, message, link };
+  const { error } = await supabase.rpc('notify_users_of_new_content', { payload });
+  if (error) {
+    console.error('Erro ao disparar notificações de Livros:', error);
+    toast.error('Publicado, mas as notificações não foram enviadas.');
   }
 };
 

@@ -2,79 +2,85 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.draalexandravasconcelos.pt/</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/sobre</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/consultas</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/cursos</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/livros</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/blog</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/midia</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/privacidade</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/cookies</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/termos</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/termos-envio</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/resolucao-litigios</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
-    <loc>https://www.draalexandravasconcelos.pt/cursos/bioreset</loc>
+    <loc>https://www.draalexandravasconcelos.pt/cursos/jejum-intermitente</loc>
     <lastmod>2026-04-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.draalexandravasconcelos.pt/cursos/bioreset-8-edicao</loc>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -85,20 +91,32 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.draalexandravasconcelos.pt/cursos/bioreset-parte-teorica</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.draalexandravasconcelos.pt/cursos/doencas-autoimunes</loc>
     <lastmod>2026-04-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.draalexandravasconcelos.pt/cursos/curso-das-hormonas</loc>
-    <lastmod>2026-05-05</lastmod>
+    <loc>https://www.draalexandravasconcelos.pt/cursos/bioreset</loc>
+    <lastmod>2026-04-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.draalexandravasconcelos.pt/cursos/curso-intensivo-de-biorressonancia-pack-modulos-1-e-2</loc>
     <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.draalexandravasconcelos.pt/cursos/curso-das-hormonas</loc>
+    <lastmod>2026-05-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -117,18 +135,6 @@
   <url>
     <loc>https://www.draalexandravasconcelos.pt/cursos/doencas-automimunes</loc>
     <lastmod>2026-04-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.draalexandravasconcelos.pt/cursos/jejum-intermitente</loc>
-    <lastmod>2026-04-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.draalexandravasconcelos.pt/cursos/bioreset-parte-teorica</loc>
-    <lastmod>2026-06-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
