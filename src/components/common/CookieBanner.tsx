@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Cookie, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Cookie, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const CookieBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem('cookie-consent');
+    const consent = localStorage.getItem("cookie-consent");
     if (!consent) {
       const timer = setTimeout(() => setIsVisible(true), 1500);
       return () => clearTimeout(timer);
@@ -15,7 +15,7 @@ export const CookieBanner: React.FC = () => {
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem('cookie-consent', 'accepted');
+    localStorage.setItem("cookie-consent", "accepted");
     setIsVisible(false);
   };
 
@@ -26,7 +26,8 @@ export const CookieBanner: React.FC = () => {
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 100 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          transition={{ type: "spring", damping: 25, stiffness: 200 }}
+          data-nosnippet
           className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[95%] max-w-[800px]"
         >
           <div className="bg-surface/95 backdrop-blur-xl border border-surface-border shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] rounded-[2rem] p-6 md:p-8">
@@ -34,12 +35,20 @@ export const CookieBanner: React.FC = () => {
               <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center shrink-0">
                 <Cookie className="text-secondary w-8 h-8" />
               </div>
-              
+
               <div className="flex-1 text-center md:text-left">
                 <p className="text-sm text-site-text-muted leading-relaxed">
-                  Utilizamos apenas cookies técnicos essenciais para garantir o funcionamento da sua conta, 
-                  do carrinho de compras e estatísticas anónimas, sem rastreio para publicidade. 
-                  Ao continuar a navegar, concorda com a nossa <Link to="/cookies" className="text-secondary font-bold hover:underline">Política de Cookies</Link>.
+                  Utilizamos apenas cookies técnicos essenciais para garantir o
+                  funcionamento da sua conta, do carrinho de compras e
+                  estatísticas anónimas, sem rastreio para publicidade. Ao
+                  continuar a navegar, concorda com a nossa{" "}
+                  <Link
+                    to="/cookies"
+                    className="text-secondary font-bold hover:underline"
+                  >
+                    Política de Cookies
+                  </Link>
+                  .
                 </p>
               </div>
 
