@@ -124,7 +124,7 @@ export const CourseDetails: React.FC = () => {
       }
       
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
-      let query = supabase.from('courses').select('id, title, subtitle, slug, description, content, image_url, secondary_image_url, type, level, modules, price, buy_url, is_featured, is_published, published_at, enrollment_closes_at, position, created_at, is_sold_out');
+      let query = supabase.from('courses').select('id, title, subtitle, slug, description, content, image_url, secondary_image_url, type, level, modules, price, buy_url, is_featured, is_published, published_at, enrollment_closes_at, position, created_at, is_sold_out, is_closed');
       
       if (isUuid) {
         query = query.eq('id', id);
@@ -210,9 +210,9 @@ export const CourseDetails: React.FC = () => {
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
               <div className="flex items-center justify-center gap-4 mb-6">
-                {course.is_sold_out ? (
-                  <span className="inline-block px-3 py-1 bg-red-500/20 text-red-500 text-xs font-bold uppercase tracking-wider rounded-md border border-red-500/30">
-                    INSCRIÇÕES ESGOTADAS
+                {(course.is_sold_out || course.is_closed) ? (
+                  <span className={`inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-md border ${course.is_closed ? 'bg-[#75618A]/20 text-[#75618A] border-[#75618A]/30' : 'bg-red-500/20 text-red-500 border-red-500/30'}`}>
+                    {course.is_closed ? 'INSCRIÇÕES FECHADAS' : 'INSCRIÇÕES ESGOTADAS'}
                   </span>
                 ) : (
                   <span className="inline-block px-3 py-1 bg-accent/20 text-accent text-xs font-bold uppercase tracking-wider rounded-md">
@@ -230,13 +230,13 @@ export const CourseDetails: React.FC = () => {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-8">
-              {course.is_sold_out ? (
+              {(course.is_sold_out || course.is_closed) ? (
                 <button 
                   type="button" 
                   disabled 
-                  className="bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-10 py-5 rounded-2xl font-bold cursor-not-allowed flex items-center justify-center gap-3 text-xl w-full sm:w-auto shadow-none border border-gray-300/50 dark:border-gray-600/50"
+                  className={`${course.is_closed ? 'bg-[#75618A]/20 text-[#75618A] border-[#75618A]/30' : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-300/50 dark:border-gray-600/50'} px-10 py-5 rounded-2xl font-bold cursor-not-allowed flex items-center justify-center gap-3 text-xl w-full sm:w-auto shadow-none border`}
                 >
-                  Esgotado
+                  {course.is_closed ? 'Fechado' : 'Esgotado'}
                 </button>
               ) : (
                 <a href={course.buy_url || '#'} target="_blank" rel="noopener noreferrer" className="bg-secondary hover:bg-secondary-light text-white px-10 py-5 rounded-2xl font-bold transition-all shadow-xl shadow-secondary/30 hover:shadow-secondary/50 hover:-translate-y-1 flex items-center justify-center gap-3 group text-xl w-full sm:w-auto">
@@ -245,7 +245,7 @@ export const CourseDetails: React.FC = () => {
                 </a>
               )}
               
-              {course.price != null && (
+              {course.price != null && !course.is_sold_out && !course.is_closed && (
                 <div className="text-left bg-surface px-6 py-4 rounded-2xl border border-surface-border flex items-center">
                   <p className="text-4xl font-extrabold text-site-text">{course.price.toFixed(2).replace('.', ',')}€</p>
                 </div>
@@ -377,13 +377,13 @@ export const CourseDetails: React.FC = () => {
               Junte-se a centenas de pessoas que já transformaram a sua saúde com o {course.title}. Não deixe para amanhã a vitalidade que pode conquistar hoje.
             </p>
             
-            {course.is_sold_out ? (
+            {(course.is_sold_out || course.is_closed) ? (
               <button 
                 type="button" 
                 disabled 
-                className="bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-10 py-5 rounded-2xl font-bold cursor-not-allowed inline-flex items-center justify-center gap-3 text-xl w-full sm:w-auto shadow-none border border-gray-300/50 dark:border-gray-600/50"
+                className={`${course.is_closed ? 'bg-[#75618A]/20 text-[#75618A] border-[#75618A]/30' : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-300/50 dark:border-gray-600/50'} px-10 py-5 rounded-2xl font-bold cursor-not-allowed inline-flex items-center justify-center gap-3 text-xl w-full sm:w-auto shadow-none border`}
               >
-                Esgotado
+                {course.is_closed ? 'Fechado' : 'Esgotado'}
               </button>
             ) : (
               <a 
@@ -463,13 +463,13 @@ export const CourseDetails: React.FC = () => {
           <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-600 font-medium rounded-full text-sm">
             <CheckCircle2 className="w-4 h-4" /> Compra Segura e Protegida
           </span>
-          {course.is_sold_out ? (
+          {(course.is_sold_out || course.is_closed) ? (
             <button 
               type="button" 
               disabled 
-              className="bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-10 py-5 rounded-2xl font-bold cursor-not-allowed mt-10 text-xl w-full sm:w-auto shadow-none border border-gray-300/50 dark:border-gray-600/50"
+              className={`${course.is_closed ? 'bg-[#75618A]/20 text-[#75618A] border-[#75618A]/30' : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-300/50 dark:border-gray-600/50'} px-10 py-5 rounded-2xl font-bold cursor-not-allowed mt-10 text-xl w-full sm:w-auto shadow-none border`}
             >
-              Esgotado
+              {course.is_closed ? 'Fechado' : 'Esgotado'}
             </button>
           ) : (
             <a href={course.buy_url || '#'} target="_blank" rel="noopener noreferrer" className="bg-secondary hover:bg-secondary-light text-white px-10 py-5 rounded-2xl font-bold transition-all shadow-lg hover:-translate-y-1 mt-10 text-xl w-full sm:w-auto">

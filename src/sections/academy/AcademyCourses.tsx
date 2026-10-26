@@ -100,6 +100,7 @@ export const AcademyCourses: React.FC<AcademyCoursesProps> = ({
                     image={course.image_url}
                     isPopular={course.is_featured}
                     isSoldOut={course.is_sold_out}
+                    isClosed={course.is_closed}
                   />
                 </Link>
               </div>

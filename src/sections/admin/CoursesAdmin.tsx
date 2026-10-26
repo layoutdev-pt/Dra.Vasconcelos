@@ -63,7 +63,7 @@ const notifyAllUsers = async (title: string, message: string, link: string) => {
 const emptyCourse = (): CourseDraft => ({
   title: '', subtitle: null, slug: null, description: '', content: '', image_url: '', secondary_image_url: '',
   type: 'curso', level: null, modules: null, price: null, buy_url: null, 
-  is_featured: false, is_published: true, is_sold_out: false,
+  is_featured: false, is_published: true, is_sold_out: false, is_closed: false,
   published_at: new Date().toISOString(),
   enrollment_closes_at: null,
   parsedContent: { html: '', modules: [], testimonials: [] }
@@ -87,10 +87,11 @@ const SortableCourseRow: React.FC<{
   course: Course; 
   onToggle: (c: Course) => void; 
   onToggleSoldOut: (c: Course) => void;
+  onToggleClosed: (c: Course) => void;
   onEdit: (c: Course) => void; 
   onDelete: (id: string) => void; 
   deletingId: string | null 
-}> = ({ course, onToggle, onToggleSoldOut, onEdit, onDelete, deletingId }) => {
+}> = ({ course, onToggle, onToggleSoldOut, onToggleClosed, onEdit, onDelete, deletingId }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: course.id });
   const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 1 };
 
@@ -112,6 +113,7 @@ const SortableCourseRow: React.FC<{
         <div className="flex flex-wrap gap-1 mt-1">
           {course.is_featured && <span className="inline-block px-2 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold uppercase tracking-wider">Destaque</span>}
           {course.is_sold_out && <span className="inline-block px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-[10px] font-bold uppercase tracking-wider">Esgotado</span>}
+          {course.is_closed && <span className="inline-block px-2 py-0.5 rounded-full bg-[#75618A]/15 text-[#75618A] text-[10px] font-bold uppercase tracking-wider">Fechado</span>}
         </div>
       </td>
       <td className="px-4 py-4">
@@ -140,6 +142,17 @@ const SortableCourseRow: React.FC<{
               <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-all ${course.is_sold_out ? 'left-3.5' : 'left-0.5'}`} />
             </div>
           </button>
+          <button
+            type="button"
+            onClick={() => onToggleClosed(course)}
+            title="Alternar estado fechado"
+            className={`group flex items-center justify-between w-28 px-2 py-1.5 border rounded-lg transition-all cursor-pointer ${course.is_closed ? 'bg-[#75618A]/10 border-[#75618A]/30' : 'bg-white border-gray-200 hover:border-gray-300'}`}
+          >
+            <span className={`text-[10px] font-bold uppercase tracking-wider ${course.is_closed ? 'text-[#75618A]' : 'text-gray-400 group-hover:text-gray-600'}`}>{course.is_closed ? 'Fechado' : 'Aberto'}</span>
+            <div className={`w-7 h-4 rounded-full relative transition-colors ${course.is_closed ? 'bg-[#75618A]' : 'bg-gray-200 group-hover:bg-gray-300'}`}>
+              <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-all ${course.is_closed ? 'left-3.5' : 'left-0.5'}`} />
+            </div>
+          </button>
         </div>
       </td>
       <td className="px-6 py-4 text-right">
@@ -165,6 +178,7 @@ const CourseModal: React.FC<{ course: Course | null; maxPosition: number; onClos
       return { 
         ...course, 
         is_sold_out: course.is_sold_out ?? false,
+        is_closed: course.is_closed ?? false,
         parsedContent: parseContent(course.content) 
       };
     }
@@ -230,6 +244,7 @@ const CourseModal: React.FC<{ course: Course | null; maxPosition: number; onClos
         is_featured: draft.is_featured,
         is_published: draft.is_published,
         is_sold_out: draft.is_sold_out ?? false,
+        is_closed: draft.is_closed ?? false,
         published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null,
         enrollment_closes_at: draft.enrollment_closes_at ? new Date(draft.enrollment_closes_at).toISOString() : null,
         ...(isNew ? { position: maxPosition + 1 } : {})
@@ -377,7 +392,8 @@ const CourseModal: React.FC<{ course: Course | null; maxPosition: number; onClos
               <div className="flex flex-wrap gap-6 pt-4 border-t border-gray-100">
                 <Toggle value={draft.is_featured} onChange={v => set('is_featured', v)} label="Em Destaque" />
                 <Toggle value={draft.is_published} onChange={v => set('is_published', v)} label="Publicado" />
-                <Toggle value={draft.is_sold_out ?? false} onChange={v => set('is_sold_out', v)} label="Esgotado" />
+                <Toggle value={draft.is_sold_out ?? false} onChange={v => setDraft(d => ({ ...d, is_sold_out: v, ...(v ? { is_closed: false } : {}) }))} label="Esgotado" />
+                <Toggle value={draft.is_closed ?? false} onChange={v => setDraft(d => ({ ...d, is_closed: v, ...(v ? { is_sold_out: false } : {}) }))} label="Fechado" />
               </div>
             </div>
           )}
@@ -546,7 +562,7 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
     const to = from + ITEMS_PER_PAGE - 1;
 
     const { data, count } = await supabase.from('courses')
-      .select('id, title, subtitle, is_featured, type, price, is_published, is_sold_out, position, image_url, created_at', { count: 'estimated' })
+      .select('id, title, subtitle, is_featured, type, price, is_published, is_sold_out, is_closed, position, image_url, created_at', { count: 'estimated' })
       .order('position', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: false })
       .range(from, to);
@@ -610,12 +626,23 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
 
   const handleToggleSoldOut = async (c: Course) => {
     const nextVal = !c.is_sold_out;
-    const { error } = await supabase.from('courses').update({ is_sold_out: nextVal }).eq('id', c.id);
+    const { error } = await supabase.from('courses').update({ is_sold_out: nextVal, ...(nextVal ? { is_closed: false } : {}) }).eq('id', c.id);
     if (!error) {
       showToast(nextVal ? 'Curso marcado como esgotado.' : 'Curso disponível para inscrição.');
       fetch();
     } else {
       showToast('Erro ao atualizar estado de esgotado.');
+    }
+  };
+
+  const handleToggleClosed = async (c: Course) => {
+    const nextVal = !c.is_closed;
+    const { error } = await supabase.from('courses').update({ is_closed: nextVal, ...(nextVal ? { is_sold_out: false } : {}) }).eq('id', c.id);
+    if (!error) {
+      showToast(nextVal ? 'Curso marcado como fechado.' : 'Curso aberto para inscrição.');
+      fetch();
+    } else {
+      showToast('Erro ao atualizar estado do curso.');
     }
   };
 
@@ -678,6 +705,7 @@ export const CoursesAdmin: React.FC<{ showToast: (m: string) => void }> = ({ sho
                         course={course} 
                         onToggle={handleToggle} 
                         onToggleSoldOut={handleToggleSoldOut}
+                        onToggleClosed={handleToggleClosed}
                         onEdit={handleEdit} 
                         onDelete={handleDelete} 
                         deletingId={deletingId} 

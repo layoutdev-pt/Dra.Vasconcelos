@@ -15,6 +15,7 @@ export interface Course {
   is_featured: boolean;
   is_published: boolean;
   is_sold_out?: boolean;
+  is_closed?: boolean;
   published_at: string | null;
   enrollment_closes_at: string | null;
   position?: number;
