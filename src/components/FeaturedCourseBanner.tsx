@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import { OptimizedImage } from "./OptimizedImage";
 import defaultCourseImage from "../assets/images/curso1.webp";
 
-const COURSE_IMAGE_URL = "https://mrlfgpdsoockzfdcrvwi.supabase.co/storage/v1/object/public/media/courses/61x9tou3eum_1789680473806.webp";
-const TARGET_COURSE_URL = "/cursos/curso-intensivo-de-biorressonancia-pack-modulos-1-e-2";
+const COURSE_IMAGE_URL =
+  "https://mrlfgpdsoockzfdcrvwi.supabase.co/storage/v1/object/public/media/courses/61x9tou3eum_1789680473806.webp";
+const TARGET_COURSE_URL =
+  "/cursos/curso-intensivo-de-biorressonancia-pack-modulos-1-e-2";
 
 export const FeaturedCourseBanner: React.FC = () => {
   return (
@@ -27,21 +29,42 @@ export const FeaturedCourseBanner: React.FC = () => {
             </div>
 
             <p className="text-base lg:text-lg text-site-text-muted leading-relaxed font-light">
-              Uma formação completa, dos fundamentos à aplicação prática, para profissionais de saúde que pretendem compreender e aprofundar a Biorressonância e integrar uma abordagem mais estruturada e individualizada na sua prática clínica.
+              Uma formação completa, dos fundamentos à aplicação prática, para
+              profissionais de saúde que pretendem compreender e aprofundar a
+              Biorressonância e integrar uma abordagem mais estruturada e
+              individualizada na sua prática clínica.
             </p>
 
             <ul className="space-y-3.5 pt-1">
               <li className="flex items-start gap-3 text-site-text font-medium leading-relaxed text-sm lg:text-base">
                 <CheckCircle2 className="w-5 h-5 text-secondary shrink-0 mt-0.5" />
-                <span><strong className="text-site-text font-bold">Formação completa:</strong> 6 dias de formação, divididos em dois módulos complementares — online e presencial.</span>
+                <span>
+                  <strong className="text-site-text font-bold">
+                    Formação completa:
+                  </strong>{" "}
+                  6 dias de formação, divididos em dois módulos complementares —
+                  online e presencial.
+                </span>
               </li>
               <li className="flex items-start gap-3 text-site-text font-medium leading-relaxed text-sm lg:text-base">
                 <CheckCircle2 className="w-5 h-5 text-secondary shrink-0 mt-0.5" />
-                <span><strong className="text-site-text font-bold">Dos fundamentos à prática:</strong> avaliação, testagem, interpretação, definição de prioridades e personalização da abordagem.</span>
+                <span>
+                  <strong className="text-site-text font-bold">
+                    Dos fundamentos à prática:
+                  </strong>{" "}
+                  avaliação, testagem, interpretação, definição de prioridades e
+                  personalização da abordagem.
+                </span>
               </li>
               <li className="flex items-start gap-3 text-site-text font-medium leading-relaxed text-sm lg:text-base">
                 <CheckCircle2 className="w-5 h-5 text-secondary shrink-0 mt-0.5" />
-                <span><strong className="text-site-text font-bold">Não é necessário possuir equipamento:</strong> a formação é adequada tanto para quem já trabalha com Biorressonância como para quem pretende começar.</span>
+                <span>
+                  <strong className="text-site-text font-bold">
+                    Não é necessário possuir equipamento:
+                  </strong>{" "}
+                  a formação é adequada tanto para quem já trabalha com
+                  Biorressonância como para quem pretende começar.
+                </span>
               </li>
             </ul>
 
@@ -49,11 +72,11 @@ export const FeaturedCourseBanner: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <div className="flex items-center gap-2.5 text-xs lg:text-sm font-semibold text-site-text bg-surface-muted/60 p-3 rounded-xl border border-surface-border">
                 <Calendar className="w-4 h-4 text-secondary shrink-0" />
-                <span>Módulo 1: 14, 15 e 16 NOV 2026 | Online</span>
+                <span>Módulo 1 - 23 a 25 de JAN 2027 | Online</span>
               </div>
               <div className="flex items-center gap-2.5 text-xs lg:text-sm font-semibold text-site-text bg-surface-muted/60 p-3 rounded-xl border border-surface-border">
                 <Calendar className="w-4 h-4 text-secondary shrink-0" />
-                <span>Módulo 2: 23, 24 e 25 JAN 2027 | Presencial - Lisboa</span>
+                <span>Módulo 2: 13 a 15 de FEV 2027 | Presencial - Lisboa</span>
               </div>
             </div>
 

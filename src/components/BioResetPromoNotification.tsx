@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { X, Calendar, CheckCircle2, ArrowRight, ArrowUpRight, Maximize2 } from "lucide-react";
+import {
+  X,
+  Calendar,
+  CheckCircle2,
+  ArrowRight,
+  ArrowUpRight,
+  Maximize2,
+} from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
@@ -9,8 +16,10 @@ import { useViewportAnchor } from "../hooks/useViewportAnchor";
 type DisplayMode = "hidden" | "modal" | "minimized" | "sticky-footer";
 
 const PROMO_SESSION_KEY = "biorressonancia_promo_session_v1";
-const TARGET_COURSE_URL = "/cursos/curso-intensivo-de-biorressonancia-pack-modulos-1-e-2";
-const COURSE_IMAGE_URL = "https://mrlfgpdsoockzfdcrvwi.supabase.co/storage/v1/object/public/media/courses/61x9tou3eum_1789680473806.webp";
+const TARGET_COURSE_URL =
+  "/cursos/curso-intensivo-de-biorressonancia-pack-modulos-1-e-2";
+const COURSE_IMAGE_URL =
+  "https://mrlfgpdsoockzfdcrvwi.supabase.co/storage/v1/object/public/media/courses/61x9tou3eum_1789680473806.webp";
 const REAPPEAR_INTERVAL_MS = 45000; // Tempo em ms (45s) para reexibir o nonmodal pequeno
 
 export const BioResetPromoNotification: React.FC = () => {
@@ -194,29 +203,44 @@ export const BioResetPromoNotification: React.FC = () => {
                 >
                   Curso Intensivo de Biorressonância
                 </h2>
-                
+
                 <p className="text-sm sm:text-base font-bold text-secondary">
                   Aplicada à Prática Clínica — Módulos 1 + 2
                 </p>
               </div>
 
               <p className="text-site-text-muted text-sm sm:text-base leading-relaxed font-normal">
-                Uma formação completa, dos fundamentos à aplicação prática, para profissionais de saúde que pretendem compreender e aprofundar a Biorressonância e integrar uma abordagem mais estruturada e individualizada na sua prática clínica.
+                Uma formação completa, dos fundamentos à aplicação prática, para
+                profissionais de saúde que pretendem compreender e aprofundar a
+                Biorressonância e integrar uma abordagem mais estruturada e
+                individualizada na sua prática clínica.
               </p>
 
               {/* Destaques / Pontos Fortes */}
               <div className="space-y-2.5 pt-1">
                 <div className="flex items-start gap-2.5 text-xs sm:text-sm text-site-text bg-surface-muted/60 p-3 rounded-xl border border-surface-border">
                   <CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
-                  <span><strong>Formação completa:</strong> 6 dias de formação, divididos em dois módulos complementares — online e presencial.</span>
+                  <span>
+                    <strong>Formação completa:</strong> 6 dias de formação,
+                    divididos em dois módulos complementares — online e
+                    presencial.
+                  </span>
                 </div>
                 <div className="flex items-start gap-2.5 text-xs sm:text-sm text-site-text bg-surface-muted/60 p-3 rounded-xl border border-surface-border">
                   <CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
-                  <span><strong>Dos fundamentos à prática:</strong> avaliação, testagem, interpretação, definição de prioridades e personalização da abordagem.</span>
+                  <span>
+                    <strong>Dos fundamentos à prática:</strong> avaliação,
+                    testagem, interpretação, definição de prioridades e
+                    personalização da abordagem.
+                  </span>
                 </div>
                 <div className="flex items-start gap-2.5 text-xs sm:text-sm text-site-text bg-surface-muted/60 p-3 rounded-xl border border-surface-border">
                   <CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
-                  <span><strong>Não é necessário possuir equipamento:</strong> a formação é adequada tanto para quem já trabalha com Biorressonância como para quem pretende começar.</span>
+                  <span>
+                    <strong>Não é necessário possuir equipamento:</strong> a
+                    formação é adequada tanto para quem já trabalha com
+                    Biorressonância como para quem pretende começar.
+                  </span>
                 </div>
               </div>
 
@@ -224,11 +248,13 @@ export const BioResetPromoNotification: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                 <div className="flex items-center gap-2.5 text-xs font-semibold text-site-text bg-surface-muted p-3 rounded-xl border border-surface-border">
                   <Calendar className="w-4 h-4 text-secondary shrink-0" />
-                  <span>Módulo 1: 14, 15 e 16 NOV 2026 | Online</span>
+                  <span>Módulo 1 - 23 a 25 de JAN 2027 | Online</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-xs font-semibold text-site-text bg-surface-muted p-3 rounded-xl border border-surface-border">
                   <Calendar className="w-4 h-4 text-secondary shrink-0" />
-                  <span>Módulo 2: 23, 24 e 25 JAN 2027 | Presencial - Lisboa</span>
+                  <span>
+                    Módulo 2: 13 a 15 de FEV 2027 | Presencial - Lisboa
+                  </span>
                 </div>
               </div>
 
@@ -316,7 +342,7 @@ export const BioResetPromoNotification: React.FC = () => {
           aria-label="Notificação Promocional Biorressonância"
         >
           {/* Thumbnail & Title/Info */}
-          <div 
+          <div
             className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer"
             onClick={handleOpenModal}
           >
@@ -359,6 +385,6 @@ export const BioResetPromoNotification: React.FC = () => {
         </motion.div>
       )}
     </AnimatePresence>,
-    document.body
+    document.body,
   );
 };

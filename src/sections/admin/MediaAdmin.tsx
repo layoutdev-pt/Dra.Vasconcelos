@@ -11,7 +11,6 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSo
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
 import { OptimizedImage } from '../../components/OptimizedImage';
-import { Pagination } from '../../components/Pagination';
 
 /* ─── FUNÇÃO DE NOTIFICAÇÃO GLOBAL ───────────────────────────────────────── */
 
@@ -29,7 +28,26 @@ const notifyAllUsers = async (title: string, message: string, link: string) => {
 const inputCls = 'w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all';
 const labelCls = 'block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
 
-/* ─── MODAL DE MEDIA (MEDIA MODAL) ───────────────────────────────────────── */
+/* ─── ORDEM (POSITION 0..n-1, A 0 É O PRIMEIRO CARD) ─────────────────────── */
+
+// Sem paginação: a lista completa é necessária para reordenar livremente
+const fetchMediaList = async () => {
+  const { data } = await supabase
+    .from('media')
+    .select('id, title, external_url, image_url, type, published_at, position, created_at')
+    .order('position', { ascending: true })
+    .order('published_at', { ascending: false })
+    .order('created_at', { ascending: false });
+  return data as unknown as MediaEntry[] | null;
+};
+
+const saveMediaOrder = async (ids: string[]) => {
+  const payload = ids.map((id, index) => ({ id, position: index }));
+  const { error } = await supabase.rpc('update_media_order', { payload });
+  if (error) throw error;
+};
+
+/* ─── LINHA ARRASTÁVEL ───────────────────────────────────────────────────── */
 
 const SortableMediaRow: React.FC<{ m: MediaEntry; onEdit: (m: MediaEntry) => void; onDelete: (id: string) => void }> = ({ m, onEdit, onDelete }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: m.id });
@@ -65,7 +83,9 @@ const SortableMediaRow: React.FC<{ m: MediaEntry; onEdit: (m: MediaEntry) => voi
   );
 };
 
-const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; maxPosition: number; onClose: () => void; onSaved: () => void }> = ({ mediaUrl, maxPosition, onClose, onSaved }) => {
+/* ─── MODAL DE MEDIA (MEDIA MODAL) ───────────────────────────────────────── */
+
+const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; orderedIds: string[]; onClose: () => void; onSaved: () => void }> = ({ mediaUrl, orderedIds, onClose, onSaved }) => {
   const [draft, setDraft] = useState<Partial<MediaEntry>>(mediaUrl ? { ...mediaUrl } : { title: '', type: 'video', external_url: '', image_url: '', published_at: new Date().toISOString().split('T')[0] });
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
@@ -101,16 +121,26 @@ const MediaModal: React.FC<{ mediaUrl: MediaEntry | null; maxPosition: number; o
         external_url: draft.external_url,
         image_url: finalImageUrl || null,
         published_at: draft.published_at ? new Date(draft.published_at).toISOString() : null,
-        ...(!mediaUrl ? { position: maxPosition + 1 } : {})
+        ...(!mediaUrl ? { position: 0 } : {})
       };
 
       const isNew = !mediaUrl;
 
-      const { error: dbErr } = mediaUrl
-        ? await supabase.from('media').update(payload).eq('id', mediaUrl.id)
-        : await supabase.from('media').insert(payload);
-        
-      if (dbErr) throw dbErr;
+      if (mediaUrl) {
+        const { error: dbErr } = await supabase.from('media').update(payload).eq('id', mediaUrl.id);
+        if (dbErr) throw dbErr;
+      } else {
+        const { data: inserted, error: dbErr } = await supabase.from('media').insert(payload).select('id').single();
+        if (dbErr) throw dbErr;
+
+        // O novo item passa a ser o primeiro card; os restantes descem uma posição
+        try {
+          await saveMediaOrder([inserted.id, ...orderedIds]);
+        } catch (orderErr: unknown) {
+          console.error('Error updating order:', orderErr);
+          toast.error('Guardado, mas não foi possível colocá-lo em primeiro lugar.');
+        }
+      }
 
       if (isNew) {
         await notifyAllUsers(
@@ -195,31 +225,21 @@ export const MediaAdmin: React.FC = () => {
   const [editingMedia, setEditingMedia] = useState<MediaEntry | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const ITEMS_PER_PAGE = 20;
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
-
   const fetchMedia = useCallback(async () => {
-    setLoading(true);
-    const from = (currentPage - 1) * ITEMS_PER_PAGE;
-    const to = from + ITEMS_PER_PAGE - 1;
-
-    const { data, count } = await supabase
-      .from('media')
-      .select('id, title, external_url, image_url, type, published_at, position, created_at', { count: 'estimated' })
-      .order('position', { ascending: true })
-      .order('published_at', { ascending: false })
-      .order('created_at', { ascending: false })
-      .range(from, to);
-      
-    if (data) {
-      setMediaList(data as unknown as MediaEntry[]);
-      if (count !== null) setTotalCount(count);
-    }
+    const list = await fetchMediaList();
+    if (list) setMediaList(list);
     setLoading(false);
-  }, [currentPage]);
+  }, []);
 
-  useEffect(() => { fetchMedia(); }, [fetchMedia]);
+  useEffect(() => {
+    let isMounted = true;
+    fetchMediaList().then(list => {
+      if (!isMounted) return;
+      if (list) setMediaList(list);
+      setLoading(false);
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -232,14 +252,11 @@ export const MediaAdmin: React.FC = () => {
       const oldIndex = mediaList.findIndex((item) => item.id === active.id);
       const newIndex = mediaList.findIndex((item) => item.id === over.id);
       const newMedia = arrayMove(mediaList, oldIndex, newIndex);
-      
+
       setMediaList(newMedia);
 
-      const from = (currentPage - 1) * ITEMS_PER_PAGE;
-      const payload = newMedia.map((m, index) => ({ id: m.id, position: from + index }));
       try {
-        const { error } = await supabase.rpc('update_media_order', { payload });
-        if (error) throw error;
+        await saveMediaOrder(newMedia.map(m => m.id));
       } catch (err: unknown) {
         console.error('Error updating order:', err);
         alert('Erro ao atualizar a ordem das menções.');
@@ -295,21 +312,11 @@ export const MediaAdmin: React.FC = () => {
         </div>
       )}
       
-      {!loading && totalCount > ITEMS_PER_PAGE && (
-        <div className="mt-8">
-          <Pagination 
-            currentPage={currentPage}
-            totalPages={Math.ceil(totalCount / ITEMS_PER_PAGE)}
-            onPageChange={setCurrentPage}
-          />
-        </div>
-      )}
-      
       <AnimatePresence>
         {isModalOpen && (
-          <MediaModal 
-            mediaUrl={editingMedia} 
-            maxPosition={mediaList.length > 0 ? Math.max(...mediaList.map(m => m.position ?? 0)) : 0}
+          <MediaModal
+            mediaUrl={editingMedia}
+            orderedIds={mediaList.map(m => m.id)}
             onClose={() => setIsModalOpen(false)} 
             onSaved={fetchMedia} 
           />
