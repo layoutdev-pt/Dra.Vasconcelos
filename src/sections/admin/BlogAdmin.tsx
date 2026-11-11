@@ -11,7 +11,6 @@ import type { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
-import { Pagination } from '../../components/Pagination';
 
 /* ─── FUNÇÃO DE NOTIFICAÇÃO GLOBAL ───────────────────────────────────────── */
 
@@ -40,7 +39,25 @@ const Toggle: React.FC<{ value: boolean; onChange: (v: boolean) => void; label: 
   </label>
 );
 
-/* ─── MODAL DO ARTIGO (BLOG MODAL) ───────────────────────────────────────── */
+/* ─── ORDEM (POSITION 0..n-1, A 0 É O PRIMEIRO ARTIGO) ───────────────────── */
+
+// Sem paginação: a lista completa é necessária para reordenar livremente
+const fetchPostsList = async () => {
+  const { data, error } = await supabase.from('blog_posts')
+    .select('id, title, slug, category, summary, image_url, published_at, is_published, position, created_at')
+    .order('position', { ascending: true })
+    .order('created_at', { ascending: false });
+  if (error) console.error('Fetch posts error:', error);
+  return data as BlogPost[] | null;
+};
+
+const savePostsOrder = async (ids: string[]) => {
+  const payload = ids.map((id, index) => ({ id, position: index }));
+  const { error } = await supabase.rpc('update_posts_order', { payload });
+  if (error) throw error;
+};
+
+/* ─── LINHA ARRASTÁVEL ───────────────────────────────────────────────────── */
 
 const SortablePostRow: React.FC<{ p: BlogPost; onEdit: (p: BlogPost) => void; onDelete: (id: string) => void }> = ({ p, onEdit, onDelete }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: p.id });
@@ -73,7 +90,9 @@ const SortablePostRow: React.FC<{ p: BlogPost; onEdit: (p: BlogPost) => void; on
   );
 };
 
-const BlogModal: React.FC<{ post: BlogPost | null; maxPosition: number; onClose: () => void; onSaved: () => void }> = ({ post, maxPosition, onClose, onSaved }) => {
+/* ─── MODAL DO ARTIGO (BLOG MODAL) ───────────────────────────────────────── */
+
+const BlogModal: React.FC<{ post: BlogPost | null; orderedIds: string[]; onClose: () => void; onSaved: () => void }> = ({ post, orderedIds, onClose, onSaved }) => {
   const [draft, setDraft] = useState<Partial<BlogPost>>(post ? { ...post } : { title: '', slug: '', summary: '', content: '', category: 'Artigo', is_published: true, image_url: '', published_at: new Date().toISOString() });
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
@@ -113,7 +132,7 @@ const BlogModal: React.FC<{ post: BlogPost | null; maxPosition: number; onClose:
       image_url: finalImageUrl || null,
       is_published: draft.is_published ?? true,
       published_at: draft.is_published ? (draft.published_at || new Date().toISOString()) : null,
-      ...(!post ? { position: maxPosition + 1 } : {})
+      ...(!post ? { position: 0 } : {})
     };
 
     const isNew = !post;
@@ -122,8 +141,16 @@ const BlogModal: React.FC<{ post: BlogPost | null; maxPosition: number; onClose:
       const { error: dbErr } = await supabase.from('blog_posts').update(payload).eq('id', post.id);
       if (dbErr) { setError(dbErr.message); setSaving(false); return; }
     } else {
-      const { error: dbErr } = await supabase.from('blog_posts').insert(payload).select('id').single();
+      const { data: inserted, error: dbErr } = await supabase.from('blog_posts').insert(payload).select('id').single();
       if (dbErr) { setError(dbErr.message); setSaving(false); return; }
+
+      // O novo artigo passa a ser o primeiro; os restantes descem uma posição
+      try {
+        await savePostsOrder([inserted.id, ...orderedIds]);
+      } catch (orderErr: unknown) {
+        console.error('Error updating order:', orderErr);
+        toast.error('Guardado, mas não foi possível colocá-lo em primeiro lugar.');
+      }
     }
 
     // NOTIFICAÇÃO GLOBAL: Se for um artigo novo e estiver publicado
@@ -203,31 +230,21 @@ export const BlogAdmin: React.FC = () => {
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const ITEMS_PER_PAGE = 20;
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
-
   const fetchPosts = useCallback(async () => {
-    setLoading(true);
-    const from = (currentPage - 1) * ITEMS_PER_PAGE;
-    const to = from + ITEMS_PER_PAGE - 1;
-
-    const { data, count, error } = await supabase.from('blog_posts')
-      .select('id, title, slug, category, summary, image_url, published_at, is_published, position, created_at', { count: 'estimated' })
-      .order('position', { ascending: true })
-      .order('created_at', { ascending: false })
-      .range(from, to);
-      
-    if (error) console.error('Fetch posts error:', error);
-    
-    if (data) {
-      setPosts(data as BlogPost[]);
-      if (count !== null) setTotalCount(count);
-    }
+    const list = await fetchPostsList();
+    if (list) setPosts(list);
     setLoading(false);
-  }, [currentPage]);
+  }, []);
 
-  useEffect(() => { fetchPosts(); }, [fetchPosts]);
+  useEffect(() => {
+    let isMounted = true;
+    fetchPostsList().then(list => {
+      if (!isMounted) return;
+      if (list) setPosts(list);
+      setLoading(false);
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -243,11 +260,8 @@ export const BlogAdmin: React.FC = () => {
       
       setPosts(newPosts);
 
-      const from = (currentPage - 1) * ITEMS_PER_PAGE;
-      const payload = newPosts.map((p, index) => ({ id: p.id, position: from + index }));
       try {
-        const { error } = await supabase.rpc('update_posts_order', { payload });
-        if (error) throw error;
+        await savePostsOrder(newPosts.map(p => p.id));
       } catch (err: unknown) {
         console.error('Error updating order:', err);
         alert('Erro ao atualizar a ordem dos artigos.');
@@ -313,18 +327,8 @@ export const BlogAdmin: React.FC = () => {
         </div>
       )}
 
-      {!loading && totalCount > ITEMS_PER_PAGE && (
-        <div className="mt-8">
-          <Pagination 
-            currentPage={currentPage}
-            totalPages={Math.ceil(totalCount / ITEMS_PER_PAGE)}
-            onPageChange={setCurrentPage}
-          />
-        </div>
-      )}
-      
       <AnimatePresence>
-        {isModalOpen && <BlogModal post={editingPost} maxPosition={posts.length > 0 ? Math.max(...posts.map(p => p.position ?? 0)) : 0} onClose={() => setIsModalOpen(false)} onSaved={fetchPosts} />}
+        {isModalOpen && <BlogModal post={editingPost} orderedIds={posts.map(p => p.id)} onClose={() => setIsModalOpen(false)} onSaved={fetchPosts} />}
       </AnimatePresence>
     </div>
   );
